@@ -1,0 +1,70 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>fi.nls.oskari.elf</groupId>
+    <artifactId>webapp-map</artifactId>
+    <version>1.26-SNAPSHOT</version>
+    <packaging>war</packaging>
+    <name>Elf-map webapp</name>
+
+    <properties>
+        <appName>oskari-map</appName>
+        <oskari.version>1.26</oskari.version>
+        <commons-dbcp2.version>2.0.1</commons-dbcp2.version>
+        <postgresql.version>9.3-1102-jdbc41</postgresql.version>
+    </properties>
+
+    <dependencies>
+        <!-- Replace icu4j version included by axiom-api with newer version
+        which does not brake .jar investigation performed by jetty-maven plugin  -->
+        <dependency>
+            <groupId>com.ibm.icu</groupId>
+            <artifactId>icu4j</artifactId>
+            <version>51.1</version>
+        </dependency>
+        <!-- oskari -->
+        <dependency>
+            <groupId>fi.nls.oskari</groupId>
+            <artifactId>map-servlet</artifactId>
+            <version>${oskari.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.ibm.icu</groupId>
+                    <artifactId>icu4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-search-nls</artifactId>
+            <version>${oskari.version}</version>
+        </dependency>
+        <!-- /oskari -->
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-dbcp2</artifactId>
+            <version>${commons-dbcp2.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <finalName>${appName}</finalName>
+    </build>
+    <repositories>
+        <repository>
+            <id>oskari_org</id>
+            <name>Oskari.org release repository</name>
+            <url>http://oskari.org/nexus/content/repositories/releases/</url>
+        </repository>
+    </repositories>
+</project>
