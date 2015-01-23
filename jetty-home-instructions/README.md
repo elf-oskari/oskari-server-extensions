@@ -11,3 +11,11 @@ Jetty 8 install
 - Download the driver .jar-file from https://jdbc.postgresql.org/download.html (tested withJDBC41 Postgresql Driver, Version 9.3-1102)
 - Place the driver in {JETTY_HOME}/lib/ext/[postgresql-9.3-1102.jdbc41.jar]
 - Add "jndi" to the OPTIONS-list in {JETTY_HOME}/start.ini
+
+4) Add configuration to serve Oskari frontend files
+
+- add oskari-front.xml to {JETTY_HOME}/contexts/
+- run 'git clone https://github.com/nls-oskari/oskari' in {JETTY_HOME}
+- after clone you have for example a file in {JETTY_HOME}/oskari/ReleaseNotes.md
+- optionally modify 'resourceBase' in oskari-front.xml to point to a location where Oskari frontend files are located
+
