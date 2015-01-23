@@ -33,3 +33,10 @@ Jetty 8 install
 - add oskarirealm.conf to {JETTY_HOME}/resources/
 - modify {JETTY_HOME}/start.ini and add a reference to configuration file 'resources/jetty-jaas-oskari.xml'
 - modify {JETTY_HOME}/contexts/oskari-map.xml to include a securityHandler for JAAS
+
+7) Start the Jetty by running the command in {JETTY_HOME}
+
+	java -Doskari.setup=app-elf.json -jar start.jar
+
+This creates the basic database structure with initial content based on a json file in webapp-map resources.
+After initial startup you can use just 'java -jar start.jar'

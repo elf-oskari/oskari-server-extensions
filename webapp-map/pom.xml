@@ -4,13 +4,13 @@
 
     <groupId>fi.nls.oskari.elf</groupId>
     <artifactId>webapp-map</artifactId>
-    <version>1.26-SNAPSHOT</version>
+    <version>1.27-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>Elf-map webapp</name>
 
     <properties>
         <appName>oskari-map</appName>
-        <oskari.version>1.26</oskari.version>
+        <oskari.version>${project.version}</oskari.version>
         <commons-dbcp2.version>2.0.1</commons-dbcp2.version>
         <postgresql.version>9.3-1102-jdbc41</postgresql.version>
     </properties>
