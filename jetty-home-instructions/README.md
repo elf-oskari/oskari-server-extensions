@@ -26,3 +26,10 @@ Jetty 8 install
 - add oskari-ext.properties to {JETTY_HOME}/resources/
 - NOTE! configure the same connection params to oskari-ext.properties, the database creation requires this dual configuration for now.
 - build the oskari-map.war file and copy it to {JETTY_HOME}/webapps/oskari-map.war
+
+6) Configure JAAS for login functionality
+
+- add jetty-jaas-oskari.xml to {JETTY_HOME}/resources/
+- add oskarirealm.conf to {JETTY_HOME}/resources/
+- modify {JETTY_HOME}/start.ini and add a reference to configuration file 'resources/jetty-jaas-oskari.xml'
+- modify {JETTY_HOME}/contexts/oskari-map.xml to include a securityHandler for JAAS
