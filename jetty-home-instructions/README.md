@@ -5,3 +5,9 @@ Jetty 8 install
 
 - Remove everything from {JETTY_HOME}/contexts/
 - Remove .war-files under {JETTY_HOME}/webapps/
+
+3) Adding JNDI support and a PostgreSQL driver
+
+- Download the driver .jar-file from https://jdbc.postgresql.org/download.html (tested withJDBC41 Postgresql Driver, Version 9.3-1102)
+- Place the driver in {JETTY_HOME}/lib/ext/[postgresql-9.3-1102.jdbc41.jar]
+- Add "jndi" to the OPTIONS-list in {JETTY_HOME}/start.ini
