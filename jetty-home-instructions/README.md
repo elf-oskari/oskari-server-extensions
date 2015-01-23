@@ -19,3 +19,10 @@ Jetty 8 install
 - after clone you have for example a file in {JETTY_HOME}/oskari/ReleaseNotes.md
 - optionally modify 'resourceBase' in oskari-front.xml to point to a location where Oskari frontend files are located
 
+5) Configuring oskari-map as root webapp
+
+- add oskari-map.xml to {JETTY_HOME}/contexts/
+- configure the database connection parameters (user/password) for OskariPool in oskari-map.xml
+- add oskari-ext.properties to {JETTY_HOME}/resources/
+- NOTE! configure the same connection params to oskari-ext.properties, the database creation requires this dual configuration for now.
+- build the oskari-map.war file and copy it to {JETTY_HOME}/webapps/oskari-map.war
