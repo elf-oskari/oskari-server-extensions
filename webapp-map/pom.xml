@@ -16,6 +16,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>fi.nls.oskari.elf</groupId>
+            <artifactId>elf-resources</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <!-- Replace icu4j version included by axiom-api with newer version
         which does not brake .jar investigation performed by jetty-maven plugin  -->
         <dependency>
