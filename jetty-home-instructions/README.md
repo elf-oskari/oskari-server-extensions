@@ -65,7 +65,6 @@ Configuration instructions for non-default settings TBD.
 - add transport-ext.properties to {JETTY_HOME}/resources/
 - edit oskari.domain property in transport-ext.properties if you are not running in port 8080
 
-	# transport uses this to get maplayer data from webapp-map
 	oskari.domain=http://localhost:8080
 
 ##### 5) Start the Jetty by running the command in {JETTY_HOME}
