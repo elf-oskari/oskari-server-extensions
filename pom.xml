@@ -7,10 +7,17 @@
     <artifactId>elf-parent</artifactId>
     <version>1.27-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>ELF-applications</name>
+    <name>ELF applications</name>
+
+    <properties>
+        <oskari.version>${project.version}</oskari.version>
+        <commons-dbcp2.version>2.0.1</commons-dbcp2.version>
+        <postgresql.version>9.3-1102-jdbc41</postgresql.version>
+    </properties>
 
     <modules>
         <module>elf-resources</module>
+        <module>runnable-jar</module>
         <module>webapp-map</module>
     </modules>
 
