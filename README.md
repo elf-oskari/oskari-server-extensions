@@ -12,4 +12,7 @@ See README.md under jetty-home-instructions
 
 ## To build the webapp for map
 
-Run 'mvn clean install' in webapp-map
+Run 'mvn clean install' in this directory. 
+A deployable WAR-file will be compiled to ./webapp-map/target/oskari-map.war
+
+##### Note! The runnable JAR packaging is under development and shouldn't be used for now

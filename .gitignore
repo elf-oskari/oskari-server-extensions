@@ -9,3 +9,5 @@ target/
 .idea
 .project
 *pom.xml.versionsBackup
+runnable-jar/dist/
+
