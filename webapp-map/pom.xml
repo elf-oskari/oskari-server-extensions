@@ -66,11 +66,4 @@
     <build>
         <finalName>${appName}</finalName>
     </build>
-    <repositories>
-        <repository>
-            <id>oskari_org</id>
-            <name>Oskari.org release repository</name>
-            <url>http://oskari.org/nexus/content/repositories/releases/</url>
-        </repository>
-    </repositories>
 </project>
