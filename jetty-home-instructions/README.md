@@ -37,9 +37,6 @@
 
 ##### 7) Start the Jetty by running the command in {JETTY_HOME}
 
-	java -Doskari.setup=app-elf.json -jar start.jar
-
-This creates the basic database structure with initial content based on a json file in webapp-map resources.
-After initial startup you can use just:
-
 	java -jar start.jar
+
+This creates the basic database structure (if it doesn't exist) with initial content based on a json file in webapp-map resources.
