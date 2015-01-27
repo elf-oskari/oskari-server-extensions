@@ -32,6 +32,7 @@
         <module>elf-resources</module>
         <!-- Disabled since no-one is using it for now -->
         <!-- module>runnable-jar</module -->
+        <module>server-extension</module>
         <module>webapp-map</module>
         <module>webapp-transport</module>
     </modules>
