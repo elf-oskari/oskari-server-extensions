@@ -22,7 +22,7 @@ INSERT INTO portti_wfs_template_model(name, description, type, request_template,
 VALUES (
 	'ELF AU', 'ELF AU PoC', 'mah taip', 
 	'/fi/nls/oskari/fe/input/format/gml/inspire/au/fgi_fi_elf_wfs_template.xml', 
-	'/fi/nls/oskari/fe/input/format/gml/au/ELF_generic_AU.groovy');          
+	'fi.nls.oskari.eu.elf.recipe.administrativeunits.ELF_MasterLoD0_AdministrativeUnit_Parser');          
 
 -- add wfs specific layer data; 
 INSERT INTO portti_wfs_layer ( 
