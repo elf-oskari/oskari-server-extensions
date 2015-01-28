@@ -15,10 +15,26 @@
         <postgresql.version>9.3-1102-jdbc41</postgresql.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>oskari_org</id>
+            <name>Oskari.org release repository</name>
+            <url>http://oskari.org/nexus/content/repositories/releases/</url>
+        </repository>
+        <repository>
+            <id>oskari_org_snapshot</id>
+            <name>Oskari.org snapshot repository</name>
+            <url>http://oskari.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
+
     <modules>
         <module>elf-resources</module>
-        <module>runnable-jar</module>
+        <!-- Disabled since no-one is using it for now -->
+        <!-- module>runnable-jar</module -->
+        <module>server-extension</module>
         <module>webapp-map</module>
+        <module>webapp-transport</module>
     </modules>
 
 </project>
