@@ -1,5 +1,8 @@
 package eu.elf.oskari.user;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -26,6 +29,8 @@ public class ConterraSecurityManagerUserService extends DatabaseUserService {
     private static final String PARAM_REQUEST = "REQUEST";
     private static final String PARAM_REQUEST_VALUE = "GetSAMLResponse";
     private static final String PARAM_CREDENTIALS = "CREDENTIALS";
+
+    private final UserXMLMapping mapping = new UserXMLMapping();
 
     @Override
     public void init() throws ServiceException {
@@ -69,13 +74,11 @@ public class ConterraSecurityManagerUserService extends DatabaseUserService {
     }
 
     public User parseResponse(final String response) {
+        if(response == null) {
+            return null;
+        }
+
         log.debug("Got response:\n",response);
-        /*
-        /Response/Status/StatusCode[Value=samlp:Success]
-        /Response/Assertion/AuthenticationStatement/Subject/NameIdentifier -> text content == username
-        /Response/Assertion/AttributeStatement/Subject/NameIdentifier -> text content == username
-        /Response/Assertion/AttributeStatement/Attribute[AttributeName=urn:conterra:names:sdi-suite:policy:attribute:user-id]/AttributeValue -> user-id (number)
-         */
-        return null;
+        return mapping.parse(response);
     }
 }
