@@ -13,6 +13,7 @@
         <oskari.version>${project.version}</oskari.version>
         <commons-dbcp2.version>2.0.1</commons-dbcp2.version>
         <postgresql.version>9.3-1102-jdbc41</postgresql.version>
+        <junit.version>4.11</junit.version>
     </properties>
 
     <repositories>

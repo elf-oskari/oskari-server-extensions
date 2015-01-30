@@ -1,0 +1,80 @@
+<Response xmlns="urn:oasis:names:tc:SAML:1.0:protocol" xmlns:saml="urn:oasis:names:tc:SAML:1.0:assertion"
+          xmlns:samlp="urn:oasis:names:tc:SAML:1.0:protocol" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" IssueInstant="2015-01-30T09:42:12.760Z" MajorVersion="1"
+          MinorVersion="1" ResponseID="_2477ec0515abc229bdcdd8df674d5906">
+    <Status>
+        <StatusCode Value="samlp:Success"></StatusCode>
+    </Status>
+    <Assertion xmlns="urn:oasis:names:tc:SAML:1.0:assertion" AssertionID="_7d8beaba8b4599e2ae0b6410fd5b0fd2"
+               IssueInstant="2015-01-30T09:42:12.760Z" Issuer="ct-security" MajorVersion="1" MinorVersion="1">
+        <Conditions NotBefore="2015-01-30T09:42:12.760Z" NotOnOrAfter="2015-01-30T10:42:12.760Z"></Conditions>
+        <AuthenticationStatement AuthenticationInstant="2015-01-30T09:42:12.760Z"
+                                 AuthenticationMethod="urn:oasis:names:tc:SAML:1.0:am:password">
+            <Subject>
+                <NameIdentifier Format="urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified">CONT</NameIdentifier>
+            </Subject>
+        </AuthenticationStatement>
+        <AttributeStatement>
+            <Subject>
+                <NameIdentifier Format="urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified">CONT</NameIdentifier>
+            </Subject>
+            <Attribute AttributeName="urn:conterra:names:sdi-suite:policy:attribute:user-id"
+                       AttributeNamespace="urn:ct:names">
+                <AttributeValue xsi:type="xsd:string">76</AttributeValue>
+            </Attribute>
+            <Attribute AttributeName="mail" AttributeNamespace="urn:ct:names">
+                <AttributeValue xsi:type="xsd:string">r.gartmann@conterra.de</AttributeValue>
+            </Attribute>
+            <Attribute AttributeName="urn:conterra:names:sdi-suite:policy:attribute:group-id"
+                       AttributeNamespace="urn:ct:names">
+                <AttributeValue xsi:type="xsd:string">40</AttributeValue>
+            </Attribute>
+            <Attribute AttributeName="urn:conterra:names:sdi-suite:policy:attribute:group-name"
+                       AttributeNamespace="urn:ct:names">
+                <AttributeValue xsi:type="xsd:string">Users</AttributeValue>
+            </Attribute>
+            <Attribute AttributeName="urn:conterra:names:sdi-suite:policy:attribute:role"
+                       AttributeNamespace="urn:ct:names">
+                <AttributeValue xsi:type="xsd:string">sM_Administrator</AttributeValue>
+                <AttributeValue xsi:type="xsd:string">User</AttributeValue>
+            </Attribute>
+            <Attribute AttributeName="givenname" AttributeNamespace="urn:ct:names">
+                <AttributeValue xsi:type="xsd:string">con terra GmbH</AttributeValue>
+            </Attribute>
+            <Attribute AttributeName="familyname" AttributeNamespace="urn:ct:names">
+                <AttributeValue xsi:type="xsd:string">Germany</AttributeValue>
+            </Attribute>
+            <Attribute AttributeName="country" AttributeNamespace="urn:ct:names">
+                <AttributeValue xsi:type="xsd:string">Germany</AttributeValue>
+            </Attribute>
+        </AttributeStatement>
+        <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+            <ds:SignedInfo>
+                <ds:CanonicalizationMethod
+                        Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"></ds:CanonicalizationMethod>
+                <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"></ds:SignatureMethod>
+                <ds:Reference URI="#_7d8beaba8b4599e2ae0b6410fd5b0fd2">
+                    <ds:Transforms>
+                        <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"></ds:Transform>
+                        <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+                            <ec:InclusiveNamespaces xmlns:ec="http://www.w3.org/2001/10/xml-exc-c14n#"
+                                                    PrefixList="code ds kind rw saml samlp typens #default xsd xsi"></ec:InclusiveNamespaces>
+                        </ds:Transform>
+                    </ds:Transforms>
+                    <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></ds:DigestMethod>
+                    <ds:DigestValue>jw0pAJ9uKs8KmF9dSyWURihH8vM=</ds:DigestValue>
+                </ds:Reference>
+            </ds:SignedInfo>
+            <ds:SignatureValue>
+                nD8NSRY4OBcu42eQ2wWl4sQpNUCH/Z52AP+l+wpCS5rHeSDkcVvlbeaRCbf841jM8JnZ31geB0afdGxzfm44zgvw8qEPrmqEmpNJl1zVScPNpYMZjbijOrLNuw/pf9dmTQBBFyQraYnHdG5UvzZLd7oetsGsHVLselpdMq7PEPz1lAR3S5nSyMO9M9O6HAw6qTTr3tRzF8xNoM2a5UsrGv9HIMF3Rdk3rfOQ75kyI8VeOsEUTZej3/AcqBk1oz70VZeGSFn0xlOSvJI0/yKCjiVNK3nNG8912Q+ZaisIKkjXv58NGymddvIMYWhqVrKAmi/N315h2jJDC7dpC9ed5A==
+            </ds:SignatureValue>
+            <ds:KeyInfo>
+                <ds:X509Data>
+                    <ds:X509Certificate>
+                        MIIDHTCCAgWgAwIBAgIEGxE5kjANBgkqhkiG9w0BAQsFADA/MQswCQYDVQQGEwJFVTEMMAoGA1UEChMDRUxGMQ8wDQYDVQQLEwZzZXJ2ZXIxETAPBgNVBAMTCHNlY3VyaXR5MB4XDTE0MDUyNzA5NTMwNloXDTE5MDUwMTA5NTMwNlowPzELMAkGA1UEBhMCRVUxDDAKBgNVBAoTA0VMRjEPMA0GA1UECxMGc2VydmVyMREwDwYDVQQDEwhzZWN1cml0eTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAJ7T5uz3FTIHqnyXCH409iU4IaDquSP616zlvZDBHEXt6kosaQ0EW7eoyTZcwoaEWLUsAl/9zaGKhWLYgKGgzNiNMpT85M/yA6/a5VEy0uHZjxuidkFVvWPf8I4yKwlKHfJq/Eb/Q3Pk+CT+TBxfzS1EvRjq5P7bPqByqbisGu4JglFb7HrKXkPZAjeA4UFLWY67U5Sac3dKxnfZNJLQX13rjQenxo4JzOovWde109Zg5rW0I0A2sJx3FhtK6akEvbNjsMCw2D0JNADVpQmXGt09+OxI/en+d3CqHNy3T8hdRgvw7Cj2kv/12lothn5QnsvV+lAVcTKEFUyno4YqN/UCAwEAAaMhMB8wHQYDVR0OBBYEFNWyNkuhL+iXS2ukpfB4HgqNCqTyMA0GCSqGSIb3DQEBCwUAA4IBAQB7S7RJICgLxK6O6Tl3Gvm+9b9DSKgnGjdRbsyDwX6BmAb4FQ89dyT99ueHOy8OP/AacPwardHAbckxYJTz1MpNcdQQ8XefLK6Qp7352gKixx5KAJwDY/yCBmUpvEnAHcbmJ86i9Q2t7nVlfBF5DX7fTgCPWe+qEJcUYCrNHqFE0R8DmHSYsaz1NGIRTGpvdlGnKgsrLBItVHYOaohoWb5ujzy9cpdjThIF9VBDa7u0bNewo17x3XNoH5tFgn6s23sD0+9/GarWkBtpUai4D68m0UpYVNpVNI+6NKXRZsR7y7f76ajOQqr0T6WCsUUZf1Csy2XyxRI/sgOAWwYRQW6i
+                    </ds:X509Certificate>
+                </ds:X509Data>
+            </ds:KeyInfo>
+        </ds:Signature>
+    </Assertion>
+</Response>
