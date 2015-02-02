@@ -1,7 +1,5 @@
 package eu.elf.oskari.user;
 
-
-import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
