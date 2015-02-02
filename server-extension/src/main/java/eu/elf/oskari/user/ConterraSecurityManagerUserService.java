@@ -1,6 +1,5 @@
 package eu.elf.oskari.user;
 
-import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -10,10 +9,8 @@ import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 
 import java.net.HttpURLConnection;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by SMAKINEN on 27.1.2015.
@@ -54,6 +51,7 @@ public class ConterraSecurityManagerUserService extends DatabaseUserService {
     @Override
     public User login(String username, String pass) throws ServiceException {
         try {
+            // call security manager login
             HttpURLConnection conn = IOHelper.getConnection(serviceURL);
             IOHelper.setContentType(conn, IOHelper.CONTENTTYPE_FORM_URLENCODED);
             final String payload = payloadTemplate + IOHelper.encode64(username) + "," + IOHelper.encode64(pass);
@@ -62,13 +60,11 @@ public class ConterraSecurityManagerUserService extends DatabaseUserService {
             if(response.isEmpty()) {
                 throw new ServiceException("Couldn't get response from server " + serviceURL + " with payload:\n" + payload);
             }
-            User user = parseResponse(IOHelper.decode64(response));
-            if(user != null) {
-                // save to database
-                user = updateOrAddUser(user);
-            }
-
-            return user;
+            // parse the user information from response
+            final User user = parseResponse(IOHelper.decode64(response));
+            // save to database
+            final User savedUser = saveUser(user);
+            return savedUser;
         }
         catch (Exception ex) {
             if(ex instanceof ServiceException) {

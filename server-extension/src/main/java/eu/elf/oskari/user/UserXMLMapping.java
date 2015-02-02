@@ -29,8 +29,13 @@ public class UserXMLMapping {
     private XPathExpression XPATH_STATUS = null;
     private XPathExpression XPATH_NameIdentifier = null;
     private XPathExpression XPATH_Attribute = null;
+    private Set<String> ADDITIONAL_ATTR_NAMES = new HashSet<String>();
 
     public UserXMLMapping() {
+        ADDITIONAL_ATTR_NAMES.add("urn:conterra:names:sdi-suite:policy:attribute:user-id");
+        ADDITIONAL_ATTR_NAMES.add("urn:conterra:names:sdi-suite:policy:attribute:group-id");
+        ADDITIONAL_ATTR_NAMES.add("urn:conterra:names:sdi-suite:policy:attribute:group-name");
+        ADDITIONAL_ATTR_NAMES.add("country");
         /*
         /Response/Status/StatusCode[Value=samlp:Success]
         /Response/Assertion/AuthenticationStatement/Subject/NameIdentifier -> text content == username
@@ -82,13 +87,13 @@ public class UserXMLMapping {
             while(it.hasNext()) {
                 user.addRole(-1, it.next());
             }
-            // TODO: other attributes to some json field?
-            /*
-[DEBUG] eu.elf.oskari.user.UserXMLMapping: urn:conterra:names:sdi-suite:policy:attribute:user-id = 76
-[DEBUG] eu.elf.oskari.user.UserXMLMapping: urn:conterra:names:sdi-suite:policy:attribute:group-id = 40
-[DEBUG] eu.elf.oskari.user.UserXMLMapping: urn:conterra:names:sdi-suite:policy:attribute:group-name = Users
-[DEBUG] eu.elf.oskari.user.UserXMLMapping: country = Germany
-             */
+            // other attributes to a json field
+            for(String key : ADDITIONAL_ATTR_NAMES) {
+                final Set<String> attr = getAttribute(attributes, key);
+                if (!attr.isEmpty()) {
+                    user.setAttribute(key, attr.iterator().next());
+                }
+            }
 
             log.debug("User:", user);
             return user;
