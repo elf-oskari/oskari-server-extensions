@@ -51,6 +51,11 @@ public class UserXMLMapping {
             e.printStackTrace();
         }
     }
+
+    public Set<String> getAdditionalAttributeNames() {
+        return ADDITIONAL_ATTR_NAMES;
+    }
+
     public User parse(String xml) {
         try {
             final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

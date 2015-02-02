@@ -10,6 +10,7 @@ import static org.junit.Assert.*;
 public class ConterraSecurityManagerUserServiceTest {
 
     final ConterraSecurityManagerUserService service = new ConterraSecurityManagerUserService();
+    final UserXMLMapping mapper = new UserXMLMapping();
 
     @Test
     public void testParseResponseNotExpectedInput() throws Exception {
@@ -39,6 +40,29 @@ public class ConterraSecurityManagerUserServiceTest {
         assertEquals("Should have 2 roles", 2, user.getRoles().size());
         for(Role role : user.getRoles()) {
             assertTrue("Roles should match: [sM_Administrator || User]", "sM_Administrator".equals(role.getName()) || "User".equals(role.getName()));
+        }
+        /*
+{
+  "country": "Germany",
+  "urn:conterra:names:sdi-suite:policy:attribute:group-id": "40",
+  "urn:conterra:names:sdi-suite:policy:attribute:group-name": "Users",
+  "urn:conterra:names:sdi-suite:policy:attribute:user-id": "76"
+}
+         */
+        for(String attr : mapper.getAdditionalAttributeNames()) {
+            if(attr.equals("country")) {
+                assertEquals("Attribute should match: country", "Germany", user.getAttribute(attr));
+            }
+            else if(attr.equals("urn:conterra:names:sdi-suite:policy:attribute:group-id")) {
+                assertEquals("Attribute should match: group-id", "40", user.getAttribute(attr));
+            }
+            else if(attr.equals("urn:conterra:names:sdi-suite:policy:attribute:group-name")) {
+                assertEquals("Attribute should match: group-name", "Users", user.getAttribute(attr));
+            }
+            else if(attr.equals("urn:conterra:names:sdi-suite:policy:attribute:user-id")) {
+                assertEquals("Attribute should match: user-id", "76", user.getAttribute(attr));
+            }
+
         }
     }
 }
