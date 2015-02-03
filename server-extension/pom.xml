@@ -6,7 +6,7 @@
     <parent>
         <groupId>fi.nls.oskari.elf</groupId>
         <artifactId>elf-parent</artifactId>
-        <version>1.27-SNAPSHOT</version>
+        <version>1.0-SNAPSHOT</version>
     </parent>
     <artifactId>server-extension</artifactId>
 
@@ -16,6 +16,7 @@
             <artifactId>oskari-users</artifactId>
             <version>${oskari.version}</version>
         </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

@@ -27,6 +27,8 @@ public class ConterraSecurityManagerUserService extends DatabaseUserService {
     private static final String PARAM_REQUEST_VALUE = "GetSAMLResponse";
     private static final String PARAM_CREDENTIALS = "CREDENTIALS";
 
+    private final UserXMLMapping mapping = new UserXMLMapping();
+
     @Override
     public void init() throws ServiceException {
         super.init();
@@ -47,35 +49,39 @@ public class ConterraSecurityManagerUserService extends DatabaseUserService {
     }
 
     @Override
-    public User login(String user, String pass) throws ServiceException {
+    public User login(String username, String pass) throws ServiceException {
         try {
+            // call security manager login
             HttpURLConnection conn = IOHelper.getConnection(serviceURL);
             IOHelper.setContentType(conn, IOHelper.CONTENTTYPE_FORM_URLENCODED);
-            final String payload = payloadTemplate + IOHelper.encode64(user) + "," + IOHelper.encode64(pass);
+            final String payload = payloadTemplate + IOHelper.encode64(username) + "," + IOHelper.encode64(pass);
             IOHelper.writeToConnection(conn, payload);
             final String response = IOHelper.readString(conn);
             if(response.isEmpty()) {
                 throw new ServiceException("Couldn't get response from server " + serviceURL + " with payload:\n" + payload);
             }
-            return parseResponse(IOHelper.decode64(response));
+            // parse the user information from response
+            final User user = parseResponse(IOHelper.decode64(response));
+            // save to database
+            final User savedUser = saveUser(user);
+            return savedUser;
         }
         catch (Exception ex) {
             if(ex instanceof ServiceException) {
                 throw (ServiceException) ex;
             }
-            log.error(ex, "Error logging in. URL:", serviceURL, ".User:", user);
+            log.error(ex, "Error logging in. URL:", serviceURL, ".User:", username);
         }
         return null;
     }
 
+
     public User parseResponse(final String response) {
+        if(response == null) {
+            return null;
+        }
+
         log.debug("Got response:\n",response);
-        /*
-        /Response/Status/StatusCode[Value=samlp:Success]
-        /Response/Assertion/AuthenticationStatement/Subject/NameIdentifier -> text content == username
-        /Response/Assertion/AttributeStatement/Subject/NameIdentifier -> text content == username
-        /Response/Assertion/AttributeStatement/Attribute[AttributeName=urn:conterra:names:sdi-suite:policy:attribute:user-id]/AttributeValue -> user-id (number)
-         */
-        return null;
+        return mapping.parse(response);
     }
 }
