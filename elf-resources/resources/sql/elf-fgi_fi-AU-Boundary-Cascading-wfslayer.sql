@@ -1,13 +1,12 @@
-
+-- ELF AU fgi_fi - requires username, password
 -- add map layer; 
 INSERT INTO oskari_maplayer(type, name, groupId, 
                             minscale, maxscale, 
-                            url, username, password,  srs_name, version,
-                            locale) 
-  VALUES('wfslayer', 'elf_tn_fgifi', 905, 
-         50000, 1, 
-         'http://54.228.221.191/ELFcascadingWFS/service', null, null, 'EPSG:900913', '2.0.0',
-         '{fi:{name:"TN Road Link - fgi.fi", subtitle:"ELF Cascading"},sv:{name:"TN Road Link - fgi.fi", subtitle:"ELF Cascading"},en:{name:"TN Road Link - fgi.fi", subtitle:"ELF Cascading"}}');
+                            url, username, password, srs_name,version, 
+                             locale) 
+  VALUES('wfslayer', 'elf_AUb_fgi_fi', 903, 
+         20000, 1, 
+         'http://54.228.221.191/ELFcascadingWFS/service', null, null, 'EPSG:900913','2.0.0',  '{fi:{name:"AU Administrative Boundaries - fgi.fi", subtitle:""},sv:{name:"AU Administrative Boundaries  - fgi.fi", subtitle:""},en:{name:"AU Administrative Boundaries - fgi.fi", subtitle:""}}');
          
 
          
@@ -15,15 +14,15 @@ INSERT INTO oskari_maplayer(type, name, groupId,
 INSERT INTO oskari_maplayer_themes(maplayerid, 
                                    themeid) 
   VALUES((SELECT MAX(id) FROM oskari_maplayer), 
-         (SELECT id FROM portti_inspiretheme WHERE locale LIKE '%Transport%')); 
+         (SELECT id FROM portti_inspiretheme WHERE locale LIKE '%Administrative units%')); 
          
          
--- add template model stuff; 
+-- add template model stuff;
 INSERT INTO portti_wfs_template_model(name, description, type, request_template, response_template) 
 VALUES (
-    'ELF TN', 'ELF TN PoC', 'mah taip', 
-    '/fi/nls/oskari/fe/input/format/gml/inspire/tn/fgi_fi_wfs_template.xml', 
-    'fi.nls.oskari.eu.elf.recipe.roadtransportnetwork.ELF_MasterLoD1_RoadLink_Parser');          
+	'ELF AU', 'ELF AU PoC', 'mah taip', 
+	'/fi/nls/oskari/fe/input/format/gml/inspire/au/fgi_fi_elf_wfs_boundary_template.xml', 
+	'fi.nls.oskari.eu.elf.recipe.administrativeunits.ELF_MasterLoD0_AdministrativeBoundary_nls_fi_wfs_Parser');          
 
 -- add wfs specific layer data; 
 INSERT INTO portti_wfs_layer ( 
@@ -46,35 +45,35 @@ INSERT INTO portti_wfs_layer (
     job_type, 
     wfs_template_model_id) 
     VALUES ( (select max(id) from oskari_maplayer), 
-      'ELF_TN_fgi_fi', 
+      'ELF_AUb_fgi_fi', 
        'geom', '3.2.1', false, 
         5000, 
-       'elf_lod1rtn', 
+       'elf-lod1au', 
        '', 
-       '{"default" : "*geometry:Geometry,text:String,script:String,sourceOfName:String,nameStatus:String,nativeness:String,language:String,beginLifespanVersion:String,endLifespanVersion:String,localType:String"}', 
+       '{"default" : "default" : "*geometry:Geometry,beginLifespanVersion:String,endLifespanVersion:String,localId:String,namespace:String,versionId:String,nationalLevel:String,nationalLevelName:String,country:String,name:String,sourceOfName:String,pronunciation:String,referenceName:String,text:String,script:String,NUTS:String,upperLevelUnit:String"}', 
        '{}', 
        '{}', 
        '2d', 
        NULL, true, true, false, NULL, 
-    'RoadLink', 'urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0', 
-    '', 
-    true, '{}', '{ "default" : 1, "oskari_custom" : 1}', 
-    'oskari-feature-engine', (select max(id) from portti_wfs_template_model)); 
-    
+	'AdministrativeBoundary', 'http://www.locationframework.eu/schemas/AdministrativeUnits/MasterLoD1/1.0', 
+	'', 
+	true, '{}', '{ "default" : 1, "oskari_custom" : 1}', 
+	'oskari-feature-engine', (select max(id) from portti_wfs_template_model)); 
+	
 -- add wfs layer styles; 
 INSERT INTO portti_wfs_layer_style (name,sld_style) VALUES(
-    'oskari-feature-engine',
-    '/fi/nls/oskari/fe/output/style/INSPIRE_SLD/TN.RoadTransportNetwork.RoadLink.Default.sld'
+	'oskari-feature-engine',
+	'/fi/nls/oskari/fe/output/style/INSPIRE_SLD/AU.AdministrativeBoundary.Default.xml'
 );
 
 -- link wfs layer styles; 
 INSERT INTO portti_wfs_layers_styles (wfs_layer_id,wfs_layer_style_id) VALUES(
-    (select max(id) from portti_wfs_layer),
-    (select max(id) from portti_wfs_layer_style));
-    
+	(select max(id) from portti_wfs_layer),
+	(select max(id) from portti_wfs_layer_style));
+	
 
 -- setup permissions for guest user;
-INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'wfslayer+http://54.228.221.191/ELFcascadingWFS/service+elf_tn_fgifi');
+INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'wfslayer+http://54.228.221.191/ELFcascadingWFS/service+elf_AUb_fgi_fi');
 
 -- permissions;
 -- adding permissions to roles with id 10110, 2, and 3;
@@ -96,7 +95,6 @@ INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, ext
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
 ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'PUBLISH', '2');
 
-
 -- give publish permission for the resource to ROLE 3 (admin);
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
 ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'PUBLISH', '3');
@@ -105,11 +103,13 @@ INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, ext
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
 ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_PUBLISHED', '10110');
 
+-- give view_published_layer permission for the resource to ROLE 10110 (guest);
+INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_PUBLISHED', '1');
+
 -- give view_published_layer permission for the resource to ROLE 2 (user);
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
 ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_PUBLISHED', '2');
 
 
-                -- give view_published_layer permission for the resource to ROLE 10110 (guest);
-INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
-((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_PUBLISHED', '1');
+	

@@ -4,8 +4,8 @@ INSERT INTO oskari_maplayer(type, name, groupId,
                             url, username, password, srs_name, version,
                              locale) 
   VALUES('wfslayer', 'elf_ad_fgifi', 905, 
-         120000, 1, 
-          'http://54.228.221.191/ELFcascadingWFS/service', null, null, 'urn:ogc:def:crs:EPSG::3857', '2.0.0', '{fi:{name:"AD Osoitteet - fgi.fi", subtitle:""},sv:{name:"Ad Adresser - fgi.fi", subtitle:""},en:{name:"AD Address- fgi.fi", subtitle:""}}');
+         50000, 1, 
+          'http://54.228.221.191/ELFcascadingWFS/service', null, null, 'urn:ogc:def:crs:EPSG::3857', '2.0.0', '{fi:{name:"AD Osoitteet - fgi.fi", subtitle:"ELF Cascading"},sv:{name:"Ad Adresser - fgi.fi", subtitle:"ELF Cascading"},en:{name:"AD Address- fgi.fi", subtitle:"ELF Cascading"}}');
           
  
           

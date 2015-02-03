@@ -6,7 +6,7 @@ INSERT INTO oskari_maplayer(type, name, groupId,
                              locale) 
   VALUES('wfslayer', 'elf_AU_fgi_fi', 903, 
          500000, 1, 
-         'http://54.228.221.191/ELFcascadingWFS/service', null, null, 'EPSG:900913','2.0.0',  '{fi:{name:"AU Administrative Units - fgi.fi", subtitle:""},sv:{name:"AU Administrative Units  - fgi.fi", subtitle:""},en:{name:"AU Administrative Units - fgi.fi", subtitle:""}}');
+         'http://54.228.221.191/ELFcascadingWFS/service', null, null, 'EPSG:900913','2.0.0',  '{fi:{name:"AU Administrative Units - fgi.fi", subtitle:"ELF Cascading"},sv:{name:"AU Administrative Units  - fgi.fi", subtitle:"ELF Cascading"},en:{name:"AU Administrative Units - fgi.fi", subtitle:"ELF Cascading"}}');
          
 
          
@@ -22,7 +22,7 @@ INSERT INTO portti_wfs_template_model(name, description, type, request_template,
 VALUES (
 	'ELF AU', 'ELF AU PoC', 'mah taip', 
 	'/fi/nls/oskari/fe/input/format/gml/inspire/au/fgi_fi_elf_wfs_template.xml', 
-	'fi.nls.oskari.eu.elf.recipe.administrativeunits.ELF_MasterLoD0_AdministrativeUnit_Parser');          
+	'fi.nls.oskari.eu.elf.recipe.administrativeunits.ELF_MasterLoD0_AdministrativeUnit_nls_fi_wfs_Parser');          
 
 -- add wfs specific layer data; 
 INSERT INTO portti_wfs_layer ( 
@@ -55,7 +55,7 @@ INSERT INTO portti_wfs_layer (
        '{}', 
        '2d', 
        NULL, true, true, false, NULL, 
-	'AdministrativeBoundary', 'http://www.locationframework.eu/schemas/AdministrativeUnits/MasterLoD1/1.0', 
+	'AdministrativeUnit', 'http://www.locationframework.eu/schemas/AdministrativeUnits/MasterLoD1/1.0', 
 	'', 
 	true, '{}', '{ "default" : 1, "oskari_custom" : 1}', 
 	'oskari-feature-engine', (select max(id) from portti_wfs_template_model)); 
@@ -63,7 +63,7 @@ INSERT INTO portti_wfs_layer (
 -- add wfs layer styles; 
 INSERT INTO portti_wfs_layer_style (name,sld_style) VALUES(
 	'oskari-feature-engine',
-	'/fi/nls/oskari/fe/output/style/INSPIRE_SLD/AU.AdministrativeBoundary.Default.xml'
+	'/fi/nls/oskari/fe/output/style/INSPIRE_SLD/AU.AdministrativeUnit.Default.xml'
 );
 
 -- link wfs layer styles; 

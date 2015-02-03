@@ -5,7 +5,7 @@ INSERT INTO oskari_maplayer(type, name, groupId,
                              locale) 
   VALUES('wfslayer', 'elf_bu_fgifi', 905, 
          20000, 1, 
-         'http://54.228.221.191/ELFcascadingWFS/service', null, null, 'urn:ogc:def:crs:EPSG::3857', '2.0.0', '{fi:{name:"BU Rakennukset - fgi.fi", subtitle:""},sv:{name:"BU Byggnader - fgi.fi", subtitle:""},en:{name:"BU Buildings- fgi.fi", subtitle:""}}');
+         'http://54.228.221.191/ELFcascadingWFS/service', null, null, 'urn:ogc:def:crs:EPSG::3857', '2.0.0', '{fi:{name:"BU Rakennukset - fgi.fi", subtitle:"ELF Cascading"},sv:{name:"BU Byggnader - fgi.fi", subtitle:"ELF Cascading"},en:{name:"BU Buildings- fgi.fi", subtitle:"ELF Cascading"}}');
          
 
          
