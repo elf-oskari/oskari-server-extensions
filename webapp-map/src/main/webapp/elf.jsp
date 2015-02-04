@@ -83,17 +83,17 @@
     <div id="toolbar">
     </div>
      <div id="login">
-        <c:choose>
-            <c:when test="${!empty loginState}">
-                <p class="error">Invalid password or username!!</p>
-            </c:when>
-        </c:choose>
         <c:set var="user" value="fi.nls.oskari.domain.User" />
         <c:choose>
             <c:when test="${!empty _logout_uri}">
                 <a href="${_logout_uri}">Logout</a>
             </c:when>
             <c:otherwise>
+                <c:choose>
+                    <c:when test="${!empty loginState}">
+                        <p class="error">Invalid password or username!!</p>
+                    </c:when>
+                </c:choose>
                 <form action='j_security_check' method="post" accept-charset="UTF-8">
                     <input size="16" id="username" name="j_username" type="text" placeholder="Username" autofocus
                            required>
