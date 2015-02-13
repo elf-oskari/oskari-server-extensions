@@ -1,0 +1,927 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<w:WPOSResponse xmlns:w="http://www.conterra.de/wpos/1.1" xmlns:x="http://www.conterra.de/xcpf/1.1" status="success">
+	<x:catalog id="ct-license-manager" name="ct-license-manager">
+		<x:title xml:lang="de">The product catalog of the license manager</x:title>
+		<x:abstract xml:lang="de">contains the products created by the security-license-administrator</x:abstract>
+		<x:calculation>
+			<x:declarationList>
+				<x:referencedParameters>
+					<x:parameter name="productGroupSum" type="real">
+						<x:origin parameterName="productGroupSum"/>
+					</x:parameter>
+				</x:referencedParameters>
+				<x:precalculatedParameters>
+					<x:parameter fn="sum" fnargs="productGroupSum" name="fullPrice_raw" type="real">
+						<x:title xml:lang="en">The full raw price of the order or partial catalog</x:title>
+					</x:parameter>
+				</x:precalculatedParameters>
+				<x:resultParameters>
+					<x:parameter fractionDigits="2" name="fullPrice" type="real">
+						<x:title xml:lang="en">The full price of the order or partial catalog</x:title>
+						<x:unit textstyle="EUR"/>
+					</x:parameter>
+				</x:resultParameters>
+			</x:declarationList>
+			<x:formulae>
+				<x:function name="func_FullPrice">
+					<x:out>
+						<x:paramRef>fullPrice</x:paramRef>
+					</x:out>
+					<x:in>
+						<x:paramRef>fullPrice_raw</x:paramRef>
+					</x:in>
+					<x:operation>
+						<x:math>
+							<x:apply>
+								<x:piecewise>
+									<x:piece>
+										<x:apply>
+											<x:max/>
+											<x:cn>0.01</x:cn>
+											<x:ci>fullPrice_raw</x:ci>
+										</x:apply>
+										<x:apply>
+											<x:gt/>
+											<x:ci>fullPrice_raw</x:ci>
+											<x:cn>0.00</x:cn>
+										</x:apply>
+									</x:piece>
+									<x:otherwise>
+										<x:ci>fullPrice_raw</x:ci>
+									</x:otherwise>
+								</x:piecewise>
+							</x:apply>
+						</x:math>
+					</x:operation>
+				</x:function>
+			</x:formulae>
+		</x:calculation>
+		<x:productGroup id="urn:conterra:names:sdi-suite:licensing:licenseset:WFS:FGI_License_Test_20141023" parentId="ct-license-manager" visible="true" name="http://54.247.162.180:8080/wss/service/FGI_Test_Service_20141023/WSS">
+			<x:title xml:lang="de">FGI_License_Test_20141023</x:title>
+			<x:abstract xml:lang="de">FGI is testing the license creation process</x:abstract>
+			<x:calculation>
+				<x:declarationList>
+					<x:referencedParameters>
+						<x:parameter name="productPriceSum" type="real">
+							<x:origin parameterName="productPriceSum"/>
+						</x:parameter>
+					</x:referencedParameters>
+					<x:resultParameters>
+						<x:parameter name="productGroupSum" type="real">
+							<x:title xml:lang="de">The sum product group sum</x:title>
+							<x:unit textstyle="EUR"/>
+						</x:parameter>
+					</x:resultParameters>
+				</x:declarationList>
+				<x:formulae>
+					<x:function name="func_ProductPriceSum">
+						<x:out>
+							<x:paramRef>productGroupSum</x:paramRef>
+						</x:out>
+						<x:in>
+							<x:paramRef>productPriceSum</x:paramRef>
+						</x:in>
+						<x:operation>
+							<x:math>
+								<x:apply>
+									<x:sum/>
+									<x:bvar>productPriceSum</x:bvar>
+									<x:ci>productPriceSum</x:ci>
+								</x:apply>
+							</x:math>
+						</x:operation>
+					</x:function>
+				</x:formulae>
+			</x:calculation>
+			<x:product id="urn:conterra:names:sdi-suite:licensing:license:WFS:FGI_License_Test_20141023:LICENSE_GPF_dev_test" parentId="urn:conterra:names:sdi-suite:licensing:licenseset:WFS:FGI_License_Test_20141023" visible="true" name="GPF_dev_test">
+				<x:title xml:lang="de">GPF_dev_test</x:title>
+				<x:abstract xml:lang="de">This is a sample license for GPF development!</x:abstract>
+				<x:metadataRef>http://54.247.162.180:8080/wss/service/FGI_Test_Service_20141023/WSS</x:metadataRef>
+				<x:calculation>
+					<x:declarationList>
+						<x:predefinedParameters>
+							<x:parameter name="LICENSE_TEXT_000_License text 1" type="string">
+								<x:title xml:lang="de">License text 1</x:title>
+								<x:value>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In blandit ac nisl id imperdiet. Vivamus a cursus velit, ac vestibulum risus. Proin gravida auctor nunc sit amet euismod. Phasellus molestie massa vitae neque fermentum tincidunt. Morbi leo nunc, semper aliquet consequat vestibulum, commodo at dui. Integer ultricies egestas commodo. Pellentesque convallis est ut facilisis aliquet. Integer sagittis consectetur congue. Vivamus volutpat ex vitae pretium pulvinar. Aenean urna magna, dapibus varius est nec, imperdiet euismod erat. Vivamus fermentum nec urna eu auctor. Etiam condimentum id metus et aliquet. In tempor ut velit nec luctus.</x:value>
+							</x:parameter>
+							<x:parameter name="LICENSE_TEXT_001_License text 2" type="string">
+								<x:title xml:lang="de">License text 2</x:title>
+								<x:value>Sed vitae dignissim metus. Nam feugiat posuere quam, in auctor lacus facilisis id. Sed aliquam elementum nisi, sed fermentum metus eleifend sed. Praesent placerat quam dolor, sed lacinia nulla suscipit pharetra. Donec aliquam posuere odio, in aliquam leo tristique in. Cras diam quam, dapibus a sodales nec, volutpat vitae velit. Ut vitae venenatis leo, vel aliquet lectus. Nam sit amet commodo leo. Pellentesque commodo tortor ut tellus consequat pellentesque. Nullam vitae metus neque. Quisque hendrerit quam facilisis nulla sollicitudin, consequat sagittis urna rhoncus. Morbi est ex, ultricies nec lacus sit amet, blandit lobortis lacus. Morbi sagittis, dolor vel fermentum iaculis, orci nisl porta ex, mattis tempus urna nisl et lorem.</x:value>
+							</x:parameter>
+							<x:parameter name="ALL_ROLES" type="string" multi="false">
+								<x:title xml:lang="de">Indicates if product is supported for all groups</x:title>
+								<x:abstract xml:lang="de">Will be set to true if all groups are supported, else value will be set to false</x:abstract>
+								<x:value>false</x:value>
+							</x:parameter>
+							<x:parameter name="ALLOWED_ROLES" type="string" multi="true" optional="true" select="true">
+								<x:title xml:lang="de">Roles for this license product</x:title>
+								<x:abstract xml:lang="de">The roles that are able to see this license product</x:abstract>
+								<x:value selected="true">NewUser</x:value>
+								<x:value selected="true">User</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_NamedPlace_GetCapabilities" type="boolean">
+								<x:title xml:lang="de">gn:NamedPlace</x:title>
+								<x:abstract xml:lang="de">Permission for gn:NamedPlace and GetCapabilities</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_NamedPlace_DescribeFeatureType" type="boolean">
+								<x:title xml:lang="de">gn:NamedPlace</x:title>
+								<x:abstract xml:lang="de">Permission for gn:NamedPlace and DescribeFeatureType</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_NamedPlace_GetFeature" type="boolean">
+								<x:title xml:lang="de">gn:NamedPlace</x:title>
+								<x:abstract xml:lang="de">Permission for gn:NamedPlace and GetFeature</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_NamedPlace_GetGmlObject" type="boolean">
+								<x:title xml:lang="de">gn:NamedPlace</x:title>
+								<x:abstract xml:lang="de">Permission for gn:NamedPlace and GetGmlObject</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_NamedPlace_x-ii-access" type="boolean">
+								<x:title xml:lang="de">gn:NamedPlace</x:title>
+								<x:abstract xml:lang="de">Permission for gn:NamedPlace and x-ii-access</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_NamedPlace_x-ii-dereference" type="boolean">
+								<x:title xml:lang="de">gn:NamedPlace</x:title>
+								<x:abstract xml:lang="de">Permission for gn:NamedPlace and x-ii-dereference</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_SI\x5FGazetteer_GetCapabilities" type="boolean">
+								<x:title xml:lang="de">iso19112:SI_Gazetteer</x:title>
+								<x:abstract xml:lang="de">Permission for iso19112:SI_Gazetteer and GetCapabilities</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_SI\x5FGazetteer_DescribeFeatureType" type="boolean">
+								<x:title xml:lang="de">iso19112:SI_Gazetteer</x:title>
+								<x:abstract xml:lang="de">Permission for iso19112:SI_Gazetteer and DescribeFeatureType</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_SI\x5FGazetteer_GetFeature" type="boolean">
+								<x:title xml:lang="de">iso19112:SI_Gazetteer</x:title>
+								<x:abstract xml:lang="de">Permission for iso19112:SI_Gazetteer and GetFeature</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_SI\x5FGazetteer_GetGmlObject" type="boolean">
+								<x:title xml:lang="de">iso19112:SI_Gazetteer</x:title>
+								<x:abstract xml:lang="de">Permission for iso19112:SI_Gazetteer and GetGmlObject</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_SI\x5FGazetteer_x-ii-access" type="boolean">
+								<x:title xml:lang="de">iso19112:SI_Gazetteer</x:title>
+								<x:abstract xml:lang="de">Permission for iso19112:SI_Gazetteer and x-ii-access</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_SI\x5FGazetteer_x-ii-dereference" type="boolean">
+								<x:title xml:lang="de">iso19112:SI_Gazetteer</x:title>
+								<x:abstract xml:lang="de">Permission for iso19112:SI_Gazetteer and x-ii-dereference</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_SI\x5FLocationInstance_GetCapabilities" type="boolean">
+								<x:title xml:lang="de">iso19112:SI_LocationInstance</x:title>
+								<x:abstract xml:lang="de">Permission for iso19112:SI_LocationInstance and GetCapabilities</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_SI\x5FLocationInstance_DescribeFeatureType" type="boolean">
+								<x:title xml:lang="de">iso19112:SI_LocationInstance</x:title>
+								<x:abstract xml:lang="de">Permission for iso19112:SI_LocationInstance and DescribeFeatureType</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_SI\x5FLocationInstance_GetFeature" type="boolean">
+								<x:title xml:lang="de">iso19112:SI_LocationInstance</x:title>
+								<x:abstract xml:lang="de">Permission for iso19112:SI_LocationInstance and GetFeature</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_SI\x5FLocationInstance_GetGmlObject" type="boolean">
+								<x:title xml:lang="de">iso19112:SI_LocationInstance</x:title>
+								<x:abstract xml:lang="de">Permission for iso19112:SI_LocationInstance and GetGmlObject</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_SI\x5FLocationInstance_x-ii-access" type="boolean">
+								<x:title xml:lang="de">iso19112:SI_LocationInstance</x:title>
+								<x:abstract xml:lang="de">Permission for iso19112:SI_LocationInstance and x-ii-access</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_SI\x5FLocationInstance_x-ii-dereference" type="boolean">
+								<x:title xml:lang="de">iso19112:SI_LocationInstance</x:title>
+								<x:abstract xml:lang="de">Permission for iso19112:SI_LocationInstance and x-ii-dereference</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_SI\x5FLocationType_GetCapabilities" type="boolean">
+								<x:title xml:lang="de">iso19112:SI_LocationType</x:title>
+								<x:abstract xml:lang="de">Permission for iso19112:SI_LocationType and GetCapabilities</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_SI\x5FLocationType_DescribeFeatureType" type="boolean">
+								<x:title xml:lang="de">iso19112:SI_LocationType</x:title>
+								<x:abstract xml:lang="de">Permission for iso19112:SI_LocationType and DescribeFeatureType</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_SI\x5FLocationType_GetFeature" type="boolean">
+								<x:title xml:lang="de">iso19112:SI_LocationType</x:title>
+								<x:abstract xml:lang="de">Permission for iso19112:SI_LocationType and GetFeature</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_SI\x5FLocationType_GetGmlObject" type="boolean">
+								<x:title xml:lang="de">iso19112:SI_LocationType</x:title>
+								<x:abstract xml:lang="de">Permission for iso19112:SI_LocationType and GetGmlObject</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_SI\x5FLocationType_x-ii-access" type="boolean">
+								<x:title xml:lang="de">iso19112:SI_LocationType</x:title>
+								<x:abstract xml:lang="de">Permission for iso19112:SI_LocationType and x-ii-access</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_SI\x5FLocationType_x-ii-dereference" type="boolean">
+								<x:title xml:lang="de">iso19112:SI_LocationType</x:title>
+								<x:abstract xml:lang="de">Permission for iso19112:SI_LocationType and x-ii-dereference</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_SI\x5FSpatialReferenceSystemUsingGeographicIdentifiers_GetCapabilities" type="boolean">
+								<x:title xml:lang="de">iso19112:SI_SpatialReferenceSystemUsingGeographicIdentifiers</x:title>
+								<x:abstract xml:lang="de">Permission for iso19112:SI_SpatialReferenceSystemUsingGeographicIdentifiers and GetCapabilities</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_SI\x5FSpatialReferenceSystemUsingGeographicIdentifiers_DescribeFeatureType" type="boolean">
+								<x:title xml:lang="de">iso19112:SI_SpatialReferenceSystemUsingGeographicIdentifiers</x:title>
+								<x:abstract xml:lang="de">Permission for iso19112:SI_SpatialReferenceSystemUsingGeographicIdentifiers and DescribeFeatureType</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_SI\x5FSpatialReferenceSystemUsingGeographicIdentifiers_GetFeature" type="boolean">
+								<x:title xml:lang="de">iso19112:SI_SpatialReferenceSystemUsingGeographicIdentifiers</x:title>
+								<x:abstract xml:lang="de">Permission for iso19112:SI_SpatialReferenceSystemUsingGeographicIdentifiers and GetFeature</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_SI\x5FSpatialReferenceSystemUsingGeographicIdentifiers_GetGmlObject" type="boolean">
+								<x:title xml:lang="de">iso19112:SI_SpatialReferenceSystemUsingGeographicIdentifiers</x:title>
+								<x:abstract xml:lang="de">Permission for iso19112:SI_SpatialReferenceSystemUsingGeographicIdentifiers and GetGmlObject</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_SI\x5FSpatialReferenceSystemUsingGeographicIdentifiers_x-ii-access" type="boolean">
+								<x:title xml:lang="de">iso19112:SI_SpatialReferenceSystemUsingGeographicIdentifiers</x:title>
+								<x:abstract xml:lang="de">Permission for iso19112:SI_SpatialReferenceSystemUsingGeographicIdentifiers and x-ii-access</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PERMISSION_MATRIX_SI\x5FSpatialReferenceSystemUsingGeographicIdentifiers_x-ii-dereference" type="boolean">
+								<x:title xml:lang="de">iso19112:SI_SpatialReferenceSystemUsingGeographicIdentifiers</x:title>
+								<x:abstract xml:lang="de">Permission for iso19112:SI_SpatialReferenceSystemUsingGeographicIdentifiers and x-ii-dereference</x:abstract>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE-PER-OPERATION" type="boolean">
+								<x:value>FALSE</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE-BASIC" type="real">
+								<x:title xml:lang="de">Base price for usage</x:title>
+								<x:value>1</x:value>
+							</x:parameter>
+							<x:parameter name="LICENSE-TAX-RATE" type="real">
+								<x:title xml:lang="de">The current license tax rate in percent</x:title>
+								<x:value>19</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE-MINIMUM" type="real">
+								<x:title xml:lang="de">Minimum price for usage</x:title>
+								<x:value>0.0</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_NamedPlace_GetCapabilities" type="real">
+								<x:title xml:lang="de">Price for resource NamedPlace and operation GetCapabilities.</x:title>
+								<x:value>10</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_NamedPlace_DescribeFeatureType" type="real">
+								<x:title xml:lang="de">Price for resource NamedPlace and operation DescribeFeatureType.</x:title>
+								<x:value>10</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_NamedPlace_GetFeature" type="real">
+								<x:title xml:lang="de">Price for resource NamedPlace and operation GetFeature.</x:title>
+								<x:value>10</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_NamedPlace_GetGmlObject" type="real">
+								<x:title xml:lang="de">Price for resource NamedPlace and operation GetGmlObject.</x:title>
+								<x:value>10</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_NamedPlace_x-ii-access" type="real">
+								<x:title xml:lang="de">Price for resource NamedPlace and operation x-ii-access.</x:title>
+								<x:value>10</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_NamedPlace_x-ii-dereference" type="real">
+								<x:title xml:lang="de">Price for resource NamedPlace and operation x-ii-dereference.</x:title>
+								<x:value>10</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_SI\x5FGazetteer_GetCapabilities" type="real">
+								<x:title xml:lang="de">Price for resource SI_Gazetteer and operation GetCapabilities.</x:title>
+								<x:value>0.0</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_SI\x5FGazetteer_DescribeFeatureType" type="real">
+								<x:title xml:lang="de">Price for resource SI_Gazetteer and operation DescribeFeatureType.</x:title>
+								<x:value>0.0</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_SI\x5FGazetteer_GetFeature" type="real">
+								<x:title xml:lang="de">Price for resource SI_Gazetteer and operation GetFeature.</x:title>
+								<x:value>0.0</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_SI\x5FGazetteer_GetGmlObject" type="real">
+								<x:title xml:lang="de">Price for resource SI_Gazetteer and operation GetGmlObject.</x:title>
+								<x:value>0.0</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_SI\x5FGazetteer_x-ii-access" type="real">
+								<x:title xml:lang="de">Price for resource SI_Gazetteer and operation x-ii-access.</x:title>
+								<x:value>0.0</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_SI\x5FGazetteer_x-ii-dereference" type="real">
+								<x:title xml:lang="de">Price for resource SI_Gazetteer and operation x-ii-dereference.</x:title>
+								<x:value>0.0</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_SI\x5FLocationInstance_GetCapabilities" type="real">
+								<x:title xml:lang="de">Price for resource SI_LocationInstance and operation GetCapabilities.</x:title>
+								<x:value>0.0</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_SI\x5FLocationInstance_DescribeFeatureType" type="real">
+								<x:title xml:lang="de">Price for resource SI_LocationInstance and operation DescribeFeatureType.</x:title>
+								<x:value>0.0</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_SI\x5FLocationInstance_GetFeature" type="real">
+								<x:title xml:lang="de">Price for resource SI_LocationInstance and operation GetFeature.</x:title>
+								<x:value>0.0</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_SI\x5FLocationInstance_GetGmlObject" type="real">
+								<x:title xml:lang="de">Price for resource SI_LocationInstance and operation GetGmlObject.</x:title>
+								<x:value>0.0</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_SI\x5FLocationInstance_x-ii-access" type="real">
+								<x:title xml:lang="de">Price for resource SI_LocationInstance and operation x-ii-access.</x:title>
+								<x:value>0.0</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_SI\x5FLocationInstance_x-ii-dereference" type="real">
+								<x:title xml:lang="de">Price for resource SI_LocationInstance and operation x-ii-dereference.</x:title>
+								<x:value>0.0</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_SI\x5FLocationType_GetCapabilities" type="real">
+								<x:title xml:lang="de">Price for resource SI_LocationType and operation GetCapabilities.</x:title>
+								<x:value>0.0</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_SI\x5FLocationType_DescribeFeatureType" type="real">
+								<x:title xml:lang="de">Price for resource SI_LocationType and operation DescribeFeatureType.</x:title>
+								<x:value>0.0</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_SI\x5FLocationType_GetFeature" type="real">
+								<x:title xml:lang="de">Price for resource SI_LocationType and operation GetFeature.</x:title>
+								<x:value>0.0</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_SI\x5FLocationType_GetGmlObject" type="real">
+								<x:title xml:lang="de">Price for resource SI_LocationType and operation GetGmlObject.</x:title>
+								<x:value>0.0</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_SI\x5FLocationType_x-ii-access" type="real">
+								<x:title xml:lang="de">Price for resource SI_LocationType and operation x-ii-access.</x:title>
+								<x:value>0.0</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_SI\x5FLocationType_x-ii-dereference" type="real">
+								<x:title xml:lang="de">Price for resource SI_LocationType and operation x-ii-dereference.</x:title>
+								<x:value>0.0</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_SI\x5FSpatialReferenceSystemUsingGeographicIdentifiers_GetCapabilities" type="real">
+								<x:title xml:lang="de">Price for resource SI_SpatialReferenceSystemUsingGeographicIdentifiers and operation GetCapabilities.</x:title>
+								<x:value>0.0</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_SI\x5FSpatialReferenceSystemUsingGeographicIdentifiers_DescribeFeatureType" type="real">
+								<x:title xml:lang="de">Price for resource SI_SpatialReferenceSystemUsingGeographicIdentifiers and operation DescribeFeatureType.</x:title>
+								<x:value>0.0</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_SI\x5FSpatialReferenceSystemUsingGeographicIdentifiers_GetFeature" type="real">
+								<x:title xml:lang="de">Price for resource SI_SpatialReferenceSystemUsingGeographicIdentifiers and operation GetFeature.</x:title>
+								<x:value>0.0</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_SI\x5FSpatialReferenceSystemUsingGeographicIdentifiers_GetGmlObject" type="real">
+								<x:title xml:lang="de">Price for resource SI_SpatialReferenceSystemUsingGeographicIdentifiers and operation GetGmlObject.</x:title>
+								<x:value>0.0</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_SI\x5FSpatialReferenceSystemUsingGeographicIdentifiers_x-ii-access" type="real">
+								<x:title xml:lang="de">Price for resource SI_SpatialReferenceSystemUsingGeographicIdentifiers and operation x-ii-access.</x:title>
+								<x:value>0.0</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE_MATRIX_SI\x5FSpatialReferenceSystemUsingGeographicIdentifiers_x-ii-dereference" type="real">
+								<x:title xml:lang="de">Price for resource SI_SpatialReferenceSystemUsingGeographicIdentifiers and operation x-ii-dereference.</x:title>
+								<x:value>0.0</x:value>
+							</x:parameter>
+							<x:parameter name="USAGE-PRODUCT-ID" type="string">
+								<x:title xml:lang="de">The id of the usage product id.</x:title>
+								<x:value>urn:conterra:names:sdi-suite:licensing:license:WFS:FGI_License_Test_20141023:USAGE_GPF_dev_test</x:value>
+							</x:parameter>
+							<x:parameter name="USAGE-PRODUCT-DESCRIPTION" type="string">
+								<x:title xml:lang="de">The id of the usage product id.</x:title>
+								<x:value>test</x:value>
+							</x:parameter>
+							<x:parameter name="USAGE-TAX-RATE" type="real">
+								<x:title xml:lang="de">The current license tax rate in percent</x:title>
+								<x:value>19</x:value>
+							</x:parameter>
+							<x:parameter name="PRICE-CALCULATION_BASE" type="string">
+								<x:title xml:lang="de">Base area unit for calculation.</x:title>
+								<x:value title="Feature number">featurenumber</x:value>
+							</x:parameter>
+							<x:parameter name="SERVICE_URL" type="string">
+								<x:title xml:lang="de">The service url</x:title>
+								<x:value>http://54.247.101.37/elf/GeolocatorService</x:value>
+							</x:parameter>
+							<x:parameter name="SERVICE_TYPE" type="string">
+								<x:title xml:lang="de">The technical type of the service</x:title>
+								<x:value>WFS</x:value>
+							</x:parameter>
+							<x:parameter name="SERVICE_RESOURCES" multi="true" type="string" select="true">
+								<x:title xml:lang="de">All resources available for this service</x:title>
+								<x:value title="gn:NamedPlace" selected="true">NamedPlace</x:value>
+								<x:value title="iso19112:SI_Gazetteer" selected="true">SI_Gazetteer</x:value>
+								<x:value title="iso19112:SI_LocationInstance" selected="true">SI_LocationInstance</x:value>
+								<x:value title="iso19112:SI_LocationType" selected="true">SI_LocationType</x:value>
+								<x:value title="iso19112:SI_SpatialReferenceSystemUsingGeographicIdentifiers" selected="true">SI_SpatialReferenceSystemUsingGeographicIdentifiers</x:value>
+							</x:parameter>
+							<x:parameter name="WSS_URL" type="string">
+								<x:title xml:lang="de">The security service url</x:title>
+								<x:value>http://54.247.162.180:8080/wss/service/FGI_Test_Service_20141023/WSS</x:value>
+							</x:parameter>
+						</x:predefinedParameters>
+						<x:configurationParameters>
+							<x:parameter name="LICENSE_DURATION" type="string" multi="false" select="true">
+								<x:title xml:lang="de">Duration of license validity, chooseable by the user</x:title>
+								<x:value title="1 Day">P1D</x:value>
+								<x:value title="1 Week">P1W</x:value>
+								<x:value title="1 Month">P1M</x:value>
+								<x:value title="1 Year">P1Y</x:value>
+								<x:value title="2 Days">P2D</x:value>
+								<x:value title="2 Weeks">P2W</x:value>
+								<x:value title="2 Months">P2M</x:value>
+								<x:value title="2 Years">P2Y</x:value>
+							</x:parameter>
+							<x:parameter name="LICENSE_USER_GROUP" type="string">
+								<x:title xml:lang="de">The group of the user</x:title>
+								<x:abstract xml:lang="de">This must be set automatical by the license client and not to show in the GUI</x:abstract>
+							</x:parameter>
+							<x:parameter name="LICENSE_USER_ID" type="string">
+								<x:title xml:lang="de">The id of the user</x:title>
+								<x:abstract xml:lang="de">This must be set automatical by the license client and not to show in the GUI</x:abstract>
+							</x:parameter>
+							<x:parameter name="LICENSE_USER_TYPE" type="string" multi="false" select="true">
+								<x:title xml:lang="de">Which scope shall have the license</x:title>
+								<x:abstract xml:lang="de">If only one value is present (static choice during configuration in license-editor) than the value may not be shown in the license client</x:abstract>
+								<x:value title="Individual" selected="true">SubjectId</x:value>
+							</x:parameter>
+							<x:parameter name="LICENSE_PARAMETER_Integer type parameter" type="real">
+								<x:title xml:lang="de">What is your shoe size?</x:title>
+								<x:value>40</x:value>
+							</x:parameter>
+							<x:parameter name="LICENSE_PARAMETER_Text type parameter" type="string">
+								<x:title xml:lang="de">What is your favourite color?</x:title>
+								<x:value/>
+							</x:parameter>
+							<x:parameter name="LICENSE_PARAMETER_Boolean type parameter" type="boolean">
+								<x:title xml:lang="de">Do you want laces in your shoes?</x:title>
+								<x:value>TRUE</x:value>
+							</x:parameter>
+							<x:parameter name="LICENSE_PARAMETER_Enumeration type parameter" type="string" multi="false" select="true">
+								<x:title xml:lang="de">How many pair of shoes you need?</x:title>
+								<x:value>1</x:value>
+								<x:value selected="true">2</x:value>
+								<x:value>3</x:value>
+							</x:parameter>
+							<x:parameter name="LICENSE_PARAMETER_Enumeration with multiple choice" type="string" multi="true" optional="true" select="true">
+								<x:title xml:lang="de">For what kind of use you need shoes?</x:title>
+								<x:value>Indoor use</x:value>
+								<x:value>Outdoor use</x:value>
+							</x:parameter>
+						</x:configurationParameters>
+						<x:precalculatedParameters>
+							<x:parameter name="PRICE-OPERATIONS" type="real"/>
+							<x:parameter name="PRICE-FACTOR_Duration_License duration" type="real"/>
+							<x:parameter name="PRICE-FACTORS" type="real"/>
+							<x:parameter name="PRICE-SUM" type="real"/>
+							<x:parameter name="PRICE-TAX" type="real"/>
+							<x:parameter name="PRICE-RAW" type="real"/>
+						</x:precalculatedParameters>
+						<x:resultParameters>
+							<x:parameter name="productPriceSum" type="real">
+								<x:title xml:lang="de">The single product sum</x:title>
+								<x:unit textstyle="EUR"/>
+							</x:parameter>
+						</x:resultParameters>
+					</x:declarationList>
+					<x:formulae>
+						<x:function name="func_productPrice">
+							<x:out>
+								<x:paramRef>productPriceSum</x:paramRef>
+							</x:out>
+							<x:in>
+								<x:paramRef>PRICE-RAW</x:paramRef>
+								<x:paramRef>PRICE-TAX</x:paramRef>
+							</x:in>
+							<x:operation>
+								<x:math>
+									<x:apply>
+										<x:plus/>
+										<x:ci>PRICE-RAW</x:ci>
+										<x:ci>PRICE-TAX</x:ci>
+									</x:apply>
+								</x:math>
+							</x:operation>
+						</x:function>
+						<x:function name="func_taxPrice">
+							<x:out>
+								<x:paramRef>PRICE-TAX</x:paramRef>
+							</x:out>
+							<x:in>
+								<x:paramRef>PRICE-RAW</x:paramRef>
+								<x:paramRef>LICENSE-TAX-RATE</x:paramRef>
+							</x:in>
+							<x:operation>
+								<x:math>
+									<x:apply>
+										<x:times/>
+										<x:ci>PRICE-RAW</x:ci>
+										<x:ci>LICENSE-TAX-RATE</x:ci>
+										<x:cn>0.01</x:cn>
+									</x:apply>
+								</x:math>
+							</x:operation>
+						</x:function>
+						<x:function name="func_rawPrice">
+							<x:out>
+								<x:paramRef>PRICE-RAW</x:paramRef>
+							</x:out>
+							<x:in>
+								<x:paramRef>PRICE-SUM</x:paramRef>
+								<x:paramRef>PRICE-MINIMUM</x:paramRef>
+							</x:in>
+							<x:operation>
+								<x:math>
+									<x:piecewise>
+										<x:piece>
+											<x:ci>PRICE-MINIMUM</x:ci>
+											<x:apply>
+												<x:lt/>
+												<x:ci>PRICE-SUM</x:ci>
+												<x:ci>PRICE-MINIMUM</x:ci>
+											</x:apply>
+										</x:piece>
+										<x:otherwise>
+											<x:ci>PRICE-SUM</x:ci>
+										</x:otherwise>
+									</x:piecewise>
+								</x:math>
+							</x:operation>
+						</x:function>
+						<x:function name="func_priceSum">
+							<x:out>
+								<x:paramRef>PRICE-SUM</x:paramRef>
+							</x:out>
+							<x:in>
+								<x:paramRef>PRICE-BASIC</x:paramRef>
+								<x:paramRef>PRICE-OPERATIONS</x:paramRef>
+								<x:paramRef>PRICE-FACTORS</x:paramRef>
+							</x:in>
+							<x:operation>
+								<x:math>
+									<x:apply>
+										<x:plus/>
+										<x:ci>PRICE-BASIC</x:ci>
+										<x:ci>PRICE-OPERATIONS</x:ci>
+										<x:ci>PRICE-FACTORS</x:ci>
+									</x:apply>
+								</x:math>
+							</x:operation>
+						</x:function>
+						<x:function name="func_priceMatrix">
+							<x:out>
+								<x:paramRef>PRICE-OPERATIONS</x:paramRef>
+							</x:out>
+							<x:operation>
+								<x:math>
+									<x:apply>
+										<x:plus/>
+										<x:cn>0</x:cn>
+										<x:piecewise>
+											<x:piece>
+												<x:ci>PRICE_MATRIX_NamedPlace_GetCapabilities</x:ci>
+												<x:apply>
+													<x:or/>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_NamedPlace_GetCapabilities</x:ci>
+													</x:apply>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_SI\x5FGazetteer_GetCapabilities</x:ci>
+													</x:apply>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_SI\x5FLocationInstance_GetCapabilities</x:ci>
+													</x:apply>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_SI\x5FLocationType_GetCapabilities</x:ci>
+													</x:apply>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_SI\x5FSpatialReferenceSystemUsingGeographicIdentifiers_GetCapabilities</x:ci>
+													</x:apply>
+												</x:apply>
+											</x:piece>
+											<x:otherwise>
+												<x:cn>0</x:cn>
+											</x:otherwise>
+										</x:piecewise>
+										<x:piecewise>
+											<x:piece>
+												<x:ci>PRICE_MATRIX_NamedPlace_DescribeFeatureType</x:ci>
+												<x:apply>
+													<x:or/>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_NamedPlace_DescribeFeatureType</x:ci>
+													</x:apply>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_SI\x5FGazetteer_DescribeFeatureType</x:ci>
+													</x:apply>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_SI\x5FLocationInstance_DescribeFeatureType</x:ci>
+													</x:apply>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_SI\x5FLocationType_DescribeFeatureType</x:ci>
+													</x:apply>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_SI\x5FSpatialReferenceSystemUsingGeographicIdentifiers_DescribeFeatureType</x:ci>
+													</x:apply>
+												</x:apply>
+											</x:piece>
+											<x:otherwise>
+												<x:cn>0</x:cn>
+											</x:otherwise>
+										</x:piecewise>
+										<x:piecewise>
+											<x:piece>
+												<x:ci>PRICE_MATRIX_NamedPlace_GetFeature</x:ci>
+												<x:apply>
+													<x:or/>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_NamedPlace_GetFeature</x:ci>
+													</x:apply>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_SI\x5FGazetteer_GetFeature</x:ci>
+													</x:apply>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_SI\x5FLocationInstance_GetFeature</x:ci>
+													</x:apply>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_SI\x5FLocationType_GetFeature</x:ci>
+													</x:apply>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_SI\x5FSpatialReferenceSystemUsingGeographicIdentifiers_GetFeature</x:ci>
+													</x:apply>
+												</x:apply>
+											</x:piece>
+											<x:otherwise>
+												<x:cn>0</x:cn>
+											</x:otherwise>
+										</x:piecewise>
+										<x:piecewise>
+											<x:piece>
+												<x:ci>PRICE_MATRIX_NamedPlace_GetGmlObject</x:ci>
+												<x:apply>
+													<x:or/>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_NamedPlace_GetGmlObject</x:ci>
+													</x:apply>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_SI\x5FGazetteer_GetGmlObject</x:ci>
+													</x:apply>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_SI\x5FLocationInstance_GetGmlObject</x:ci>
+													</x:apply>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_SI\x5FLocationType_GetGmlObject</x:ci>
+													</x:apply>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_SI\x5FSpatialReferenceSystemUsingGeographicIdentifiers_GetGmlObject</x:ci>
+													</x:apply>
+												</x:apply>
+											</x:piece>
+											<x:otherwise>
+												<x:cn>0</x:cn>
+											</x:otherwise>
+										</x:piecewise>
+										<x:piecewise>
+											<x:piece>
+												<x:ci>PRICE_MATRIX_NamedPlace_x-ii-access</x:ci>
+												<x:apply>
+													<x:or/>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_NamedPlace_x-ii-access</x:ci>
+													</x:apply>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_SI\x5FGazetteer_x-ii-access</x:ci>
+													</x:apply>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_SI\x5FLocationInstance_x-ii-access</x:ci>
+													</x:apply>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_SI\x5FLocationType_x-ii-access</x:ci>
+													</x:apply>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_SI\x5FSpatialReferenceSystemUsingGeographicIdentifiers_x-ii-access</x:ci>
+													</x:apply>
+												</x:apply>
+											</x:piece>
+											<x:otherwise>
+												<x:cn>0</x:cn>
+											</x:otherwise>
+										</x:piecewise>
+										<x:piecewise>
+											<x:piece>
+												<x:ci>PRICE_MATRIX_NamedPlace_x-ii-dereference</x:ci>
+												<x:apply>
+													<x:or/>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_NamedPlace_x-ii-dereference</x:ci>
+													</x:apply>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_SI\x5FGazetteer_x-ii-dereference</x:ci>
+													</x:apply>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_SI\x5FLocationInstance_x-ii-dereference</x:ci>
+													</x:apply>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_SI\x5FLocationType_x-ii-dereference</x:ci>
+													</x:apply>
+													<x:apply>
+														<x:eq/>
+														<x:cn>1</x:cn>
+														<x:ci>PERMISSION_MATRIX_SI\x5FSpatialReferenceSystemUsingGeographicIdentifiers_x-ii-dereference</x:ci>
+													</x:apply>
+												</x:apply>
+											</x:piece>
+											<x:otherwise>
+												<x:cn>0</x:cn>
+											</x:otherwise>
+										</x:piecewise>
+									</x:apply>
+								</x:math>
+							</x:operation>
+						</x:function>
+						<x:function name="func_priceWithFactors">
+							<x:out>
+								<x:paramRef>PRICE-FACTORS</x:paramRef>
+							</x:out>
+							<x:in>
+								<x:paramRef>PRICE-FACTOR_Duration_License duration</x:paramRef>
+							</x:in>
+							<x:operation>
+								<x:math>
+									<x:apply>
+										<x:plus/>
+										<x:cn>0</x:cn>
+										<x:ci>PRICE-FACTOR_Duration_License duration</x:ci>
+									</x:apply>
+								</x:math>
+							</x:operation>
+						</x:function>
+						<x:function name="PRICE-FACTOR_Duration_License duration">
+							<x:title xml:lang="de">Factors for parameter price calculation.</x:title>
+							<x:out>
+								<x:paramRef>PRICE-FACTOR_Duration_License duration</x:paramRef>
+							</x:out>
+							<x:in>
+								<x:paramRef>PRICE-OPERATIONS</x:paramRef>
+								<x:paramRef>LICENSE_DURATION</x:paramRef>
+							</x:in>
+							<x:operation>
+								<x:math>
+									<x:apply>
+										<x:times/>
+										<x:ci>PRICE-OPERATIONS</x:ci>
+										<x:piecewise>
+											<x:piece>
+												<x:cn>100</x:cn>
+												<x:apply>
+													<x:streq/>
+													<x:cn>P1M</x:cn>
+													<x:ci>LICENSE_DURATION</x:ci>
+												</x:apply>
+											</x:piece>
+											<x:piece>
+												<x:cn>100</x:cn>
+												<x:apply>
+													<x:streq/>
+													<x:cn>P2M</x:cn>
+													<x:ci>LICENSE_DURATION</x:ci>
+												</x:apply>
+											</x:piece>
+											<x:piece>
+												<x:cn>100</x:cn>
+												<x:apply>
+													<x:streq/>
+													<x:cn>P1Y</x:cn>
+													<x:ci>LICENSE_DURATION</x:ci>
+												</x:apply>
+											</x:piece>
+											<x:piece>
+												<x:cn>100</x:cn>
+												<x:apply>
+													<x:streq/>
+													<x:cn>P1W</x:cn>
+													<x:ci>LICENSE_DURATION</x:ci>
+												</x:apply>
+											</x:piece>
+											<x:piece>
+												<x:cn>100</x:cn>
+												<x:apply>
+													<x:streq/>
+													<x:cn>P2W</x:cn>
+													<x:ci>LICENSE_DURATION</x:ci>
+												</x:apply>
+											</x:piece>
+											<x:piece>
+												<x:cn>100</x:cn>
+												<x:apply>
+													<x:streq/>
+													<x:cn>P2Y</x:cn>
+													<x:ci>LICENSE_DURATION</x:ci>
+												</x:apply>
+											</x:piece>
+											<x:piece>
+												<x:cn>100</x:cn>
+												<x:apply>
+													<x:streq/>
+													<x:cn>P1D</x:cn>
+													<x:ci>LICENSE_DURATION</x:ci>
+												</x:apply>
+											</x:piece>
+											<x:piece>
+												<x:cn>100</x:cn>
+												<x:apply>
+													<x:streq/>
+													<x:cn>P2D</x:cn>
+													<x:ci>LICENSE_DURATION</x:ci>
+												</x:apply>
+											</x:piece>
+										</x:piecewise>
+									</x:apply>
+								</x:math>
+							</x:operation>
+						</x:function>
+					</x:formulae>
+				</x:calculation>
+			</x:product>
+		</x:productGroup>
+	</x:catalog>
+</w:WPOSResponse>
