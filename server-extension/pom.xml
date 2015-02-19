@@ -16,6 +16,16 @@
             <artifactId>oskari-users</artifactId>
             <version>${oskari.version}</version>
         </dependency>
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-control</artifactId>
+            <version>${oskari.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-search-nls</artifactId>
+            <version>${oskari.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
