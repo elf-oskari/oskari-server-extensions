@@ -19,6 +19,10 @@ import org.json.JSONTokener;
 
 /**
  * Get list of localised names of ELF countries
+ *
+ * - names are based on ELF geolocator administrator names
+ * - names are mapped to countries in the resource file geolocator-countries.json
+ * - resource file is in oskari-server (oskari-search-nls) jar
  */
 @OskariActionRoute("GetELFCountriesData")
 public class GetELFCountriesDataHandler extends ActionHandler {
@@ -32,8 +36,6 @@ public class GetELFCountriesDataHandler extends ActionHandler {
 
     }
 
-
-
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
 
@@ -45,14 +47,10 @@ public class GetELFCountriesDataHandler extends ActionHandler {
         try {
             String[] locales = Locale.getISOCountries();
 
-            ELFGeoLocatorSearchChannel elfchannel = new ELFGeoLocatorSearchChannel();
-            this.countryMap = elfchannel.getElfCountryMap();
-
-
             for (String countryCode : locales) {
 
                 Locale obj = new Locale("", countryCode);
-                if(this.countryMap.has(obj.getCountry()))
+                if(countryMap.has(obj.getCountry()))
                 {
                     JSONObject item = new JSONObject();
                     item.put("id", obj.getCountry());
