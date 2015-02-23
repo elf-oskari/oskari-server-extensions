@@ -1,6 +1,5 @@
 package eu.elf.oskari.license;
 
-import com.oracle.webservices.internal.api.message.PropertySet;
 import eu.elf.license.LicenseService;
 import eu.elf.license.model.LicenseModelGroup;
 import fi.nls.oskari.annotation.OskariActionRoute;
@@ -19,11 +18,7 @@ import java.util.List;
 import static fi.nls.oskari.control.ActionConstants.*;
 
 /**
- * Get list of localised names of ELF countries
- *
- * - names are based on ELF geolocator administrator names
- * - names are mapped to countries in the resource file geolocator-countries.json
- * - resource file is in oskari-server (oskari-search-nls) jar
+ * Handles the service licenses
  */
 @OskariActionRoute("ELFLicense")
 public class LicenseHandler extends RestActionHandler {
@@ -46,17 +41,43 @@ public class LicenseHandler extends RestActionHandler {
     @Override
     public void handleGet(ActionParameters params) throws ActionException {
         final List<LicenseModelGroup> licenseGroups = service.getLicenseGroups();
-        final String id = params.getHttpParam(PARAM_ID);
-        if(id != null) {
-            LicenseModelGroup group = service.getLicenseGroupsForURL(licenseGroups, id);
+        final String url = params.getHttpParam(PARAM_ID);
+        if(url != null) {
+            final List<LicenseModelGroup> userLicenseGroups = service.getLicenseGroupsForUser(params.getUser().getScreenname());
+            final LicenseModelGroup userLicense = service.getLicenseGroupsForURL(userLicenseGroups, url);
+            // TODO: check the handling of case where user already has the license
+            if(userLicense != null) {
+                // User already has license, respond with it!
+                ResponseHelper.writeResponse(params, getAsJSON(userLicense));
+                return;
+            }
+            // return the license info about the service for user to fill out
+            final LicenseModelGroup group = service.getLicenseGroupsForURL(licenseGroups, url);
             if(group == null) {
-                throw new ActionParamsException("Can't find license with url: " + id);
+                throw new ActionParamsException("Can't find license with url: " + url);
             }
             ResponseHelper.writeResponse(params, getAsJSON(group));
         }
         else {
             ResponseHelper.writeResponse(params, getAsJSON(licenseGroups));
         }
+    }
+
+    @Override
+    public void handlePost(ActionParameters params) throws ActionException {
+        handlePut(params);
+    }
+
+    @Override
+    public void handlePut(ActionParameters params) throws ActionException {
+        // TODO: conclude the license
+        //service.concludeLicense()
+    }
+
+    @Override
+    public void handleDelete(ActionParameters params) throws ActionException {
+        // TODO: deactivate license
+        //service.deactivateLicense();
     }
 
     private String getAsJSON(Object param) {
