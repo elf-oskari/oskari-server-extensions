@@ -12,6 +12,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>eu.elf.oskari</groupId>
+            <artifactId>service-wpos</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-users</artifactId>
             <version>${oskari.version}</version>
