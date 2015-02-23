@@ -12,11 +12,9 @@
     <artifactId>service-wpos</artifactId>
 
     <properties>
-        <oskari.version>1.26</oskari.version>
         <jackson.version>2.5.0</jackson.version>
         <stax2-api.version>3.1.2</stax2-api.version>
         <woodstox.version>4.4.1</woodstox.version>
-        <junit.version>4.11</junit.version>
     </properties>
 
     <dependencies>
