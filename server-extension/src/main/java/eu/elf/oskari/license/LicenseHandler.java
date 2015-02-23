@@ -1,5 +1,6 @@
 package eu.elf.oskari.license;
 
+import com.oracle.webservices.internal.api.message.PropertySet;
 import eu.elf.license.LicenseService;
 import eu.elf.license.model.LicenseModelGroup;
 import fi.nls.oskari.annotation.OskariActionRoute;
@@ -9,6 +10,7 @@ import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -23,7 +25,7 @@ import static fi.nls.oskari.control.ActionConstants.*;
  * - names are mapped to countries in the resource file geolocator-countries.json
  * - resource file is in oskari-server (oskari-search-nls) jar
  */
-@OskariActionRoute("License")
+@OskariActionRoute("ELFLicense")
 public class LicenseHandler extends RestActionHandler {
 
     private static final Logger log = LogFactory.getLogger(LicenseHandler.class);
@@ -34,8 +36,11 @@ public class LicenseHandler extends RestActionHandler {
     @Override
     public void init() {
         super.init();
-        // TODO: setup url
-        service = new LicenseService();
+        service = new LicenseService(
+                PropertyUtil.getNecessary("actionhandler.ELFLicense.wpos.url"),
+                PropertyUtil.getNecessary("actionhandler.ELFLicense.wpos.user"),
+                PropertyUtil.getNecessary("actionhandler.ELFLicense.wpos.pass"),
+                PropertyUtil.getNecessary("actionhandler.ELFLicense.wpos.soapUrl"));
     }
 
     @Override
