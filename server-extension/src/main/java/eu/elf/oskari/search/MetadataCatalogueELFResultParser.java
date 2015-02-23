@@ -22,8 +22,7 @@ public class MetadataCatalogueELFResultParser extends MetadataCatalogueResultPar
 
     @Override
     public SearchResultItem parseResult(OMElement elem, String locale) throws Exception {
-        SearchResultItem item = super.parseResult(elem, locale);
-        // TODO: check if result item has available licenses in license-manager
+        final SearchResultItem item = super.parseResult(elem, locale);
         log.debug("Parsed service url for", item.getResourceId(), ":", item.getGmdURL());
         // Check OnlineResource URL: if matches securitymanagerin url -> setup KEY_LICENSE = service url
         if(urlPrefix != null && item.getGmdURL() != null && item.getGmdURL().startsWith(urlPrefix)) {

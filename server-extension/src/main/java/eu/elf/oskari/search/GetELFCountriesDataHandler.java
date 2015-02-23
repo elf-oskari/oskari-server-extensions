@@ -4,18 +4,13 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.search.channel.ELFGeoLocatorSearchChannel;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 /**
  * Get list of localised names of ELF countries
@@ -32,6 +27,7 @@ public class GetELFCountriesDataHandler extends ActionHandler {
     @Override
     public void init() {
         ELFGeoLocatorSearchChannel elfchannel = new ELFGeoLocatorSearchChannel();
+        elfchannel.init();
         countryMap = elfchannel.getElfCountryMap();
 
     }
