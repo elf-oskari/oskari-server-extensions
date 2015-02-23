@@ -31,6 +31,7 @@
 
     <modules>
         <module>elf-resources</module>
+        <module>service-wpos</module>
         <!-- Disabled since no-one is using it for now -->
         <!-- module>runnable-jar</module -->
         <module>server-extension</module>
