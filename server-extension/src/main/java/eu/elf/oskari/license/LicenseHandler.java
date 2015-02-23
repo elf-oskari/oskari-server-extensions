@@ -82,7 +82,7 @@ public class LicenseHandler extends RestActionHandler {
 
     private String getAsJSON(Object param) {
         try {
-            return mapper.writeValueAsString(param); // thread-safe
+            return mapper.writeValueAsString(param);
         } catch (Exception e) {
             log.error(e, "Exception writing license data to JSON");
         }

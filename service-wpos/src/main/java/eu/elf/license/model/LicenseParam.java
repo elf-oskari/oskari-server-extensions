@@ -8,6 +8,10 @@ public abstract class LicenseParam {
     private String title; // ui name
     private String parameterClass; // parameter class (predefinedParameter || precalculatedParameter || referencedParameter || resultParameter || configurationParameter)
 
+    public String getType() {
+        return getClass().getSimpleName();
+    }
+
 	public String getName() {
         return name;
     }
