@@ -6,8 +6,9 @@ package eu.elf.license.model;
 public abstract class LicenseParam {
     private String name; // technical name
     private String title; // ui name
+    private String parameterClass; // parameter class (predefinedParameter || precalculatedParameter || referencedParameter || resultParameter || configurationParameter)
 
-    public String getName() {
+	public String getName() {
         return name;
     }
 
@@ -23,5 +24,13 @@ public abstract class LicenseParam {
         this.title = title;
     }
 
+    public String getParameterClass() {
+		return parameterClass;
+	}
+
+	public void setParameterClass(String parameterClass) {
+		this.parameterClass = parameterClass;
+	}
+    
     public abstract boolean isValid();
 }

@@ -15,6 +15,7 @@ public class LicenseModelGroup {
     private String url;
     private List<LicenseModel> licenseModels = new ArrayList<LicenseModel>();
 
+       
     public String getId() {
         return id;
     }
@@ -31,6 +32,10 @@ public class LicenseModelGroup {
         licenseModels.add(model);
     }
 
+    public void setLicenseModels(List<LicenseModel> licenseModelList) {
+    	this.licenseModels = licenseModelList;
+    }
+    
     public List<LicenseModel> getLicenseModels() {
         return licenseModels;
     }

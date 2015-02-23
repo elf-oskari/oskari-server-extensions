@@ -34,6 +34,10 @@ public class LicenseModel {
     public List<LicenseParam> getParams() {
         return params;
     }
+    
+    public void setParams(List<LicenseParam> lpList) {
+        this.params = lpList;
+    }
 
     public String getName() {
         return name;

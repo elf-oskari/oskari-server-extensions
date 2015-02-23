@@ -2,6 +2,8 @@ package elf.license;
 
 import org.junit.Test;
 
+import elf.license.licensedetails.GetLicenseDetailsQueryPojo;
+
 import java.io.*;
 
 import static org.junit.Assert.*;
@@ -23,5 +25,4 @@ public class GetLicenseDetailsQueryPojoTest {
         // Namespaces don't serialize properly with stax2. Woodstock STAX API should be able to fix it but I haven't tested it
         System.out.println("out: "+pojo.getXMLRepresentation());
     }
-
 }

@@ -5,19 +5,42 @@ import eu.elf.license.model.LicenseModelGroup;
 
 import java.util.List;
 
-/**
- * Dummy service interface implementation
- */
 public class LicenseService {
-
+	private LicenseQueryHandler lqh;
+	
+	public LicenseService(String WPOSUrl, String WPOSUsername, String WPOSPassword, String licenseManagerURL) {
+		try {
+			this.lqh = new LicenseQueryHandler(WPOSUrl, WPOSUsername, WPOSPassword, licenseManagerURL);
+		
+		} catch (Exception e) {
+			//e.printStackTrace();
+		}
+	}
+	
     public List<LicenseModelGroup> getLicenseGroups() {
-        // TODO: populate from WPOS
-        return null;
+    	List<LicenseModelGroup> lmgList = null;
+
+    	try {
+    		lmgList = lqh.getListOfLicensesAsLicenseModelGroupList();
+    			
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
+    	
+        return lmgList;
     }
 
     public List<LicenseModelGroup> getLicenseGroupsForUser(final String userid) {
-        // TODO: populate from WPOS
-        return null;
+    	List<LicenseModelGroup> lmgList = null;
+    	
+    	try {
+    		//lmgList = lqh.getListOfLicensesAsLicenseModelGroupList(userid);
+    			
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
+    	
+        return lmgList;
     }
 
     public LicenseModelGroup getLicenseForURL(final String url) {
