@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>fi.nls.oskari.elf</groupId>
+        <groupId>eu.elf.oskari</groupId>
         <artifactId>elf-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
@@ -18,12 +18,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>fi.nls.oskari.elf</groupId>
+            <groupId>eu.elf.oskari</groupId>
             <artifactId>elf-resources</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>fi.nls.oskari.elf</groupId>
+            <groupId>eu.elf.oskari</groupId>
             <artifactId>server-extension</artifactId>
             <version>${project.version}</version>
         </dependency>
