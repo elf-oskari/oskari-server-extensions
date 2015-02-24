@@ -67,11 +67,11 @@ public class LicenseModel {
         return roles;
     }
 
-    public void cleartRoles() {
+    public void clearRoles() {
         roles.clear();
     }
 
-    public void addtRole(final String rolename) {
+    public void addRole(final String rolename) {
         roles.add(rolename);
     }
 }

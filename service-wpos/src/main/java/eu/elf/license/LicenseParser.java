@@ -162,7 +162,7 @@ public class LicenseParser {
                                 NodeList valueElementList = parameterElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "value");
 
                                 for (int m = 0; m < valueElementList.getLength(); m++) {
-                                    tempLM.addtRole(valueElementList.item(m).getTextContent());
+                                    tempLM.addRole(valueElementList.item(m).getTextContent());
                                 }
 
                             }
