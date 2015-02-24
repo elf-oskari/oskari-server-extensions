@@ -7,12 +7,11 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.RestActionHandler;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
-import org.codehaus.jackson.map.ObjectMapper;
-
 import java.util.List;
 
 import static fi.nls.oskari.control.ActionConstants.*;
@@ -26,7 +25,6 @@ public class LicenseHandler extends RestActionHandler {
     private static final Logger log = LogFactory.getLogger(LicenseHandler.class);
 
     private LicenseService service = null;
-    private static final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public void init() {
@@ -42,13 +40,15 @@ public class LicenseHandler extends RestActionHandler {
     public void handleGet(ActionParameters params) throws ActionException {
         final List<LicenseModelGroup> licenseGroups = service.getLicenseGroups();
         final String url = params.getHttpParam(PARAM_ID);
+        final User user = params.getUser();
         if(url != null) {
             final List<LicenseModelGroup> userLicenseGroups = service.getLicenseGroupsForUser(params.getUser().getScreenname());
             final LicenseModelGroup userLicense = service.getLicenseGroupsForURL(userLicenseGroups, url);
-            // TODO: check the handling of case where user already has the license
+            // TODO: check the handling of case where user already has the license, service should tag group with a boolean or something?
             if(userLicense != null) {
                 // User already has license, respond with it!
-                ResponseHelper.writeResponse(params, getAsJSON(userLicense));
+                // this doesn't need filtering by roles supposedly?
+                ResponseHelper.writeResponse(params, LicenseHelper.getAsJSON(userLicense));
                 return;
             }
             // return the license info about the service for user to fill out
@@ -56,10 +56,12 @@ public class LicenseHandler extends RestActionHandler {
             if(group == null) {
                 throw new ActionParamsException("Can't find license with url: " + url);
             }
-            ResponseHelper.writeResponse(params, getAsJSON(group));
+            final LicenseModelGroup groupForUser = LicenseHelper.filterModelsByRoles(user, group);
+            ResponseHelper.writeResponse(params, LicenseHelper.getAsJSON(groupForUser));
         }
         else {
-            ResponseHelper.writeResponse(params, getAsJSON(licenseGroups));
+            final List<LicenseModelGroup> groupsForUser = LicenseHelper.filterModelsByRoles(user, licenseGroups);
+            ResponseHelper.writeResponse(params, LicenseHelper.getAsJSON(groupsForUser));
         }
     }
 
@@ -80,13 +82,5 @@ public class LicenseHandler extends RestActionHandler {
         //service.deactivateLicense();
     }
 
-    private String getAsJSON(Object param) {
-        try {
-            return mapper.writeValueAsString(param);
-        } catch (Exception e) {
-            log.error(e, "Exception writing license data to JSON");
-        }
-        return "";
-    }
 
 }
