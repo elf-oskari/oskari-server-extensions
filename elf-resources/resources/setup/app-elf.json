@@ -9,14 +9,15 @@
     "bundles": {
         "elf": [
             "999-elf-lang-selector.sql",
-            "999-elf-geolocator.sql"
+            "999-elf-geolocator.sql",
+            "999-elf-license.sql"
         ]
     },
 
     "views": [
         "elf-view.json",
         "elf-guest-view.json",
-        "elf-publisher-template-view.json",
+        "elf-publisher-template-view.json"
     ],
     "sql": [
         "populate-Inspire-themes.sql",
