@@ -15,6 +15,24 @@ public class LicenseModelGroup {
     private String url;
     private List<LicenseModel> licenseModels = new ArrayList<LicenseModel>();
 
+
+    /**
+     * Finds model based on id
+     *
+     * @param paramId
+     * @return LicenseModel with matching id or null if none match the id.
+     */
+    public LicenseModel getModelById(final String paramId) {
+        if (paramId == null || licenseModels == null) {
+            return null;
+        }
+        for (LicenseModel model : licenseModels) {
+            if (paramId.equalsIgnoreCase(model.getId())) {
+                return model;
+            }
+        }
+        return null;
+    }
        
     public String getId() {
         return id;
