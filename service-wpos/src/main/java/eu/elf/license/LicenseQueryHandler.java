@@ -272,6 +272,164 @@ public class LicenseQueryHandler {
 		return pojo;
 	}
 		
+	
+	
+	/**
+	 * Gets the price of the License Model
+	 * 
+	 * @param lm	 - LicenseModel object
+	 * @param userId - UserId
+	 * @return		 - ProductPriceSum as String
+	 * 
+	 * @throws Exception
+	 */
+	public String getLicenseModelPrice(LicenseModel lm, String userId) throws Exception{
+		StringBuffer buf = null; 
+		String productPriceSum = "";
+		List<LicenseParam> lpList = lm.getParams();
+		
+		String productPriceQuery = 	"<?xml version=\"1.0\" encoding=\"utf-8\"?>"+
+									"<wpos:WPOSRequest xmlns:wpos=\"http://www.conterra.de/wpos/1.1\" version=\"1.1.0\">"+
+									"<wpos:GetPrice collapse=\"true\">"+
+							        "<wpos:Product id=\""+lm.getId()+"\">"+
+							        "<wpos:ConfigParams>";
+					            
+		for (int i = 0; i < lpList.size(); i++) {
+			if (lpList.get(i).getParameterClass().equals("configurationParameter")) {
+				LicenseParam lp = (LicenseParam) lpList.get(i);
+				
+				productPriceQuery += "<wpos:Parameter name=\""+lp.getName()+"\">";
+				//System.out.println(lp.getName()+"  "+lp.getParameterClass());
+
+				
+				if(lp instanceof LicenseParamInt) {
+					LicenseParamInt lpi = (LicenseParamInt) lp;
+					//System.out.println("int "+lpi.getName());
+					
+					productPriceQuery += "<wpos:Value selected=\"true\">"+lpi.getValue()+"</wpos:Value>"+
+										 "</wpos:Parameter>";
+				}
+				else if(lp instanceof LicenseParamBln) {
+					LicenseParamBln lpBln = (LicenseParamBln) lp;
+					//System.out.println("Bln "+lpBln.getName());
+					
+					productPriceQuery +=  "<wpos:Value selected=\"true\">"+lpBln.getValue()+"</wpos:Value>"+
+										  "</wpos:Parameter>";
+				}
+				else if(lp instanceof LicenseParamDisplay) {
+					LicenseParamDisplay lpd = (LicenseParamDisplay) lp;
+					List<String> values = lpd.getValues();
+					
+					//System.out.println("Display "+lpd.getName());
+					
+					if (lp.getName().equals("LICENSE_USER_GROUP")) {
+						productPriceQuery +=  "<wpos:Value>Users</wpos:Value>";
+								  			  
+					}
+					else if (lp.getName().equals("LICENSE_USER_ID")) {
+						productPriceQuery +=  "<wpos:Value>"+userId+"</wpos:Value>";
+								  			  
+					}
+					else {
+						for (int l = 0; l < values.size(); l++ ) {
+							productPriceQuery +=  "<wpos:Value selected=\"true\">"+values.get(l)+"</wpos:Value>";
+						}
+					}
+					
+					productPriceQuery += "</wpos:Parameter>";
+				}
+				else if(lp instanceof LicenseParamEnum) {
+					LicenseParamEnum lpEnum = (LicenseParamEnum) lp;
+					//System.out.println("Enum "+lpEnum.getName());
+					
+        			List<String> tempOptions = lpEnum.getOptions();
+        			List<String> tempSelections = lpEnum.getSelections();
+        			
+        			if (tempSelections.size() == 0) {
+        				productPriceQuery +=  "<wpos:Value selected=\"true\">"+tempOptions.get(0)+"</wpos:Value>"+
+					  			  			  "</wpos:Parameter>";
+        			}
+        			else {
+	        			for (int j = 0; j < tempSelections.size(); j++) {
+	        				productPriceQuery +=  "<wpos:Value selected=\"true\">"+tempSelections.get(j)+"</wpos:Value>"+
+									  			  "</wpos:Parameter>";
+	        			}
+        			}
+				}
+				else if(lp instanceof LicenseParamText) {
+					LicenseParamText lpText = (LicenseParamText) lp;
+					//System.out.println("Text "+lpText.getName());
+					
+					List<String> values = lpText.getValues();
+					
+					for (int k = 0; k < values.size(); k++) {
+						productPriceQuery +=  "<wpos:Value selected=\"true\">"+lpText.getValues()+"</wpos:Value>";					  	
+					}
+					productPriceQuery += "</wpos:Parameter>";
+				}
+				
+							       
+			}
+			
+		}
+					          
+		productPriceQuery += "</wpos:ConfigParams>"+
+							 "</wpos:Product>"+
+							 "</wpos:GetPrice>"+
+							 "</wpos:WPOSRequest>";
+
+		//System.out.println("query: "+productPriceQuery.toString());					 
+		
+		
+		
+		try {
+			buf = doHTTPQuery(this.wposURL, "post", productPriceQuery, false);
+			//System.out.println("response: "+buf.toString());	
+		 
+			
+			// Get productPriceInfo from the response
+			Document xmlDoc = LicenseParser.createXMLDocumentFromString(buf.toString());
+			Element catalogElement = (Element) xmlDoc.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "catalog").item(0);
+	        NodeList productGroupElementList = catalogElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "productGroup");
+	      
+	        for (int m = 0; m < productGroupElementList.getLength(); m++) {
+	            Element productGroupElement = (Element) productGroupElementList.item(m);
+	            Element calculationElement = (Element) productGroupElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "calculation").item(0);
+	            Element declarationListElement = (Element) calculationElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "declarationList").item(0);
+	            Element referencedParametersElement = (Element) declarationListElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "referencedParameters").item(0);
+	            NodeList referencedParametersParameterList = referencedParametersElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "parameter");
+	     
+	            for (int n = 0; n < referencedParametersParameterList.getLength(); n++) {
+		            Element referencedParametersParameterElement = (Element) referencedParametersParameterList.item(n);
+		             
+		            NamedNodeMap referencedParametersParameterAttributeMap = referencedParametersParameterElement.getAttributes();
+	            
+		            for (int o = 0; o < referencedParametersParameterAttributeMap.getLength(); o++) {
+		            	Attr attrs = (Attr) referencedParametersParameterAttributeMap.item(o);
+
+		                if (attrs.getNodeName().equals("name") ) {
+		                    if (attrs.getNodeValue().equals("productPriceSum")) {
+		                    	 Element valueElement = (Element) referencedParametersParameterElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "value").item(0); 
+		                    	 
+		                    	 productPriceSum = valueElement.getTextContent();
+		                    }
+		                }
+		            }
+	            
+	            }
+	            
+	            
+	        }
+			
+		} catch (Exception e) {
+			throw e;
+		}
+		
+		return productPriceSum;
+	}
+	
+	
+	
 		
 	/**
 	 * Send ConcludeLicense query to the WPOS Service, Return response as LicenseConcludeResponseObject
@@ -597,7 +755,8 @@ public class LicenseQueryHandler {
         
         //hPost.setHeader("User-Agent", "Mozilla/5.0");
         hPost.setHeader("Content-Type", "text/xml; charset=utf-8");
-        hPost.setHeader("SOAPAction","http://security.conterra.de/LicenseManager/DeactivateLicense");
+       // hPost.setHeader("SOAPAction","http://security.conterra.de/LicenseManager/DeactivateLicense");
+        hPost.setHeader("SOAPAction",SOAPAction);
         
         List<Cookie> cookieList = bcs.getCookies();
 		//System.out.println("cookieList.size: "+cookieList.size());
