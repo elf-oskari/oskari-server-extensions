@@ -1,5 +1,6 @@
 package eu.elf.license;
 
+import eu.elf.license.conclude.LicenseConcludeResponseObject;
 import eu.elf.license.model.*;
 import org.w3c.dom.*;
 import org.xml.sax.SAXParseException;
@@ -22,7 +23,20 @@ public class LicenseParser {
         try {
             Document xmlDoc = createXMLDocumentFromString(xml);
             NodeList productGroupElementList = xmlDoc.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "productGroup");
+            
+            return createLicenseModelGroupList(productGroupElementList);
 
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+    
+    public static List<LicenseModelGroup> parseUserLicensesAsLicenseModelGroupList(String xml) throws Exception {
+
+        try {
+            Document xmlDoc = createXMLDocumentFromString(xml);
+            NodeList productGroupElementList = xmlDoc.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "productGroup");
+            
             return createLicenseModelGroupList(productGroupElementList);
 
         } catch (Exception e) {
@@ -51,6 +65,7 @@ public class LicenseParser {
                 Attr attrs = (Attr) productGroupElementAttributeMap.item(j);
 
                 if (attrs.getNodeName().equals("id") ) {
+                	
                     if (attrs.getNodeValue().equals("ACCOUNTING_SUMMARY_GROUP")) { // Skip element with id="ACCOUNTING_SUMMARY_GROUP" -  do not add to the list
                         isAccountGroup = true;
                     }
@@ -145,7 +160,7 @@ public class LicenseParser {
                     Attr attrs = (Attr) parameterElementAttributeMap.item(l);
 
                     if (attrs.getNodeName().equals("name") ) {
-                        if (attrs.getNodeName() != null) {
+                        if (attrs.getNodeName() != null) {                       	
                             if (attrs.getNodeValue().equals("ALL_ROLES")) {
                                 Element valueElement = (Element)parameterElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "value").item(0);
 
@@ -195,81 +210,133 @@ public class LicenseParser {
      * @param declarationListElement - XML element <x:declarationList>
      * @return List of LicenseParam objects
      */
-    private static List<LicenseParam> createLicenseModelParamList(Element declarationListElement) {
+    private static List<LicenseParam> createLicenseModelParamList(Element declarationListElement) {   	
         List<LicenseParam> paramList = new ArrayList<LicenseParam>();
 
         // Predefined Parameters - create as LicenseParamDisplay objects
         Element predefinedParametersElement = (Element)declarationListElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "predefinedParameters").item(0);
-        NodeList predefinedParametersParameterElementList = predefinedParametersElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "parameter");
-
-        for (int n = 0; n < predefinedParametersParameterElementList.getLength(); n++) {
-            Element parameterElement = (Element)predefinedParametersParameterElementList.item(n);
-
-            LicenseParamDisplay displayParam = createLicenseParamDisplay(parameterElement, "predefinedParameter");
-            paramList.add(displayParam);
-
+        
+        if (predefinedParametersElement != null) {
+	        NodeList predefinedParametersParameterElementList = predefinedParametersElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "parameter");
+	
+	        for (int n = 0; n < predefinedParametersParameterElementList.getLength(); n++) {
+	            Element parameterElement = (Element)predefinedParametersParameterElementList.item(n);
+	
+	            LicenseParamDisplay displayParam = createLicenseParamDisplay(parameterElement, "predefinedParameter");
+	            paramList.add(displayParam);
+	
+	        }
         }
 
         // Configuration Parameters - might be LicenseParamDisplay || LicenseParamBln || LicenseParamEnum || LicenseParamInt || LicenseParamText
         Element configurationParametersElement = (Element)declarationListElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "configurationParameters").item(0);
-        NodeList configurationParametersParameterElementList = configurationParametersElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "parameter");
-
-        for (int n = 0; n < configurationParametersParameterElementList.getLength(); n++) {
-            Element parameterElement = (Element)configurationParametersParameterElementList.item(n);
-
-            LicenseParam lp = null;
-            Boolean isStringType = false;
-            Boolean multiAttributeExists = false;
-            Boolean optionalAttributeExists = false;
-
-            NamedNodeMap parameterElementAttributeMap = parameterElement.getAttributes();
-
-            // Create appropriate subclass object based on the "type" and "multi" attributes
-            for (int o = 0; o < parameterElementAttributeMap.getLength(); o++) {
-                Attr attrs = (Attr) parameterElementAttributeMap.item(o);
-
-                if (attrs.getNodeName().equals("type") ) {
-                    if (attrs.getNodeValue().equals("real")) {
-                        lp = createLicenseParamInt(parameterElement, "configurationParameter");
-                        paramList.add(lp);
-                        //System.out.println("lp - name "+lpInt.getName());
-                    }
-                    else if (attrs.getNodeValue().equals("string")) {
-                        isStringType = true;
-                    }
-                    else if (attrs.getNodeValue().equals("boolean")) {
-                        lp = createLicenseParamBln(parameterElement, "configurationParameter");
-                        paramList.add(lp);
-                    }
-
-                }
-                if (attrs.getNodeName().equals("multi")) {
-                    multiAttributeExists = true;
-                }
-                if (attrs.getNodeName().equals("optional")) {
-                    optionalAttributeExists = true;
-                }
-
-            }
-
-            if (isStringType == true) {
-                if (multiAttributeExists == true) {
-                    if (optionalAttributeExists == true) {
-                        // What does optional attribute signify????
-                    }
-                    else {
-                        lp = createLicenseParamEnum(parameterElement, "configurationParameter");
-                        paramList.add(lp);
-                    }
-                }
-                else {
-                    lp = createLicenseParamText(parameterElement, "configurationParameter");
-                    paramList.add(lp);
-                }
-            }
-
+        
+        if (configurationParametersElement != null) {       	
+	        NodeList configurationParametersParameterElementList = configurationParametersElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "parameter");
+	
+	        for (int n = 0; n < configurationParametersParameterElementList.getLength(); n++) {
+	            Element parameterElement = (Element)configurationParametersParameterElementList.item(n);
+	
+	            LicenseParam lp = null;
+	            Boolean isStringType = false;
+	            Boolean multiAttributeExists = false; // true for enumration type parameters
+	            //Boolean multiAttributeValue = false; // value of the multi attribute 
+	            //Boolean optionalAttribute = false;  // What does optional attribute signify???
+	
+	            NamedNodeMap parameterElementAttributeMap = parameterElement.getAttributes();
+	
+	            // Create appropriate subclass object based on the "type" and "multi" attributes
+	            for (int o = 0; o < parameterElementAttributeMap.getLength(); o++) {
+	                Attr attrs = (Attr) parameterElementAttributeMap.item(o);
+	
+	                if (attrs.getNodeName().equals("type") ) {
+	                    if (attrs.getNodeValue().equals("real")) {
+	                        lp = createLicenseParamInt(parameterElement, "configurationParameter");
+	                        paramList.add(lp);
+	                        //System.out.println("lp - name "+lpInt.getName());
+	                    }
+	                    else if (attrs.getNodeValue().equals("string")) {
+	                        isStringType = true;
+	                    }
+	                    else if (attrs.getNodeValue().equals("boolean")) {
+	                        lp = createLicenseParamBln(parameterElement, "configurationParameter");
+	                        paramList.add(lp);
+	                    }
+	
+	                }
+	                if (attrs.getNodeName().equals("multi")) {
+	                	multiAttributeExists = true;
+	                	//if (attrs.getNodeValue().equals("true")) {
+	                	
+	                		//multiAttributeValue = true;
+	                	//}
+	                	//else {
+	                		//multiAttributeExists = false;
+	                		//multiAttributeValue = false;
+	                	//}
+	                }
+	               // if (attrs.getNodeName().equals("optional")) {
+	               // 	if (attrs.getNodeName().equals("true")) {
+	               // 		optionalAttribute = true;
+	               // 	}
+	               // 	else {
+	               // 		optionalAttribute = false;
+	               // 	}
+	               // }
+	
+	            }
+	
+	            if (isStringType == true) {
+	                if (multiAttributeExists == true) {
+	                		lp = createLicenseParamEnum(parameterElement, "configurationParameter");
+	                		paramList.add(lp);
+	 
+	                	//if (optionalAttribute == true) {
+	                    //   
+	                    //	 lp = createLicenseParamEnum(parameterElement, "configurationParameter");
+		                //     paramList.add(lp);
+	                    //} 
+	                }
+	                else {
+	                    lp = createLicenseParamText(parameterElement, "configurationParameter");
+	                    paramList.add(lp);
+	                }
+	            }
+	
+	        }
         }
-
+        
+        // Precalculated Parameters - create as LicenseParamDisplay objects
+        Element precalculatedParametersElement = (Element)declarationListElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "precalculatedParameters").item(0);
+        
+        if (precalculatedParametersElement != null) {
+	        NodeList precalculatedParametersParameterElementList = precalculatedParametersElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "parameter");
+	       
+	        for (int n = 0; n < precalculatedParametersParameterElementList.getLength(); n++) {
+	            Element parameterElement = (Element)precalculatedParametersParameterElementList.item(n);
+	
+	            LicenseParamDisplay displayParam = createLicenseParamDisplay(parameterElement, "precalculatedParameter");
+	            paramList.add(displayParam);
+	
+	        }
+        }
+        
+        // Result Parameters - create as LicenseParamDisplay objects
+        Element resultParametersElement = (Element)declarationListElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "resultParameters").item(0);
+	       
+        if (resultParametersElement != null) {
+	        NodeList resultParametersParameterElementList = resultParametersElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "parameter");
+	
+	        for (int n = 0; n < resultParametersParameterElementList.getLength(); n++) {
+	            Element parameterElement = (Element)resultParametersParameterElementList.item(n);
+	
+	            LicenseParamDisplay displayParam = createLicenseParamDisplay(parameterElement, "resultParameter");
+	            paramList.add(displayParam);
+	
+	        }
+        }
+        
+        
         return paramList;
     }
 
@@ -299,7 +366,6 @@ public class LicenseParser {
 
 
         if (parameterTitleElement != null) {
-            //System.out.println(parameterTitleElement.getTextContent());
             lpbln.setTitle(parameterTitleElement.getTextContent());
         }
 
@@ -368,7 +434,8 @@ public class LicenseParser {
      * @return
      */
     private static LicenseParamEnum createLicenseParamEnum(Element parameterElement, String parameterClass) {
-        Boolean multiAttribute = false;
+    	
+        Boolean multiAttributeValue = false;
         LicenseParamEnum lpEnum = new LicenseParamEnum();
         lpEnum.setParameterClass(parameterClass);
 
@@ -377,22 +444,23 @@ public class LicenseParser {
         for (int i = 0; i < parameterElementAttributeMap.getLength(); i++) {
             Attr attrs = (Attr) parameterElementAttributeMap.item(i);
 
-            if (attrs.getNodeName().equals("name") ) {
+            if (attrs.getNodeName().equals("name") ) {        
                 lpEnum.setName(attrs.getNodeValue());
             }
 
             if (attrs.getNodeName().equals("multi")) {
-                if (attrs.getNodeValue().equals(true)) {
-                    multiAttribute = true;
+
+                if (attrs.getNodeValue().equals("true")) {
+					multiAttributeValue = true;
                 }
                 else {
-                    multiAttribute = false;
+                	multiAttributeValue = false;
                 }
             }
 
         }
 
-        lpEnum.setMulti(multiAttribute);
+        lpEnum.setMulti(multiAttributeValue);
 
         Element parameterTitleElement = (Element)parameterElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "title").item(0);
 
@@ -424,6 +492,7 @@ public class LicenseParser {
         return lpEnum;
     }
 
+    
 
     /**
      * Creates LicenseParamInt object
@@ -505,7 +574,59 @@ public class LicenseParser {
         return lpt;
     }
 
-
+    /**
+     * Creates LicenseConcludeResponseObject from the concludeLicense operation's response string
+     * 
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    public static LicenseConcludeResponseObject parseConcludeLicenseResponse(String response) throws Exception {
+    	LicenseConcludeResponseObject lcro = new LicenseConcludeResponseObject();
+    	
+    	try {
+    		Document xmlDoc = LicenseParser.createXMLDocumentFromString(response);
+    		NodeList LicenseReferenceNL = xmlDoc.getElementsByTagNameNS("http://www.52north.org/license/0.3.2", "LicenseReference");
+    		
+    		for (int i = 0; i < LicenseReferenceNL.getLength(); i++ ) {
+	    		Element attributeStatementElement = (Element)LicenseReferenceNL.item(i);
+	    		
+	    		NodeList attributeElementList = attributeStatementElement.getElementsByTagNameNS("urn:oasis:names:tc:SAML:2.0:assertion", "Attribute");
+	    		
+	    		for (int j = 0; j < attributeElementList.getLength(); j++) {
+	    			Element attributeElement = (Element)attributeElementList.item(j);
+	    			Element AttributeValueElement = (Element)attributeElement.getElementsByTagName("AttributeValue").item(0);
+	    			    			
+	    			NamedNodeMap licenseReferenceElementAttributeMap = attributeElement.getAttributes();
+	
+	                for (int k = 0; k < licenseReferenceElementAttributeMap.getLength(); k++) {
+	                    Attr attrs = (Attr) licenseReferenceElementAttributeMap.item(k);
+	
+	                    if (attrs.getNodeName().equals("Name") ) {
+	                       	if(attrs.getNodeValue().equals("urn:opengeospatial:ows4:geodrm:NotOnOrAfter")) {
+	                       		lcro.setValidTo(AttributeValueElement.getTextContent());
+	                    	}
+	                    	if(attrs.getNodeValue().equals("urn:opengeospatial:ows4:geodrm:ProductID")) {
+	                    		lcro.setProductId(AttributeValueElement.getTextContent());
+					       	}
+	                    	if(attrs.getNodeValue().equals("urn:opengeospatial:ows4:geodrm:LicenseID")) {
+	                    		lcro.setLicenseId(AttributeValueElement.getTextContent());
+	                    	}
+	                    }
+	
+	                }
+	                
+	    		}
+	    		
+    		}
+    		
+    	} catch (Exception e) {
+    		throw e;
+    	}
+    
+         
+    	return lcro; 
+    }
 
 
     /**
@@ -528,6 +649,7 @@ public class LicenseParser {
 
         } catch(SAXParseException spe) {
             Locator2Impl locator = new Locator2Impl();
+            spe.printStackTrace();
             throw new SAXParseException("", locator);
         } catch(Exception e) {
             e.printStackTrace();

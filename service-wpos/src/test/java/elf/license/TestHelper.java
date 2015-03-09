@@ -1,5 +1,7 @@
 package elf.license;
 
+import eu.elf.license.LicenseService;
+
 import java.io.*;
 
 /**
@@ -8,6 +10,15 @@ import java.io.*;
 public class TestHelper {
 
     public static final String DEFAULT_CHARSET = "UTF-8";
+
+
+    public static LicenseService createService() {
+        return new LicenseService(System.getProperty("wposurl"),
+                System.getProperty("sm_user"),
+                System.getProperty("sm_pass"),
+                System.getProperty("lmurl"));
+    }
+
     /**
      * Reads the given input stream and converts its contents to a string using #DEFAULT_CHARSET
      * @param is
@@ -49,5 +60,20 @@ public class TestHelper {
             is.close();
         }
         return writer.toString();
+    }
+
+    public static String readFile(String path) throws IOException{
+        StringBuilder sb = new StringBuilder();
+        String sCurrentLine = "";
+
+        try (BufferedReader br = new BufferedReader(new FileReader(path))){
+
+            while ((sCurrentLine = br.readLine()) != null) {
+                sb.append(sCurrentLine);
+            }
+
+        }
+
+        return sb.toString();
     }
 }

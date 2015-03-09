@@ -28,6 +28,19 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.cookie.Cookie;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -37,6 +50,7 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.ext.Locator2Impl;
 
 import elf.license.licensedetails.GetLicenseDetailsQueryPojo;
+import eu.elf.license.conclude.LicenseConcludeResponseObject;
 import eu.elf.license.model.LicenseModel;
 import eu.elf.license.model.LicenseModelGroup;
 import eu.elf.license.model.LicenseParam;
@@ -45,7 +59,6 @@ import eu.elf.license.model.LicenseParamDisplay;
 import eu.elf.license.model.LicenseParamEnum;
 import eu.elf.license.model.LicenseParamInt;
 import eu.elf.license.model.LicenseParamText;
-
 
 public class LicenseQueryHandler {
 	private String WPOSServiceAddress = "";
@@ -66,7 +79,7 @@ public class LicenseQueryHandler {
 	 * @param SOAPAddress
 	 * @throws MalformedURLException
 	 */
-	LicenseQueryHandler(String WPOSServiceAddress, String WPOSUsername, String WPOSPassword, String SOAPAddress) throws MalformedURLException {
+	public LicenseQueryHandler(String WPOSServiceAddress, String WPOSUsername, String WPOSPassword, String SOAPAddress) throws MalformedURLException {
 		try {
 			this.WPOSServiceAddress = WPOSServiceAddress;
 			this.SOAPAddress = SOAPAddress; 
@@ -152,15 +165,13 @@ public class LicenseQueryHandler {
             StringBuffer buf = doHTTPQuery(this.wposURL, "post", wposQuery, false);
 		
 			//System.out.println("buf "+buf.toString());
+           
             return LicenseParser.parseListOfLicensesAsLicenseModelGroupList(buf.toString());
 				
 		} catch (Exception e) {
 			throw e; 
 		}
 	}
-
-
-
 
 
 	
@@ -171,7 +182,7 @@ public class LicenseQueryHandler {
 	 * @throws IOException
  	 * @return WPOS service response 
 	 */
-	public String getUserLicenses(String user) throws IOException {
+	public String getUserLicensesAsXMLString(String user) throws Exception {
 		StringBuffer buf = null; 
 		
 		String getUserLicensesQuery = 	"<?xml version=\"1.0\" encoding=\"utf-8\"?>"+
@@ -185,15 +196,45 @@ public class LicenseQueryHandler {
 		
 		try {	
 			buf = doHTTPQuery(this.wposURL, "post", getUserLicensesQuery, false);
-						
-		} catch (IOException ioe) {
-			throw ioe; 
+					
+		} catch (Exception e) {
+			throw e; 
 		}
 		
 		return buf.toString();
 	}
 	
-	
+	/**
+	 * Gets the list of licenses that the user has concluded from the WPOS Service
+	 * 
+	 * @param user - user name
+	 * @throws IOException
+ 	 * @return WPOS service response 
+	 */
+	public List<LicenseModelGroup> getUserLicensesAsLicenseModelGroupList(String user) throws Exception {
+		StringBuffer buf = null; 
+		
+		String getUserLicensesQuery = 	"<?xml version=\"1.0\" encoding=\"utf-8\"?>"+
+						 				"<wpos:WPOSRequest xmlns:wpos=\"http://www.conterra.de/wpos/1.1\" xmlns:xcpf=\"http://www.conterra.de/xcpf/1.1\" version=\"1.1.0\">"+
+						 				"<wpos:GetOrderList brief=\"false\">"+
+						 				"<wpos:Filter>"+
+						 				"<wpos:CustomerId>"+user+"</wpos:CustomerId>"+
+						 				"</wpos:Filter>"+
+						 				"</wpos:GetOrderList>"+
+						 				"</wpos:WPOSRequest>";
+		
+		try {	
+			buf = doHTTPQuery(this.wposURL, "post", getUserLicensesQuery, false);
+					
+			//System.out.println("buf "+buf.toString());
+			
+			 return LicenseParser.parseListOfLicensesAsLicenseModelGroupList(buf.toString());
+			
+		} catch (Exception e) {
+			throw e; 
+		}
+		
+	}
 	
 	
 	/**
@@ -228,67 +269,246 @@ public class LicenseQueryHandler {
 			throw e;
 		}
 		
-
-		
 		return pojo;
 	}
-	
-	
-	
-	/**
-	 * ConcludeLicense query to the WPOS Service
-	 * 
-	 * @param orderProductQuery - Pre-formed orderProductQuery that will be sent to the WPOS Service
-	 * @return WPOS Service response
-	 * @throws IOException
-	 */
-	public String concludeLicense(String orderProductQuery)  throws IOException {
-		StringBuffer buf = null; 
 		
-		//String wposQuery = "<?xml version=\"1.0\" encoding=\"utf-8\"?>"+
-		//		   "<wpos:WPOSRequest xmlns:wpos=\"http://www.conterra.de/wpos/1.1\" xmlns:xcpf=\"http://www.conterra.de/xcpf/1.1\" version=\"1.1.0\">"+
-		//		   "<wpos:OrderProduct brief=\"true\">"+
-		//		   "<wpos:Customer>"+
-		//		   "<xcpf:UserIdentifier>"+parameterMap.get("user")+"</xcpf:UserIdentifier>"+
-		//		   "</wpos:Customer>"+
-		//		   "<wpos:Product id=\"urn:conterra:names:sdi-suite:licensing:license:WFS:FGI_LICENCE_TEST_3:LICENSE_WFS_TEST_LICENCE_3_LICENSEMODEL\">"+
-		//		   "<wpos:ConfigParams>"+
-		//		   "<wpos:Parameter name=\"LICENSE_USER_ID\">"+
-		//		   "<wpos:Value selected=\"true\">"+parameterMap.get("user")+"</wpos:Value>"+
-		//		   "</wpos:Parameter>"+
-		//		   "<wpos:Parameter name=\"LICENSE_DURATION\">"+
-		//		   "<wpos:Value title=\"3 Months\">"+parameterMap.get("licenseDuration")+"</wpos:Value>"+
-		//		   "</wpos:Parameter>"+
-		//		   "<wpos:Parameter name=\"LICENSE_USER_GROUP\">"+
-		//		   "<wpos:Value>Users</wpos:Value>"+
-		//		   "</wpos:Parameter>"+
-		//		   "</wpos:ConfigParams>"+
-		//		   "</wpos:Product>"+
-		//		   "</wpos:OrderProduct>"+
-		//		   "</wpos:WPOSRequest>";
+		
+	/**
+	 * Send ConcludeLicense query to the WPOS Service, Return response as LicenseConcludeResponseObject
+	 * 
+	 * @param orderProductQuery - pre-formatted conclude query
+	 * @return	LicenseConcludeResponseObject
+	 * 
+	 * @throws Exception
+	 */
+	public LicenseConcludeResponseObject concludeLicenseObjectResponse(String orderProductQuery)  throws Exception {
+		StringBuffer buf = null;
 		
 		try {	
 			buf = doHTTPQuery(this.wposURL, "post", orderProductQuery, false);
+			String response = buf.toString();
+			
+			//System.out.println("output "+response);
+			
+			if (response.contains("ExceptionReport")) {
+				return null;
+			}
+			else {
+	            return LicenseParser.parseConcludeLicenseResponse(response);
+			}
 			
 		} catch (IOException ioe) {
 			throw ioe; 
+		}		
+	}
+		
+	/**
+	 *  Send ConcludeLicense query to the WPOS Service, Return response as LicenseConcludeResponseObject
+	 * 
+	 * @param lm - License Model to be concluded with selected values for configrurationParameters
+	 * @param userId - userid
+	 * @return LicenseConcludeResponseObject
+	 * 
+	 * @throws Exception
+	 */ 
+	public LicenseConcludeResponseObject concludeLicenseObjectResponse(LicenseModel lm, String userId)  throws Exception {
+		StringBuffer buf = null;
+		
+		// create query string
+		String wposQuery = createOrderProductQueryFromLicenseModel(lm, userId);
+		
+		//System.out.println("Conclude query:"+wposQuery);
+		
+		try {	
+			buf = doHTTPQuery(this.wposURL, "post", wposQuery, false);
+			String response = buf.toString();
+			
+			//System.out.println("output "+response);
+			
+			if (response.contains("ExceptionReport")) {
+				return null;
+			}
+			else {
+	            return LicenseParser.parseConcludeLicenseResponse(response);
+			}
+			
+		} catch (IOException ioe) {
+			throw ioe; 
+		}		
+	}
+	
+	/**
+	 * ConcludeLicense query to the WPOS Service
+	 *  
+	 * @param lm - License Model to be concluded with selected values for configrurationParameters
+	 * @param userId - userid
+	 * @return Wpos response as String
+	 * 
+	 * @throws Exception
+	 */
+	public String concludeLicenseStringResponse(LicenseModel lm, String userId)  throws Exception {
+		StringBuffer buf = null; 
+		
+		String wposQuery = createOrderProductQueryFromLicenseModel(lm, userId);
+	
+		try {	
+			buf = doHTTPQuery(this.wposURL, "post", wposQuery, false);
+			
+		} catch (Exception e) {
+			throw e; 
 		}
 		
 		return buf.toString();
 	}
 	
 	
+	/**
+	 *  Creates OrderProductQuery from LicenseModel that is used for Concluding the License
+	 * 
+	 * @param lm - License Model to be concluded with selected values for configrurationParameters
+	 * @param userId - userid
+	 * @return OrderProduct query string for the WPOS Service 
+	 * 
+	 * @throws Exception
+	 */
+	private String createOrderProductQueryFromLicenseModel(LicenseModel lm, String userId) throws Exception {
+		List<LicenseParam> lpList = lm.getParams();
+		
+		// create query string
+		String wposQuery = "<?xml version=\"1.0\" encoding=\"utf-8\"?>"+
+						   "<wpos:WPOSRequest xmlns:wpos=\"http://www.conterra.de/wpos/1.1\" xmlns:xcpf=\"http://www.conterra.de/xcpf/1.1\" version=\"1.1.0\">"+
+						   "<wpos:OrderProduct brief=\"true\">"+
+						   "<wpos:Customer>"+
+						   "<xcpf:UserIdentifier>"+userId+"</xcpf:UserIdentifier>"+
+						   "</wpos:Customer>"+
+						   "<wpos:Product id=\""+lm.getId()+"\">"+
+						   "<wpos:ConfigParams>";
+		
+		for (int i = 0; i < lpList.size(); i++) {
+			if (lpList.get(i).getParameterClass().equals("configurationParameter")) {			
+				
+				if (lpList.get(i).getName().equals("LICENSE_USER_GROUP")) {
+					wposQuery += "<wpos:Parameter name=\""+lpList.get(i).getName()+"\">"+
+								 "<wpos:Value>Users</wpos:Value>"+
+								 "</wpos:Parameter>";
+				}
+				else if (lpList.get(i).getName().equals("LICENSE_USER_ID")) {
+					wposQuery += "<wpos:Parameter name=\""+lpList.get(i).getName()+"\">"+
+								 "<wpos:Value selected=\"true\">"+userId+"</wpos:Value>"+
+								 "</wpos:Parameter>";
+				}
+				else if (lpList.get(i).getName().equals("LICENSE_USER_TYPE")) {	
+					wposQuery += "<wpos:parameter name=\""+lpList.get(i).getName()+"\" type=\"string\" multi=\"false\">"+
+								 "<wpos:value title=\"Individual\" selected=\"true\">SubjectId</wpos:value>"+
+						   	 	 "</wpos:parameter>";
+				}
+				else {
+						
+					if (lpList.get(i) instanceof LicenseParamText) {
+						LicenseParamText lpt = (LicenseParamText)lpList.get(i);
+						
+						wposQuery += "<wpos:parameter name=\""+lpt.getName()+"\" type=\"string\">"+
+								   	 "<wpos:value />"+
+								   	 "</wpos:parameter>";
+					}
+					if (lpList.get(i) instanceof LicenseParamInt) {
+						LicenseParamInt	lpi = (LicenseParamInt)lpList.get(i);
+						
+						wposQuery += "<wpos:parameter name=\""+lpi.getName()+"\" type=\"real\">"+
+								   	 "<wpos:value>"+lpi.getValue()+"</wpos:value>"+
+								   	 "</wpos:parameter>";
+					}
+					if (lpList.get(i) instanceof LicenseParamBln) {
+						LicenseParamBln lpbln = (LicenseParamBln)lpList.get(i);
+						
+						wposQuery += "<wpos:parameter name=\""+lpbln.getName()+"\" type=\"boolean\">"+
+								 	"<wpos:value>"+lpbln.getValue()+"</wpos:value>"+
+								   	 "</wpos:parameter>";
+					}
+					if (lpList.get(i) instanceof LicenseParamEnum) {
+
+						LicenseParamEnum lpenum = (LicenseParamEnum)lpList.get(i);
+						
+						if (lpenum.isMulti()) {
+							wposQuery += "<wpos:parameter name=\""+lpenum.getName()+"\" type=\"string\" multi=\"true\" optional=\"true\">";
+							
+							for (int j = 0; j < lpenum.getOptions().size(); j++) {
+								if (CheckIfListOfStringContainsValue(lpenum.getSelections(), lpenum.getOptions().get(j)) == true) {
+									wposQuery += "<wpos:value selected=\"true\">"+lpenum.getOptions().get(j)+"</wpos:value>";
+								}
+								else {
+									wposQuery += "<wpos:value selected=\"false\">"+lpenum.getOptions().get(j)+"</wpos:value>";
+								}
+								
+							}
+							
+							wposQuery +="</wpos:parameter>";
+						}
+						else {
+							wposQuery += "<wpos:parameter name=\""+lpenum.getName()+"\" type=\"string\" multi=\"false\">";
+							
+							for (int k = 0; k < lpenum.getOptions().size(); k++) {
+								if (CheckIfListOfStringContainsValue(lpenum.getSelections(), lpenum.getOptions().get(k)) == true) {
+									wposQuery += "<wpos:value selected=\"true\">"+lpenum.getOptions().get(k)+"</wpos:value>";
+								}
+								else {
+									wposQuery += "<wpos:value>"+lpenum.getOptions().get(k)+"</wpos:value>";
+								}
+							}
+							
+							wposQuery += "</wpos:parameter>";
+						}
+						
+					
+					}
+					
+				}
+					
+			}
+		}
+			
+		wposQuery += 	"</wpos:ConfigParams>"+
+				   		"</wpos:Product>"+
+				   		"</wpos:OrderProduct>"+
+				   		"</wpos:WPOSRequest>";
+		
+		return wposQuery;
+	}
+	
+	
 	
 	/**
-	 * Makes DeactivateLicense query to the WPOS Service
+	 * Check if list of strings contains a specific string
 	 * 
-	 * @param XMLPOSTString
-	 * @return
+	 * @param list - list of strings
+	 * @param value - string to compare
+	 * @return true or false
 	 */
-	public String deactivateLicense(String licenseId) throws IOException {
-		StringBuffer buf = null; 
-		
-		String deactivateLicenseQuery = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"+
+	private Boolean CheckIfListOfStringContainsValue(List<String> list, String value) {
+		for (int i = 0; i < list.size(); i++) {
+			if (list.get(i).equals(value)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+	
+	
+	
+	
+	/**
+	 * Deactivate license
+	 * 
+	 * @param bcs
+	 * @param licenseId
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
+	public Boolean deactivateLicense(BasicCookieStore bcs, String licenseId) throws ClientProtocolException, IOException {
+        String SOAPAction = "http://security.conterra.de/LicenseManager/DeactivateLicense";
+        
+        String deactivateLicenseQuery = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"+
 										"<Envelope xmlns=\"http://www.w3.org/2003/05/soap-envelope\">"+
 										"<Body>"+
 										"<licmanp:DeactivateLicense ID=\"B1202458930484\" Version=\"2.0\" IssueInstant=\"2001-12-17T09:30:47.0Z\" "+
@@ -297,18 +517,143 @@ public class LicenseQueryHandler {
 										"</licmanp:DeactivateLicense>"+
 										"</Body>"+
 										"</Envelope>"; 
-		
-		try {	
-			buf = doHTTPQuery(this.soapURL, "post", deactivateLicenseQuery, true);
+        
+        Boolean success = sendSOAP(bcs, deactivateLicenseQuery, SOAPAction);
+        
+        return success;
+    }
+	
+	/**
+	 * Activate license
+	 * 
+	 * @param bcs
+	 * @param licenseId
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
+	public Boolean activateLicense(BasicCookieStore bcs, String licenseId) throws ClientProtocolException, IOException {
+        String SOAPAction = "http://security.conterra.de/LicenseManager/ActivateLicense";
+        
+        String activateLicenseQuery = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"+
+										"<Envelope xmlns=\"http://www.w3.org/2003/05/soap-envelope\">"+
+										"<Body>"+
+										"<licmanp:ActivateLicense ID=\"B1202458930484\" Version=\"2.0\" IssueInstant=\"2001-12-17T09:30:47.0Z\" "+
+										" xmlns:licmanp=\"http://www.52north.org/licensemanagerprotocol\" xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\">"+
+										"<saml:AssertionIDRef>"+licenseId+"</saml:AssertionIDRef>"+
+										"</licmanp:ActivateLicense>"+
+										"</Body>"+
+										"</Envelope>"; 
+        
+        Boolean success = sendSOAP(bcs, activateLicenseQuery, SOAPAction);
+        
+        return success;
+    }
+	
+	/**
+	 * Deactivate license
+	 * 
+	 * @param bcs
+	 * @param licenseId
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
+	public Boolean deleteLicense(BasicCookieStore bcs, String licenseId) throws ClientProtocolException, IOException {
+        String SOAPAction = "http://security.conterra.de/LicenseManager/DeleteLicense";
+        
+        String deleteLicenseQuery = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"+
+										"<Envelope xmlns=\"http://www.w3.org/2003/05/soap-envelope\">"+
+										"<Body>"+
+										"<licmanp:DeleteLicense ID=\"B1202458930484\" Version=\"2.0\" IssueInstant=\"2001-12-17T09:30:47.0Z\" "+
+										" xmlns:licmanp=\"http://www.52north.org/licensemanagerprotocol\" xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\">"+
+										"<saml:AssertionIDRef>"+licenseId+"</saml:AssertionIDRef>"+
+										"</licmanp:DeleteLicense>"+
+										"</Body>"+
+										"</Envelope>"; 
+        
+        Boolean success = sendSOAP(bcs, deleteLicenseQuery, SOAPAction);
+        
+        return success;
+    }
+
+	
+	
+	/**
+	 * Send SOAP Message for activating/deactivating/deleting a license
+	 * 
+	 * @param bcs
+	 * @param query
+	 * @param SOAPAction
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
+	private Boolean sendSOAP(BasicCookieStore bcs, String query, String SOAPAction) throws ClientProtocolException, IOException {
+		String url = "http://54.247.162.180:8080/licenserepository/services/LicenseManager";
+		//System.out.println("Query "+deactivateLicenseQuery);
+        
+        CloseableHttpClient hClient = HttpClients.custom().setDefaultCookieStore(bcs).build();
+        
+        HttpPost hPost = new HttpPost(url);
+        
+        //hPost.setHeader("User-Agent", "Mozilla/5.0");
+        hPost.setHeader("Content-Type", "text/xml; charset=utf-8");
+        hPost.setHeader("SOAPAction","http://security.conterra.de/LicenseManager/DeactivateLicense");
+        
+        List<Cookie> cookieList = bcs.getCookies();
+		//System.out.println("cookieList.size: "+cookieList.size());
+        String kex = "";
+		for (int i = 0; i < cookieList.size(); i++) {
+			//System.out.println("cookie("+i+") name: "+cookieList.get(i).getName());
+			//System.out.println("cookie("+i+") value: "+cookieList.get(i).getValue());
 			
-		} catch (IOException ioe) {
-			throw ioe; 
+			kex = cookieList.get(i).getName();
+	        kex += "=";
+	        kex += cookieList.get(i).getValue();
+	        
+	        
 		}
-		
-		return buf.toString();
+		hPost.setHeader("Cookie",kex);
+        
+        StringEntity entity = new StringEntity(query);
+        hPost.setEntity(entity);
+        System.out.println();
+        
+        
+	//    HttpHost proxy = new HttpHost("wwwp.nls.fi",800,"http");
+	//    RequestConfig conf = RequestConfig.custom().setProxy(proxy).build();
+	//    hPost.setConfig(conf);
+	        
+	        //System.out.println("hPost: "+hPost.toString());
+	//    System.out.println(hPost.getConfig().toString());
+	        //System.out.println("entity: "+hPost.getEntity().getContent().toString());
+        
+        System.out.println("HEADERS");
+        Header[] headers = hPost.getAllHeaders();
+        for (int i=0; i< headers.length; i++) {
+            System.out.println(headers[i].toString());
+        }
+        //System.out.println();
+        
+        HttpEntity ent = hPost.getEntity();
+        String cont = EntityUtils.toString(ent);
+        System.out.println("response "+cont);
+        
+        CloseableHttpResponse resp = hClient.execute(hPost);
+        
+        System.out.println(resp.getStatusLine());
+        String status = resp.getStatusLine().toString();
+        resp.close();   
+        
+        if (status.equals("HTTP/1.1 200 OK")) {
+        	return true;
+        }
+        else {
+        	return false;
+        }
+       
+        
 	}
 	
-
 	
 	/**
 	 * Performs HTTP GET or POST query to the backend server

@@ -1,8 +1,8 @@
 package elf.license;
 
-import eu.elf.license.LicenseParser;
 import org.junit.Test;
 
+import eu.elf.license.LicenseParser;
 import eu.elf.license.LicenseService;
 import eu.elf.license.model.LicenseModel;
 import eu.elf.license.model.LicenseModelGroup;
@@ -23,15 +23,22 @@ public class LicenseServiceTest_getLicenseGroups {
 
     @Test
     public void test() throws Exception {
-        final String xml = TestHelper.readString(getClass().getResourceAsStream("GetCatalogQueryResponse.xml"));
-        List<LicenseModelGroup> lmgList = LicenseParser.parseListOfLicensesAsLicenseModelGroupList(xml);
+    //	final String xml = TestHelper.readString(getClass().getResourceAsStream("GetCatalogQueryResponse.xml"));
+
+
+        LicenseService ls = TestHelper.createService();
+    	List<LicenseModelGroup> lmgList = new ArrayList<LicenseModelGroup>();
+    	
     	List<LicenseModel>  lmList = new ArrayList<LicenseModel>();
     	List<LicenseParam> lpList = new ArrayList<LicenseParam>();
     	//List<String> valueList = new ArrayList<String>();
     	
+    	lmgList = ls.getLicenseGroups();
+    //List<LicenseModelGroup> lmgList = LicenseParser.parseListOfLicensesAsLicenseModelGroupList(xml);
+    	
     	System.out.println("lmgList.size "+lmgList.size());
     
-    	
+   /**
     	
     	for (int i = 0; i < lmgList.size(); i++) {
     		System.out.println("lmgList.id "+lmgList.get(i).getId());
@@ -43,7 +50,7 @@ public class LicenseServiceTest_getLicenseGroups {
     		lmList = lmgList.get(i).getLicenseModels();
     		
         	System.out.println("lmList.size "+lmList.size());
-        	
+        
         	for (int j = 0; j < lmList.size(); j++) {
         		System.out.println("\tlmList.id "+lmList.get(j).getId());
         		System.out.println("\tlmList.name "+lmList.get(j).getName());
@@ -126,12 +133,17 @@ public class LicenseServiceTest_getLicenseGroups {
         	
         			}
         			
+        		
         			
         		}
+        			
         	}
+        	
+        	
     		System.out.println("\n");
     	}
     	
+   **/ 	
         //assertEquals("Abstract should match expected", "The product catalog of the license manager", pojo.getXMLObjectPojo().get_catalog().get_title());
         
     }

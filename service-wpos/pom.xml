@@ -14,7 +14,6 @@
     <properties>
         <jackson.version>2.5.0</jackson.version>
         <stax2-api.version>3.1.2</stax2-api.version>
-        <woodstox.version>4.4.1</woodstox.version>
     </properties>
 
     <dependencies>
@@ -28,12 +27,6 @@
             <artifactId>stax2-api</artifactId>
             <version>${stax2-api.version}</version>
         </dependency>
-
-        <!-- dependency>
-            <groupId>org.codehaus.woodstox</groupId>
-            <artifactId>woodstox-core-asl</artifactId>
-            <version>${woodstox.version}</version>
-        </dependency -->
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -49,6 +42,11 @@
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-xml</artifactId>
             <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.3.4</version>
         </dependency>
 
         <dependency>

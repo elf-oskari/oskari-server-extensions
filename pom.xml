@@ -10,9 +10,11 @@
     <name>ELF applications</name>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <oskari.version>1.28-SNAPSHOT</oskari.version>
         <commons-dbcp2.version>2.0.1</commons-dbcp2.version>
         <postgresql.version>9.3-1102-jdbc41</postgresql.version>
+        <java.version>1.7</java.version>
         <junit.version>4.11</junit.version>
     </properties>
 
@@ -29,6 +31,19 @@
         </repository>
     </repositories>
 
+    <build>
+            <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
     <modules>
         <module>elf-resources</module>
         <module>service-wpos</module>
