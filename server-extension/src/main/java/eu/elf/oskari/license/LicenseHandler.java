@@ -33,7 +33,8 @@ public class LicenseHandler extends RestActionHandler {
                 PropertyUtil.getNecessary("actionhandler.ELFLicense.wpos.url"),
                 PropertyUtil.getNecessary("actionhandler.ELFLicense.wpos.user"),
                 PropertyUtil.getNecessary("actionhandler.ELFLicense.wpos.pass"),
-                PropertyUtil.getNecessary("actionhandler.ELFLicense.wpos.soapUrl"));
+                PropertyUtil.getNecessary("actionhandler.ELFLicense.wpos.soapUrl"),
+                PropertyUtil.getNecessary("actionhandler.ELFLicense.wpos.loginUrl"));
     }
 
     @Override

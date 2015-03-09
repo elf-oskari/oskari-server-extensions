@@ -5,7 +5,7 @@ import eu.elf.license.LicenseService;
 import java.io.*;
 
 /**
- * Created by SMAKINEN on 3.2.2015.
+ * Helper-class for tests
  */
 public class TestHelper {
 
@@ -16,7 +16,8 @@ public class TestHelper {
         return new LicenseService(System.getProperty("wposurl"),
                 System.getProperty("sm_user"),
                 System.getProperty("sm_pass"),
-                System.getProperty("lmurl"));
+                System.getProperty("lmurl"),
+                System.getProperty("loginurl"));
     }
 
     /**

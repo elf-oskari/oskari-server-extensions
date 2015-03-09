@@ -14,12 +14,14 @@ import java.util.List;
 
 public class LicenseService {
     private LicenseQueryHandler lqh;
+    private String loginUrl;
     private String user;
     private String pass;
 
-    public LicenseService(String WPOSUrl, String WPOSUsername, String WPOSPassword, String licenseManagerURL) {
+    public LicenseService(String WPOSUrl, String WPOSUsername, String WPOSPassword, String licenseManagerURL, String loginUrl) {
         user = WPOSUsername;
         pass = WPOSPassword;
+        this.loginUrl = loginUrl;
         try {
             this.lqh = new LicenseQueryHandler(WPOSUrl, WPOSUsername, WPOSPassword, licenseManagerURL);
 
@@ -80,6 +82,27 @@ public class LicenseService {
         }
         return null;
     }
+
+
+    /**
+     * Gets the price of the license model
+     *
+     * @param lm - license model object
+     * @return String    - price of the license model
+     */
+    public String getLicenseModelPrice(LicenseModel lm, String userId) {
+        String productPriceSum = "";
+
+        try {
+            productPriceSum = lqh.getLicenseModelPrice(lm, userId);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return productPriceSum;
+    }
+
 
     /**
      * Subscribe a license
@@ -182,7 +205,7 @@ public class LicenseService {
         //System.out.println("Fetching cookies...");
         //CloseableHttpClient httpclient = HttpClients.createDefault();
         DefaultHttpClient httpclient = new DefaultHttpClient();
-        HttpPost post = new HttpPost("http://54.247.162.180:8080/administration/account/login?returnURL=http%3A%2F%2F54.247.162.180%3A8080%2Fadministration%2Fstart.do&app=&tokenFormat=&username=" + user + "&password=" + pass);
+        HttpPost post = new HttpPost(loginUrl + "&username=" + user + "&password=" + pass);
         BasicCookieStore bcs = new BasicCookieStore();
 
         try {
