@@ -1,14 +1,17 @@
 package eu.elf.oskari.license;
 
-import eu.elf.license.model.LicenseModel;
-import eu.elf.license.model.LicenseModelGroup;
+import eu.elf.license.model.*;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by SMAKINEN on 24.2.2015.
@@ -31,6 +34,46 @@ public class LicenseHelper {
         return "";
     }
 
+    /**
+     * Calls removeNonUIParams(model) for each model in group
+     * @param group group which models should be filtered
+     * @return filtered group
+     */
+    public static LicenseModelGroup removeNonUIParams(LicenseModelGroup group) {
+        if(group.getLicenseModels() == null) {
+            return group;
+        }
+        final List<LicenseModel> filteredList = new ArrayList<LicenseModel>();
+        for(LicenseModel model : group.getLicenseModels()) {
+            filteredList.add(removeNonUIParams(model));
+        }
+        group.setLicenseModels(filteredList);
+        return group;
+    }
+
+    /**
+     * Removes any parameter thats name doesn't start with "LICENSE_TEXT_" or "LICENSE_PARAMETER_"
+     * @param model model to filter
+     * @return filtered model
+     */
+    public static LicenseModel removeNonUIParams(LicenseModel model) {
+        final List<LicenseParam> filteredList = new ArrayList<LicenseParam>();
+        for(LicenseParam param : model.getParams()) {
+            if(param.getName() == null) {
+                continue;
+            }
+            // only include params starting with
+            if(param.getName().startsWith("LICENSE_TEXT_") ||
+                param.getName().startsWith("LICENSE_PARAMETER_")) {
+                filteredList.add(param);
+            }
+            else {
+                log.debug("Filtering out param:", param.getName());
+            }
+        }
+        model.setParams(filteredList);
+        return model;
+    }
     /**
      * Calls filterModelsByRoles(user, group) for each group in list
      * @param user user with roles
@@ -69,5 +112,41 @@ public class LicenseHelper {
             group.getLicenseModels().remove(model);
         }
         return group;
+    }
+
+    public static void setValues(LicenseModel model, JSONArray list) throws Exception {
+        Map<String, Object> values = new HashMap<>();
+        for(int i = 0; i < list.length(); ++i) {
+            JSONObject param = list.optJSONObject(i);
+            values.put(param.optString("name"), param.opt("values"));
+        }
+
+        for(LicenseParam param : model.getParams()) {
+            Object obj = values.get(param.getName());
+            if(obj == null) {
+                continue;
+            }
+            if(param instanceof LicenseParamInt) {
+                ((LicenseParamInt) param).setValue((int) obj);
+            }
+            else if(param instanceof LicenseParamBln) {
+                ((LicenseParamBln) param).setValue((boolean) obj);
+            }
+            else {
+                log.debug(obj.getClass(), obj);
+            }
+            /*
+            // TODO: check obj type?
+            else if(param instanceof LicenseParamEnum) {
+                LicenseParamEnum lp = (LicenseParamEnum) param;
+                lp.addSelection("");
+            }
+            // TODO: check obj type?
+            else if(param instanceof LicenseParamText) {
+                LicenseParamText lp = (LicenseParamText) param;
+                lp.addValue((String) obj);
+            }
+            */
+        }
     }
 }

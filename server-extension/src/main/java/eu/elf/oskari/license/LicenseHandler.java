@@ -1,6 +1,8 @@
 package eu.elf.oskari.license;
 
 import eu.elf.license.LicenseService;
+import eu.elf.license.conclude.LicenseConcludeResponseObject;
+import eu.elf.license.model.LicenseModel;
 import eu.elf.license.model.LicenseModelGroup;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
@@ -10,8 +12,12 @@ import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.List;
 
 import static fi.nls.oskari.control.ActionConstants.*;
@@ -23,6 +29,10 @@ import static fi.nls.oskari.control.ActionConstants.*;
 public class LicenseHandler extends RestActionHandler {
 
     private static final Logger log = LogFactory.getLogger(LicenseHandler.class);
+    private static final String PARAM_MODELID = "modelid";
+    private static final String PARAM_DATA = "data";
+    private static final String KEY_PRICE = "price";
+    private static final String KEY_SUCCESS = "success";
 
     private LicenseService service = null;
 
@@ -49,7 +59,8 @@ public class LicenseHandler extends RestActionHandler {
             if(userLicense != null) {
                 // User already has license, respond with it!
                 // this doesn't need filtering by roles supposedly?
-                ResponseHelper.writeResponse(params, LicenseHelper.getAsJSON(userLicense));
+                final LicenseModelGroup userLicenseForUI = LicenseHelper.removeNonUIParams(userLicense);
+                ResponseHelper.writeResponse(params, LicenseHelper.getAsJSON(userLicenseForUI));
                 return;
             }
             // return the license info about the service for user to fill out
@@ -58,30 +69,64 @@ public class LicenseHandler extends RestActionHandler {
                 throw new ActionParamsException("Can't find license with url: " + url);
             }
             final LicenseModelGroup groupForUser = LicenseHelper.filterModelsByRoles(user, group);
-            ResponseHelper.writeResponse(params, LicenseHelper.getAsJSON(groupForUser));
+            final LicenseModelGroup groupForUI = LicenseHelper.removeNonUIParams(groupForUser);
+            ResponseHelper.writeResponse(params, LicenseHelper.getAsJSON(groupForUI));
         }
         else {
             final List<LicenseModelGroup> groupsForUser = LicenseHelper.filterModelsByRoles(user, licenseGroups);
+            // note! non-ui params are not removed here!
             ResponseHelper.writeResponse(params, LicenseHelper.getAsJSON(groupsForUser));
         }
     }
 
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
-        handlePut(params);
+        // Get Price
+        final LicenseModel model = getModel(params);
+        String price = service.getLicenseModelPrice(model, params.getUser().getScreenname());
+        JSONObject resp = JSONHelper.createJSONObject(LicenseHelper.getAsJSON(model));
+        JSONHelper.putValue(resp, KEY_PRICE, price);
+        ResponseHelper.writeResponse(params, resp);
     }
 
     @Override
     public void handlePut(ActionParameters params) throws ActionException {
         // TODO: conclude the license
-        //service.concludeLicense()
+        final LicenseModel model = getModel(params);
+        final LicenseConcludeResponseObject resp = service.concludeLicense(model, params.getUser().getScreenname());
+        ResponseHelper.writeResponse(params, LicenseHelper.getAsJSON(resp));
     }
 
     @Override
     public void handleDelete(ActionParameters params) throws ActionException {
-        // TODO: deactivate license
-        //service.deactivateLicense();
+        final boolean success = service.deactivateLicense(params.getRequiredParam(PARAM_ID));
+        ResponseHelper.writeResponse(params, JSONHelper.createJSONObject(KEY_SUCCESS, success));
     }
 
+    private LicenseModel getModel(ActionParameters params) throws ActionException {
+        // only users
+        params.requireLoggedInUser();
+
+        final List<LicenseModelGroup> licenseGroups = service.getLicenseGroups();
+        final LicenseModelGroup group = service.getLicenseGroupsForURL(licenseGroups, params.getRequiredParam(PARAM_ID));
+        if(group == null) {
+            throw new ActionParamsException("Couldn't find group by id");
+        }
+        final LicenseModel model = group.getModelById(params.getRequiredParam(PARAM_MODELID));
+        if(model == null) {
+            throw new ActionParamsException("Couldn't find model by id");
+        }
+
+        try {
+            // populate model params from ActionParameters
+            JSONArray list = JSONHelper.createJSONArray(params.getHttpParam(PARAM_DATA, "[]"));
+            // TODO: maybe check that all required fields have been submitted?
+            LicenseHelper.setValues(model, list);
+        }
+        catch (Exception ex ) {
+            throw new ActionException("Error parsing license data", ex);
+        }
+        return model;
+    }
 
 }
