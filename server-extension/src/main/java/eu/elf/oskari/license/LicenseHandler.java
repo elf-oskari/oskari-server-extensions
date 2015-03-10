@@ -108,7 +108,7 @@ public class LicenseHandler extends RestActionHandler {
         params.requireLoggedInUser();
 
         final List<LicenseModelGroup> licenseGroups = service.getLicenseGroups();
-        final LicenseModelGroup group = service.getLicenseGroupsForURL(licenseGroups, params.getRequiredParam(PARAM_ID));
+        final LicenseModelGroup group = service.getLicenseGroupsForId(licenseGroups, params.getRequiredParam(PARAM_ID));
         if(group == null) {
             throw new ActionParamsException("Couldn't find group by id");
         }

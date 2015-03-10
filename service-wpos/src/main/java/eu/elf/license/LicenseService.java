@@ -76,7 +76,28 @@ public class LicenseService {
             return null;
         }
         for (LicenseModelGroup group : groups) {
+            // NOTE! -> URL <-
             if (url.equalsIgnoreCase(group.getUrl())) {
+                return group;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Finds group based on id
+     *
+     * @param groups
+     * @param id
+     * @return LicenseModelGroup with matching id or null if none match the id.
+     */
+    public LicenseModelGroup getLicenseGroupsForId(List<LicenseModelGroup> groups, final String id) {
+        if (id == null || groups == null) {
+            return null;
+        }
+        for (LicenseModelGroup group : groups) {
+            // NOTE! -> ID <-
+            if (id.equalsIgnoreCase(group.getId())) {
                 return group;
             }
         }
