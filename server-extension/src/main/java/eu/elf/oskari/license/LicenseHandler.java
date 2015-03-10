@@ -33,6 +33,7 @@ public class LicenseHandler extends RestActionHandler {
     private static final String PARAM_DATA = "data";
     private static final String KEY_PRICE = "price";
     private static final String KEY_SUCCESS = "success";
+    private static final String KEY_GROUPID = "groupid";
 
     private LicenseService service = null;
 
@@ -88,6 +89,8 @@ public class LicenseHandler extends RestActionHandler {
         final LicenseModel modelForUI = LicenseHelper.removeNonUIParams(model);
         JSONObject resp = JSONHelper.createJSONObject(LicenseHelper.getAsJSON(modelForUI));
         JSONHelper.putValue(resp, KEY_PRICE, price);
+        JSONHelper.putValue(resp, KEY_GROUPID, params.getRequiredParam(PARAM_ID));
+        
         ResponseHelper.writeResponse(params, resp);
     }
 

@@ -27,6 +27,29 @@ public class LicenseModel {
         params.clear();
     }
 
+    public void addParam(final String key, boolean value) {
+        LicenseParamBln param = new LicenseParamBln();
+        param.setName(key);
+        param.setValue(value);
+        params.add(param);
+    }
+
+    public void addParam(final String key, int value) {
+        LicenseParamInt param = new LicenseParamInt();
+        param.setName(key);
+        param.setValue(value);
+        params.add(param);
+    }
+
+    public void addParam(final String key, String... values) {
+        LicenseParamText param = new LicenseParamText();
+        param.setName(key);
+        for(String val : values) {
+            param.addValue(val);
+        }
+        params.add(param);
+    }
+
     public void addParam(final LicenseParam param) {
         params.add(param);
     }

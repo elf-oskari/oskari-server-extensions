@@ -153,18 +153,6 @@ public class LicenseHelper {
                     }
                 }
             }
-            /*
-            // TODO: check obj type?
-            else if(param instanceof LicenseParamEnum) {
-                LicenseParamEnum lp = (LicenseParamEnum) param;
-                lp.addSelection("");
-            }
-            // TODO: check obj type?
-            else if(param instanceof LicenseParamText) {
-                LicenseParamText lp = (LicenseParamText) param;
-                lp.addValue((String) obj);
-            }
-            */
         }
     }
 }
