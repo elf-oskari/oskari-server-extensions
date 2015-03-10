@@ -133,7 +133,25 @@ public class LicenseHelper {
                 ((LicenseParamBln) param).setValue((boolean) obj);
             }
             else {
-                log.debug(obj.getClass(), obj);
+                if(!(obj instanceof JSONArray)) {
+                    log.warn("Unknown param type for", param.getName(), ":", obj.getClass(), "-", obj);
+                    continue;
+                }
+                final JSONArray listValues = (JSONArray) obj;
+                if(param instanceof LicenseParamEnum) {
+                    LicenseParamEnum lp = (LicenseParamEnum) param;
+                    lp.clearSelections();
+                    for(int i=0; i < listValues.length(); ++i) {
+                        lp.addSelection(listValues.optString(i));
+                    }
+                }
+                else if(param instanceof LicenseParamText) {
+                    LicenseParamText lp = (LicenseParamText) param;
+                    lp.clearValues();
+                    for(int i=0; i < listValues.length(); ++i) {
+                        lp.addValue(listValues.optString(i));
+                    }
+                }
             }
             /*
             // TODO: check obj type?

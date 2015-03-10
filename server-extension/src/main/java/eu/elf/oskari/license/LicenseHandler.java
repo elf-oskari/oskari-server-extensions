@@ -84,7 +84,9 @@ public class LicenseHandler extends RestActionHandler {
         // Get Price
         final LicenseModel model = getModel(params);
         String price = service.getLicenseModelPrice(model, params.getUser().getScreenname());
-        JSONObject resp = JSONHelper.createJSONObject(LicenseHelper.getAsJSON(model));
+
+        final LicenseModel modelForUI = LicenseHelper.removeNonUIParams(model);
+        JSONObject resp = JSONHelper.createJSONObject(LicenseHelper.getAsJSON(modelForUI));
         JSONHelper.putValue(resp, KEY_PRICE, price);
         ResponseHelper.writeResponse(params, resp);
     }
