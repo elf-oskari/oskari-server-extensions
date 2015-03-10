@@ -118,7 +118,12 @@ public class LicenseHelper {
         Map<String, Object> values = new HashMap<>();
         for(int i = 0; i < list.length(); ++i) {
             JSONObject param = list.optJSONObject(i);
-            values.put(param.optString("name"), param.opt("values"));
+            if(param.has("values")) {
+                values.put(param.optString("name"), param.opt("values"));
+            }
+            else {
+                values.put(param.optString("name"), param.opt("value"));
+            }
         }
 
         for(LicenseParam param : model.getParams()) {

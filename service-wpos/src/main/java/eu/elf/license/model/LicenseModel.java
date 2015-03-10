@@ -50,6 +50,19 @@ public class LicenseModel {
         params.add(param);
     }
 
+    public LicenseParam getParam(final String name) {
+
+        if (name == null || params == null) {
+            return null;
+        }
+        for (LicenseParam parm : params) {
+            if (name.equalsIgnoreCase(parm.getName())) {
+                return parm;
+            }
+        }
+        return null;
+    }
+
     public void addParam(final LicenseParam param) {
         params.add(param);
     }
