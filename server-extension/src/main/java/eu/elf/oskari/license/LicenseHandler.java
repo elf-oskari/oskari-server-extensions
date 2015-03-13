@@ -12,6 +12,7 @@ import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
@@ -85,10 +86,15 @@ public class LicenseHandler extends RestActionHandler {
         // Get Price
         final LicenseModel model = getModel(params);
         String price = service.getLicenseModelPrice(model, params.getUser().getScreenname());
+        double priceDigit =  ConversionHelper.getDouble(price, -1);
+        if(priceDigit < 0) {
+            // TODO: fix the error handling in LicenseService
+            throw new ActionParamsException("Couldn't get price from '" + price + "'");
+        }
 
         final LicenseModel modelForUI = LicenseHelper.removeNonUIParams(model);
         JSONObject resp = JSONHelper.createJSONObject(LicenseHelper.getAsJSON(modelForUI));
-        JSONHelper.putValue(resp, KEY_PRICE, price);
+        JSONHelper.putValue(resp, KEY_PRICE, priceDigit);
         JSONHelper.putValue(resp, KEY_GROUPID, params.getRequiredParam(PARAM_ID));
         
         ResponseHelper.writeResponse(params, resp);
@@ -96,14 +102,19 @@ public class LicenseHandler extends RestActionHandler {
 
     @Override
     public void handlePut(ActionParameters params) throws ActionException {
-        // TODO: conclude the license
+        // conclude the license
         final LicenseModel model = getModel(params);
         final LicenseConcludeResponseObject resp = service.concludeLicense(model, params.getUser().getScreenname());
+        if(resp == null) {
+            // TODO: error handling in LicenseService?
+            throw new ActionParamsException("Couldn't conclude license");
+        }
         ResponseHelper.writeResponse(params, LicenseHelper.getAsJSON(resp));
     }
 
     @Override
     public void handleDelete(ActionParameters params) throws ActionException {
+        // deactivate the license
         final boolean success = service.deactivateLicense(params.getRequiredParam(PARAM_ID));
         ResponseHelper.writeResponse(params, JSONHelper.createJSONObject(KEY_SUCCESS, success));
     }
