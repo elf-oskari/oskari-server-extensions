@@ -110,4 +110,32 @@ public class LicenseModel {
     public void addRole(final String rolename) {
         roles.add(rolename);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof LicenseModel)) return false;
+
+        LicenseModel that = (LicenseModel) o;
+
+        if (isRestricted != that.isRestricted) return false;
+        if (description != null ? !description.equals(that.description) : that.description != null) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (params != null ? !params.equals(that.params) : that.params != null) return false;
+        if (roles != null ? !roles.equals(that.roles) : that.roles != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (isRestricted ? 1 : 0);
+        result = 31 * result + (roles != null ? roles.hashCode() : 0);
+        result = 31 * result + (params != null ? params.hashCode() : 0);
+        return result;
+    }
 }
