@@ -59,6 +59,7 @@ public class LicenseHandler extends RestActionHandler {
             final LicenseModelGroup userLicense = service.getLicenseGroupsForURL(userLicenseGroups, url);
             // TODO: check the handling of case where user already has the license, service should tag group with a boolean or something?
             if(userLicense != null) {
+                log.debug("User has license");
                 // User already has license, respond with it!
                 // this doesn't need filtering by roles supposedly?
                 final LicenseModelGroup userLicenseForUI = LicenseHelper.removeNonUIParams(userLicense);
@@ -70,6 +71,7 @@ public class LicenseHandler extends RestActionHandler {
             if(group == null) {
                 throw new ActionParamsException("Can't find license with url: " + url);
             }
+            log.debug("Showing license options to user");
             final LicenseModelGroup groupForUser = LicenseHelper.filterModelsByRoles(user, group);
             final LicenseModelGroup groupForUI = LicenseHelper.removeNonUIParams(groupForUser);
             ResponseHelper.writeResponse(params, LicenseHelper.getAsJSON(groupForUI));
