@@ -104,6 +104,7 @@ public class LicenseHelper {
             // restricted, check if user has roles specified in model.getRoles()
             final String[] rolesArray = model.getRoles().toArray(new String[0]);
             if(!user.hasAnyRoleIn(rolesArray)) {
+                log.debug("User doesn't have any needed roles for", model.getName(), "Required roles are:", rolesArray);
                 toRemove.add(model);
             }
         }

@@ -28,6 +28,8 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -61,6 +63,8 @@ import eu.elf.license.model.LicenseParamInt;
 import eu.elf.license.model.LicenseParamText;
 
 public class LicenseQueryHandler {
+
+    private static final Logger log = LogFactory.getLogger(LicenseQueryHandler.class);
 	private String WPOSServiceAddress = "";
 	private String SOAPAddress = "";
 	URL wposURL = null;
@@ -439,25 +443,19 @@ public class LicenseQueryHandler {
 	 * 
 	 * @throws Exception
 	 */
-	public LicenseConcludeResponseObject concludeLicenseObjectResponse(String orderProductQuery)  throws Exception {
-		StringBuffer buf = null;
-		
-		try {	
-			buf = doHTTPQuery(this.wposURL, "post", orderProductQuery, false);
-			String response = buf.toString();
-			
-			//System.out.println("output "+response);
-			
-			if (response.contains("ExceptionReport")) {
-				return null;
-			}
-			else {
-	            return LicenseParser.parseConcludeLicenseResponse(response);
-			}
-			
-		} catch (IOException ioe) {
-			throw ioe; 
-		}		
+	public LicenseConcludeResponseObject concludeLicenseObjectResponse(String orderProductQuery) throws Exception {
+        log.debug("Concluding license with payload:\n", orderProductQuery);
+        StringBuffer buf = doHTTPQuery(this.wposURL, "post", orderProductQuery, false);
+        String response = buf.toString();
+        log.debug("Conclude response was:\n", response);
+
+        if (response.contains("ExceptionReport")) {
+            return null;
+        }
+        else {
+            return LicenseParser.parseConcludeLicenseResponse(response);
+        }
+
 	}
 		
 	/**
@@ -470,29 +468,9 @@ public class LicenseQueryHandler {
 	 * @throws Exception
 	 */ 
 	public LicenseConcludeResponseObject concludeLicenseObjectResponse(LicenseModel lm, String userId)  throws Exception {
-		StringBuffer buf = null;
-		
 		// create query string
-		String wposQuery = createOrderProductQueryFromLicenseModel(lm, userId);
-		
-		//System.out.println("Conclude query:"+wposQuery);
-		
-		try {	
-			buf = doHTTPQuery(this.wposURL, "post", wposQuery, false);
-			String response = buf.toString();
-			
-			//System.out.println("output "+response);
-			
-			if (response.contains("ExceptionReport")) {
-				return null;
-			}
-			else {
-	            return LicenseParser.parseConcludeLicenseResponse(response);
-			}
-			
-		} catch (IOException ioe) {
-			throw ioe; 
-		}		
+		final String wposQuery = createOrderProductQueryFromLicenseModel(lm, userId);
+        return concludeLicenseObjectResponse(wposQuery);
 	}
 	
 	/**
@@ -505,18 +483,8 @@ public class LicenseQueryHandler {
 	 * @throws Exception
 	 */
 	public String concludeLicenseStringResponse(LicenseModel lm, String userId)  throws Exception {
-		StringBuffer buf = null; 
-		
 		String wposQuery = createOrderProductQueryFromLicenseModel(lm, userId);
-	
-		try {	
-			buf = doHTTPQuery(this.wposURL, "post", wposQuery, false);
-			
-		} catch (Exception e) {
-			throw e; 
-		}
-		
-		return buf.toString();
+        return doHTTPQuery(this.wposURL, "post", wposQuery, false).toString();
 	}
 	
 	
