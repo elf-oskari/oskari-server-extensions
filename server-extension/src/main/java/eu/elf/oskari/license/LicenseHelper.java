@@ -96,6 +96,8 @@ public class LicenseHelper {
      */
     public static LicenseModelGroup filterModelsByRoles(User user, LicenseModelGroup group) {
         final List<LicenseModel> toRemove = new ArrayList<LicenseModel>();
+        log.debug("Filtering models by roles, original model count is", group.getLicenseModels().size());
+        int filterCount = 0;
         for(LicenseModel model : group.getLicenseModels()) {
             if(!model.isRestricted()) {
                 // all roles are ok
@@ -105,6 +107,7 @@ public class LicenseHelper {
             final String[] rolesArray = model.getRoles().toArray(new String[0]);
             if(!user.hasAnyRoleIn(rolesArray)) {
                 log.debug("User doesn't have any needed roles for", model.getName(), "Required roles are:", rolesArray);
+                filterCount++;
                 toRemove.add(model);
             }
         }
@@ -112,6 +115,7 @@ public class LicenseHelper {
         for(LicenseModel model : toRemove) {
             group.getLicenseModels().remove(model);
         }
+        log.debug("Filtering models by roles, filtered model count is", group.getLicenseModels().size(), "- Should have removed", filterCount, "models");
         return group;
     }
 
