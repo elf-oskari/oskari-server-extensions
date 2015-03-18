@@ -52,7 +52,10 @@ public class LicenseHelper {
     }
 
     /**
-     * Removes any parameter thats name doesn't start with "LICENSE_TEXT_" or "LICENSE_PARAMETER_"
+     * Removes any parameter thats name doesn't start with:
+     * - "LICENSE_TEXT_"
+     * - "LICENSE_PARAMETER_"
+     * - "LICENSE_DURATION"
      * @param model model to filter
      * @return filtered model
      */
@@ -64,7 +67,8 @@ public class LicenseHelper {
             }
             // only include params starting with
             if(param.getName().startsWith("LICENSE_TEXT_") ||
-                param.getName().startsWith("LICENSE_PARAMETER_")) {
+                param.getName().startsWith("LICENSE_PARAMETER_") ||
+                param.getName().startsWith("LICENSE_DURATION")) {
                 filteredList.add(param);
             }
             else {
