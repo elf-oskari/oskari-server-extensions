@@ -9,6 +9,9 @@
         "development_prefix": "/applications/elf"
     },
     "bundles" : [
+        {
+          "id": "elf-lang-overrides"
+        },
         { "id" : "openlayers-default-theme" },
         {
             "id" : "mapfull",
