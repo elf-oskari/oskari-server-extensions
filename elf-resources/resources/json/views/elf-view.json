@@ -217,9 +217,9 @@
             "id": "publisher",
             "config": {
             	"publishedMapUrl": {
-            		"en" : "http://54.216.109.137/?lang=en&viewId=",
-            		"sv" : "http://54.216.109.137/?lang=sv&viewId=",
-            		"fi" : "http://54.216.109.137/?lang=fi&viewId="
+            		"en" : "http://54.75.147.57/?lang=en&viewId=",
+            		"sv" : "http://54.75.147.57/?lang=sv&viewId=",
+            		"fi" : "http://54.75.147.57/?lang=fi&viewId="
             	},
                 "tools": [{
                   "id": "Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin",

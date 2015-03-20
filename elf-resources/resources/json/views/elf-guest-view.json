@@ -158,9 +158,9 @@
                     "link": true
                 },
                 "mapUrlPrefix": {
-            		"en" : "http://54.216.109.137/oskari-map/?lang=en&",
-            		"sv" : "http://54.216.109.137/oskari-map/?lang=sv&",
-            		"fi" : "http://54.216.109.137/oskari-map/?lang=fi&"
+            		"en" : "http://54.75.147.57/oskari-map/?lang=en&",
+            		"sv" : "http://54.75.147.57/oskari-map/?lang=sv&",
+            		"fi" : "http://54.75.147.57/oskari-map/?lang=fi&"
             	}
                 
             }
