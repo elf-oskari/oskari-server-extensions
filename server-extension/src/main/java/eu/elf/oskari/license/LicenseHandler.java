@@ -143,6 +143,10 @@ public class LicenseHandler extends RestActionHandler {
     public void handleDelete(ActionParameters params) throws ActionException {
         // deactivate the license
         final boolean success = service.deactivateLicense(params.getRequiredParam(PARAM_ID));
+        if(!success) {
+            // TODO: error handling in LicenseService?
+            throw new ActionParamsException("Couldn't deactivate license");
+        }
         ResponseHelper.writeResponse(params, JSONHelper.createJSONObject(KEY_SUCCESS, success));
     }
 
