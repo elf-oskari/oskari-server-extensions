@@ -4,6 +4,8 @@ import eu.elf.license.LicenseService;
 import eu.elf.license.conclude.LicenseConcludeResponseObject;
 import eu.elf.license.model.LicenseModel;
 import eu.elf.license.model.LicenseModelGroup;
+import eu.elf.license.model.UserLicense;
+import eu.elf.license.model.UserLicenses;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
@@ -51,21 +53,18 @@ public class LicenseHandler extends RestActionHandler {
 
     @Override
     public void handleGet(ActionParameters params) throws ActionException {
-        final List<LicenseModelGroup> licenseGroups = service.getLicenseGroups();
         final String url = params.getHttpParam(PARAM_ID);
         final User user = params.getUser();
         if(url != null) {
-            final List<LicenseModelGroup> userLicenseGroups = service.getLicenseGroupsForUser(params.getUser().getScreenname());
-            final LicenseModelGroup userLicense = service.getLicenseGroupsForURL(userLicenseGroups, url);
+            final UserLicense userLicense = getUserLicense(params, url);
             // TODO: check the handling of case where user already has the license, service should tag group with a boolean or something?
             if(userLicense != null) {
-                log.debug("User has license");
                 // User already has license, respond with it!
-                // this doesn't need filtering by roles supposedly?
-                final LicenseModelGroup userLicenseForUI = LicenseHelper.removeNonUIParams(userLicense);
-                ResponseHelper.writeResponse(params, LicenseHelper.getAsJSON(userLicenseForUI));
+                log.debug("User has license");
+                ResponseHelper.writeResponse(params, LicenseHelper.getAsJSON(userLicense));
                 return;
             }
+            final List<LicenseModelGroup> licenseGroups = service.getLicenseGroups();
             // return the license info about the service for user to fill out
             final LicenseModelGroup group = service.getLicenseGroupsForURL(licenseGroups, url);
             if(group == null) {
@@ -77,10 +76,33 @@ public class LicenseHandler extends RestActionHandler {
             ResponseHelper.writeResponse(params, LicenseHelper.getAsJSON(groupForUI));
         }
         else {
+            final List<LicenseModelGroup> licenseGroups = service.getLicenseGroups();
             final List<LicenseModelGroup> groupsForUser = LicenseHelper.filterModelsByRoles(user, licenseGroups);
             // note! non-ui params are not removed here!
             ResponseHelper.writeResponse(params, LicenseHelper.getAsJSON(groupsForUser));
         }
+    }
+
+    private UserLicense getUserLicense(ActionParameters params, final String url) {
+
+        final UserLicenses userLicenses = service.getLicenseGroupsForUser(params.getUser().getScreenname());
+        if(userLicenses == null) {
+            return null;
+        }
+        final UserLicense license = userLicenses.getLicenseForURL(url);
+        if(license == null) {
+            return null;
+        }
+        List<LicenseModelGroup> groups = license.getLmgList();
+        if(groups == null) {
+            log.warn("User had license, but no LicenseModelGroups");
+            return null;
+        }
+        // groups don't need filtering by roles since user already has these
+        for(LicenseModelGroup group : groups) {
+            LicenseHelper.removeNonUIParams(group);
+        }
+        return license;
     }
 
     @Override

@@ -1,6 +1,5 @@
 package eu.elf.license.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class UserLicense {
