@@ -254,6 +254,9 @@ public class LicenseService {
         DefaultHttpClient httpclient = new DefaultHttpClient();
         // TODO: check for loginUrl.protocol() + ".proxyHost"
         if(System.getProperty("http.proxyHost") != null) {
+            log.info("http.proxyHost configured - using it for http client:",
+                    System.getProperty("http.proxyHost"),
+                    "port:", System.getProperty("http.proxyPort"));
             int proxyPort = ConversionHelper.getInt(System.getProperty("http.proxyPort"), -1);
             if(proxyPort == -1) {
                 log.warn("http.proxyHost configured, but http.proxyPort isn't");
@@ -262,6 +265,9 @@ public class LicenseService {
                 HttpHost proxy = new HttpHost(System.getProperty("http.proxyHost"), proxyPort);
                 httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY,proxy);
             }
+        }
+        else {
+            log.info("No proxy configured");
         }
 
         HttpPost post = new HttpPost(loginUrl + "&username=" + user + "&password=" + pass);
