@@ -7,9 +7,14 @@ import eu.elf.license.model.UserLicense;
 import eu.elf.license.model.UserLicenses;
 import eu.elf.license.LicenseQueryHandler;
 
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.ConversionHelper;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 
@@ -17,6 +22,8 @@ import java.io.IOException;
 import java.util.List;
 
 public class LicenseService {
+
+    private final Logger log = LogFactory.getLogger(LicenseService.class);
     private LicenseQueryHandler lqh;
     private String loginUrl;
     private String user;
@@ -245,6 +252,18 @@ public class LicenseService {
         //System.out.println("Fetching cookies...");
         //CloseableHttpClient httpclient = HttpClients.createDefault();
         DefaultHttpClient httpclient = new DefaultHttpClient();
+        // TODO: check for loginUrl.protocol() + ".proxyHost"
+        if(System.getProperty("http.proxyHost") != null) {
+            int proxyPort = ConversionHelper.getInt(System.getProperty("http.proxyPort"), -1);
+            if(proxyPort == -1) {
+                log.warn("http.proxyHost configured, but http.proxyPort isn't");
+            }
+            else {
+                HttpHost proxy = new HttpHost(System.getProperty("http.proxyHost"), proxyPort);
+                httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY,proxy);
+            }
+        }
+
         HttpPost post = new HttpPost(loginUrl + "&username=" + user + "&password=" + pass);
         BasicCookieStore bcs = new BasicCookieStore();
 
