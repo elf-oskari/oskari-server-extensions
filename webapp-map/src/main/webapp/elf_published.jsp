@@ -22,7 +22,7 @@
             rel="stylesheet"
             type="text/css"
             href="/Oskari${path}/css/portal.css"/>
-    <!-- link
+    <link
             rel="stylesheet"
             type="text/css"
             href="/Oskari${path}/css/overwritten.css"/>
@@ -30,7 +30,7 @@
         @media screen {
 			#contentMap { margin-left: 0px !important; }
         }
-    </style-->
+    </style>
     <!-- ############# /css ################# -->
 </head>
 <body>
