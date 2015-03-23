@@ -28,8 +28,9 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
+import org.apache.commons.lang3.StringEscapeUtils;
+//import fi.nls.oskari.log.LogFactory;
+//import fi.nls.oskari.log.Logger;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -61,10 +62,11 @@ import eu.elf.license.model.LicenseParamDisplay;
 import eu.elf.license.model.LicenseParamEnum;
 import eu.elf.license.model.LicenseParamInt;
 import eu.elf.license.model.LicenseParamText;
+import eu.elf.license.model.UserLicenses;
 
 public class LicenseQueryHandler {
 
-    private static final Logger log = LogFactory.getLogger(LicenseQueryHandler.class);
+    //private static final Logger log = LogFactory.getLogger(LicenseQueryHandler.class);
 	private String WPOSServiceAddress = "";
 	private String SOAPAddress = "";
 	URL wposURL = null;
@@ -96,7 +98,8 @@ public class LicenseQueryHandler {
 			throw mue;
 		}
 	}
-
+	
+	
 	public String getWPOSServiceAddress() {
 		return WPOSServiceAddress;
 	}
@@ -193,11 +196,11 @@ public class LicenseQueryHandler {
 						 				"<wpos:WPOSRequest xmlns:wpos=\"http://www.conterra.de/wpos/1.1\" xmlns:xcpf=\"http://www.conterra.de/xcpf/1.1\" version=\"1.1.0\">"+
 						 				"<wpos:GetOrderList brief=\"false\">"+
 						 				"<wpos:Filter>"+
-						 				"<wpos:CustomerId>"+user+"</wpos:CustomerId>"+
+						 				"<wpos:CustomerId>"+StringEscapeUtils.escapeXml10(user)+"</wpos:CustomerId>"+
 						 				"</wpos:Filter>"+
 						 				"</wpos:GetOrderList>"+
 						 				"</wpos:WPOSRequest>";
-		
+
 		try {	
 			buf = doHTTPQuery(this.wposURL, "post", getUserLicensesQuery, false);
 					
@@ -208,6 +211,8 @@ public class LicenseQueryHandler {
 		return buf.toString();
 	}
 	
+	
+	
 	/**
 	 * Gets the list of licenses that the user has concluded from the WPOS Service
 	 * 
@@ -215,24 +220,31 @@ public class LicenseQueryHandler {
 	 * @throws IOException
  	 * @return WPOS service response 
 	 */
-	public List<LicenseModelGroup> getUserLicensesAsLicenseModelGroupList(String user) throws Exception {
+	//public List<LicenseModelGroup> getUserLicensesAsLicenseModelGroupList(String user) throws Exception {
+	public UserLicenses getUserLicensesAsLicenseUserLicensesObject(String user) throws Exception {
+		UserLicenses userLicenses = new UserLicenses();		
 
 		String getUserLicensesQuery = 	"<?xml version=\"1.0\" encoding=\"utf-8\"?>"+
 						 				"<wpos:WPOSRequest xmlns:wpos=\"http://www.conterra.de/wpos/1.1\" xmlns:xcpf=\"http://www.conterra.de/xcpf/1.1\" version=\"1.1.0\">"+
 						 				"<wpos:GetOrderList brief=\"false\">"+
 						 				"<wpos:Filter>"+
-						 				"<wpos:CustomerId>"+user+"</wpos:CustomerId>"+
+						 				"<wpos:CustomerId>"+StringEscapeUtils.escapeXml10(user)+"</wpos:CustomerId>"+
 						 				"</wpos:Filter>"+
 						 				"</wpos:GetOrderList>"+
-						 				"</wpos:WPOSRequest>";
+						 				"</wpos:WPOSRequest>"; 
 
         final String response = doHTTPQuery(this.wposURL, "post", getUserLicensesQuery, false).toString();
-        log.debug("User licenses:\n", response);
-        List<LicenseModelGroup> list = LicenseParser.parseListOfLicensesAsLicenseModelGroupList(response);
-        for(LicenseModelGroup group : list) {
-            group.setUserLicense(true);
-        }
-        return list;
+        // System.out.println("response: "+response);
+        //log.debug("User licenses:\n", response);
+       	userLicenses = LicenseParser.parseUserLicensesAsLicenseModelGroupList(response);
+       
+       	
+       	//List<LicenseModelGroup> list = LicenseParser.parseUserLicensesAsLicenseModelGroupList(response);
+        //List<LicenseModelGroup> list = LicenseParser.parseListOfLicensesAsLicenseModelGroupList(response);
+        //for(LicenseModelGroup group : list) {
+        //   group.setUserLicense(true);
+        //}
+        return userLicenses;
 
 	}
 	
@@ -252,7 +264,7 @@ public class LicenseQueryHandler {
 							"<wpos:WPOSRequest xmlns:wpos=\"http://www.conterra.de/wpos/1.1\" version=\"1.1.0\">"+
 							"<wpos:GetPriceModel collapse=\"false\">"+
 							"<wpos:Product>"+
-							"<wpos:id>"+licenseId+"</wpos:id>"+
+							"<wpos:id>"+StringEscapeUtils.escapeXml10(licenseId)+"</wpos:id>"+
 							"</wpos:Product>"+
 							"</wpos:GetPriceModel>"+
 							"</wpos:WPOSRequest>";
@@ -291,14 +303,14 @@ public class LicenseQueryHandler {
 		String productPriceQuery = 	"<?xml version=\"1.0\" encoding=\"utf-8\"?>"+
 									"<wpos:WPOSRequest xmlns:wpos=\"http://www.conterra.de/wpos/1.1\" version=\"1.1.0\">"+
 									"<wpos:GetPrice collapse=\"true\">"+
-							        "<wpos:Product id=\""+lm.getId()+"\">"+
+							        "<wpos:Product id=\""+StringEscapeUtils.escapeXml10(lm.getId())+"\">"+
 							        "<wpos:ConfigParams>";
 					            
 		for (int i = 0; i < lpList.size(); i++) {
 			if (lpList.get(i).getParameterClass().equals("configurationParameter")) {
 				LicenseParam lp = (LicenseParam) lpList.get(i);
 				
-				productPriceQuery += "<wpos:Parameter name=\""+lp.getName()+"\">";
+				productPriceQuery += "<wpos:Parameter name=\""+StringEscapeUtils.escapeXml10(lp.getName())+"\">";
 				//System.out.println(lp.getName()+"  "+lp.getParameterClass());
 
 				
@@ -332,7 +344,7 @@ public class LicenseQueryHandler {
 					}
 					else {
 						for (int l = 0; l < values.size(); l++ ) {
-							productPriceQuery +=  "<wpos:Value selected=\"true\">"+values.get(l)+"</wpos:Value>";
+							productPriceQuery +=  "<wpos:Value selected=\"true\">"+StringEscapeUtils.escapeXml10(values.get(l))+"</wpos:Value>";
 						}
 					}
 					
@@ -346,12 +358,12 @@ public class LicenseQueryHandler {
         			List<String> tempSelections = lpEnum.getSelections();
         			
         			if (tempSelections.size() == 0) {
-        				productPriceQuery +=  "<wpos:Value selected=\"true\">"+tempOptions.get(0)+"</wpos:Value>"+
+        				productPriceQuery +=  "<wpos:Value selected=\"true\">"+StringEscapeUtils.escapeXml10(tempOptions.get(0))+"</wpos:Value>"+
 					  			  			  "</wpos:Parameter>";
         			}
         			else {
 	        			for (int j = 0; j < tempSelections.size(); j++) {
-	        				productPriceQuery +=  "<wpos:Value selected=\"true\">"+tempSelections.get(j)+"</wpos:Value>"+
+	        				productPriceQuery +=  "<wpos:Value selected=\"true\">"+StringEscapeUtils.escapeXml10(tempSelections.get(j))+"</wpos:Value>"+
 									  			  "</wpos:Parameter>";
 	        			}
         			}
@@ -440,11 +452,11 @@ public class LicenseQueryHandler {
 	 * @throws Exception
 	 */
 	public LicenseConcludeResponseObject concludeLicenseObjectResponse(String orderProductQuery) throws Exception {
-        log.debug("Concluding license with payload:\n", orderProductQuery);
+        //log.debug("Concluding license with payload:\n", orderProductQuery);
         StringBuffer buf = doHTTPQuery(this.wposURL, "post", orderProductQuery, false);
         String response = buf.toString();
-        log.debug("Conclude response was:\n", response);
-
+        //log.debug("Conclude response was:\n", response);
+        //System.out.println("response "+buf.toString());
         if (response.contains("ExceptionReport")) {
             return null;
         }
@@ -466,6 +478,9 @@ public class LicenseQueryHandler {
 	public LicenseConcludeResponseObject concludeLicenseObjectResponse(LicenseModel lm, String userId)  throws Exception {
 		// create query string
 		final String wposQuery = createOrderProductQueryFromLicenseModel(lm, userId);
+		
+		//System.out.println("wposquery "+wposQuery);
+		
         return concludeLicenseObjectResponse(wposQuery);
 	}
 	
@@ -510,40 +525,48 @@ public class LicenseQueryHandler {
 			if (lpList.get(i).getParameterClass().equals("configurationParameter")) {			
 				
 				if (lpList.get(i).getName().equals("LICENSE_USER_GROUP")) {
-					wposQuery += "<wpos:Parameter name=\""+lpList.get(i).getName()+"\">"+
+					wposQuery += "<wpos:Parameter name=\""+StringEscapeUtils.escapeXml10(lpList.get(i).getName())+"\">"+
 								 "<wpos:Value>Users</wpos:Value>"+
 								 "</wpos:Parameter>";
 				}
 				else if (lpList.get(i).getName().equals("LICENSE_USER_ID")) {
-					wposQuery += "<wpos:Parameter name=\""+lpList.get(i).getName()+"\">"+
+					wposQuery += "<wpos:Parameter name=\""+StringEscapeUtils.escapeXml10(lpList.get(i).getName())+"\">"+
 								 "<wpos:Value selected=\"true\">"+userId+"</wpos:Value>"+
 								 "</wpos:Parameter>";
 				}
 				else if (lpList.get(i).getName().equals("LICENSE_USER_TYPE")) {	
-					wposQuery += "<wpos:parameter name=\""+lpList.get(i).getName()+"\" type=\"string\" multi=\"false\">"+
+					wposQuery += "<wpos:parameter name=\""+StringEscapeUtils.escapeXml10(lpList.get(i).getName())+"\" type=\"string\" multi=\"false\">"+
 								 "<wpos:value title=\"Individual\" selected=\"true\">SubjectId</wpos:value>"+
 						   	 	 "</wpos:parameter>";
+				}
+				else if (lpList.get(i).getName().equals("LICENSE_DURATION")) {
+					wposQuery += "<wpos:Parameter name=\""+StringEscapeUtils.escapeXml10(lpList.get(i).getName())+"\">";
+					
+					LicenseParamEnum duration = (LicenseParamEnum)lpList.get(i);
+					
+					wposQuery += "<wpos:Value selected=\"true\">"+StringEscapeUtils.escapeXml10(duration.getSelections().get(0))+"</wpos:Value>"+
+								 "</wpos:Parameter>";
 				}
 				else {
 						
 					if (lpList.get(i) instanceof LicenseParamText) {
 						LicenseParamText lpt = (LicenseParamText)lpList.get(i);
 						
-						wposQuery += "<wpos:parameter name=\""+lpt.getName()+"\" type=\"string\">"+
+						wposQuery += "<wpos:parameter name=\""+StringEscapeUtils.escapeXml10(lpt.getName())+"\" type=\"string\">"+
 								   	 "<wpos:value />"+
 								   	 "</wpos:parameter>";
 					}
 					if (lpList.get(i) instanceof LicenseParamInt) {
 						LicenseParamInt	lpi = (LicenseParamInt)lpList.get(i);
 						
-						wposQuery += "<wpos:parameter name=\""+lpi.getName()+"\" type=\"real\">"+
+						wposQuery += "<wpos:parameter name=\""+StringEscapeUtils.escapeXml10(lpi.getName())+"\" type=\"real\">"+
 								   	 "<wpos:value>"+lpi.getValue()+"</wpos:value>"+
 								   	 "</wpos:parameter>";
 					}
 					if (lpList.get(i) instanceof LicenseParamBln) {
 						LicenseParamBln lpbln = (LicenseParamBln)lpList.get(i);
 						
-						wposQuery += "<wpos:parameter name=\""+lpbln.getName()+"\" type=\"boolean\">"+
+						wposQuery += "<wpos:parameter name=\""+StringEscapeUtils.escapeXml10(lpbln.getName())+"\" type=\"boolean\">"+
 								 	"<wpos:value>"+lpbln.getValue()+"</wpos:value>"+
 								   	 "</wpos:parameter>";
 					}
@@ -552,14 +575,14 @@ public class LicenseQueryHandler {
 						LicenseParamEnum lpenum = (LicenseParamEnum)lpList.get(i);
 						
 						if (lpenum.isMulti()) {
-							wposQuery += "<wpos:parameter name=\""+lpenum.getName()+"\" type=\"string\" multi=\"true\" optional=\"true\">";
+							wposQuery += "<wpos:parameter name=\""+StringEscapeUtils.escapeXml10(lpenum.getName())+"\" type=\"string\" multi=\"true\" optional=\"true\">";
 							
 							for (int j = 0; j < lpenum.getOptions().size(); j++) {
 								if (CheckIfListOfStringContainsValue(lpenum.getSelections(), lpenum.getOptions().get(j)) == true) {
-									wposQuery += "<wpos:value selected=\"true\">"+lpenum.getOptions().get(j)+"</wpos:value>";
+									wposQuery += "<wpos:value selected=\"true\">"+StringEscapeUtils.escapeXml10(lpenum.getOptions().get(j))+"</wpos:value>";
 								}
 								else {
-									wposQuery += "<wpos:value selected=\"false\">"+lpenum.getOptions().get(j)+"</wpos:value>";
+									wposQuery += "<wpos:value selected=\"false\">"+StringEscapeUtils.escapeXml10(lpenum.getOptions().get(j))+"</wpos:value>";
 								}
 								
 							}
@@ -567,14 +590,14 @@ public class LicenseQueryHandler {
 							wposQuery +="</wpos:parameter>";
 						}
 						else {
-							wposQuery += "<wpos:parameter name=\""+lpenum.getName()+"\" type=\"string\" multi=\"false\">";
+							wposQuery += "<wpos:parameter name=\""+StringEscapeUtils.escapeXml10(lpenum.getName())+"\" type=\"string\" multi=\"false\">";
 							
 							for (int k = 0; k < lpenum.getOptions().size(); k++) {
 								if (CheckIfListOfStringContainsValue(lpenum.getSelections(), lpenum.getOptions().get(k)) == true) {
-									wposQuery += "<wpos:value selected=\"true\">"+lpenum.getOptions().get(k)+"</wpos:value>";
+									wposQuery += "<wpos:value selected=\"true\">"+StringEscapeUtils.escapeXml10(lpenum.getOptions().get(k))+"</wpos:value>";
 								}
 								else {
-									wposQuery += "<wpos:value>"+lpenum.getOptions().get(k)+"</wpos:value>";
+									wposQuery += "<wpos:value>"+StringEscapeUtils.escapeXml10(lpenum.getOptions().get(k))+"</wpos:value>";
 								}
 							}
 							
@@ -593,7 +616,7 @@ public class LicenseQueryHandler {
 				   		"</wpos:Product>"+
 				   		"</wpos:OrderProduct>"+
 				   		"</wpos:WPOSRequest>";
-		
+
 		return wposQuery;
 	}
 	
@@ -635,7 +658,7 @@ public class LicenseQueryHandler {
 										"<Body>"+
 										"<licmanp:DeactivateLicense ID=\"B1202458930484\" Version=\"2.0\" IssueInstant=\"2001-12-17T09:30:47.0Z\" "+
 										" xmlns:licmanp=\"http://www.52north.org/licensemanagerprotocol\" xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\">"+
-										"<saml:AssertionIDRef>"+licenseId+"</saml:AssertionIDRef>"+
+										"<saml:AssertionIDRef>"+StringEscapeUtils.escapeXml10(licenseId)+"</saml:AssertionIDRef>"+
 										"</licmanp:DeactivateLicense>"+
 										"</Body>"+
 										"</Envelope>"; 
@@ -661,7 +684,7 @@ public class LicenseQueryHandler {
 										"<Body>"+
 										"<licmanp:ActivateLicense ID=\"B1202458930484\" Version=\"2.0\" IssueInstant=\"2001-12-17T09:30:47.0Z\" "+
 										" xmlns:licmanp=\"http://www.52north.org/licensemanagerprotocol\" xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\">"+
-										"<saml:AssertionIDRef>"+licenseId+"</saml:AssertionIDRef>"+
+										"<saml:AssertionIDRef>"+StringEscapeUtils.escapeXml10(licenseId)+"</saml:AssertionIDRef>"+
 										"</licmanp:ActivateLicense>"+
 										"</Body>"+
 										"</Envelope>"; 
@@ -687,7 +710,7 @@ public class LicenseQueryHandler {
 										"<Body>"+
 										"<licmanp:DeleteLicense ID=\"B1202458930484\" Version=\"2.0\" IssueInstant=\"2001-12-17T09:30:47.0Z\" "+
 										" xmlns:licmanp=\"http://www.52north.org/licensemanagerprotocol\" xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\">"+
-										"<saml:AssertionIDRef>"+licenseId+"</saml:AssertionIDRef>"+
+										"<saml:AssertionIDRef>"+StringEscapeUtils.escapeXml10(licenseId)+"</saml:AssertionIDRef>"+
 										"</licmanp:DeleteLicense>"+
 										"</Body>"+
 										"</Envelope>"; 
@@ -739,7 +762,7 @@ public class LicenseQueryHandler {
         
         StringEntity entity = new StringEntity(query);
         hPost.setEntity(entity);
-        System.out.println();
+       // System.out.println();
         
         
 	//    HttpHost proxy = new HttpHost("wwwp.nls.fi",800,"http");
@@ -750,20 +773,20 @@ public class LicenseQueryHandler {
 	//    System.out.println(hPost.getConfig().toString());
 	        //System.out.println("entity: "+hPost.getEntity().getContent().toString());
         
-        System.out.println("HEADERS");
+        //System.out.println("HEADERS");
         Header[] headers = hPost.getAllHeaders();
         for (int i=0; i< headers.length; i++) {
-            System.out.println(headers[i].toString());
+          //  System.out.println(headers[i].toString());
         }
         //System.out.println();
         
         HttpEntity ent = hPost.getEntity();
         String cont = EntityUtils.toString(ent);
-        System.out.println("response "+cont);
+        //System.out.println("response "+cont);
         
         CloseableHttpResponse resp = hClient.execute(hPost);
         
-        System.out.println(resp.getStatusLine());
+       // System.out.println(resp.getStatusLine());
         String status = resp.getStatusLine().toString();
         resp.close();   
         

@@ -25,8 +25,7 @@ public class LicenseServiceTest_getLicenseGroups {
     public void test() throws Exception {
     //	final String xml = TestHelper.readString(getClass().getResourceAsStream("GetCatalogQueryResponse.xml"));
 
-
-        LicenseService ls = TestHelper.createService();
+    	LicenseService ls = TestHelper.createService();
     	List<LicenseModelGroup> lmgList = new ArrayList<LicenseModelGroup>();
     	
     	List<LicenseModel>  lmList = new ArrayList<LicenseModel>();

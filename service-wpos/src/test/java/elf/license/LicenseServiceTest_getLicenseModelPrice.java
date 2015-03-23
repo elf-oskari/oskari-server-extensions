@@ -18,6 +18,7 @@ public class LicenseServiceTest_getLicenseModelPrice {
 	  public void test() throws Exception { 
 		String productPriceSum = "";
 		LicenseService ls = TestHelper.createService();
+	
 		List<LicenseModelGroup> lmgList = new ArrayList<LicenseModelGroup>();
 		    	
 		List<LicenseModel>  lmList = new ArrayList<LicenseModel>();

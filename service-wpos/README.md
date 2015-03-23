@@ -1,3 +1,3 @@
 # Service implementation for license manager abstraction
 
-Heavily under construction, do not use
+Heavily under construction and API might change without notice

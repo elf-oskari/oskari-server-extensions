@@ -11,7 +11,6 @@ public class TestHelper {
 
     public static final String DEFAULT_CHARSET = "UTF-8";
 
-
     public static LicenseService createService() {
         return new LicenseService(System.getProperty("wposurl"),
                 System.getProperty("sm_user"),

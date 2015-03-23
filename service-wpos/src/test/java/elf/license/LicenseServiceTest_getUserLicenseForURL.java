@@ -25,7 +25,6 @@ public class LicenseServiceTest_getUserLicenseForURL {
     public void test() throws Exception {
     	//	final String xml = TestHelper.readString(getClass().getResourceAsStream("GetCatalogQueryResponse.xml"));
 
-
         LicenseService ls = TestHelper.createService();
     	LicenseModelGroup lmg = ls.getUserLicenseForURL("FGI", "http://54.247.162.180:8080/wss/service/FGI_WFS_TEST_3/WSS");
 		

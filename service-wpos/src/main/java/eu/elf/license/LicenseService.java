@@ -3,6 +3,10 @@ package eu.elf.license;
 import eu.elf.license.conclude.LicenseConcludeResponseObject;
 import eu.elf.license.model.LicenseModel;
 import eu.elf.license.model.LicenseModelGroup;
+import eu.elf.license.model.UserLicense;
+import eu.elf.license.model.UserLicenses;
+import eu.elf.license.LicenseQueryHandler;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
@@ -43,17 +47,18 @@ public class LicenseService {
         return lmgList;
     }
 
-    public List<LicenseModelGroup> getLicenseGroupsForUser(final String userid) {
-        List<LicenseModelGroup> lmgList = null;
 
+    public UserLicenses getLicenseGroupsForUser(final String userid) {
+    	UserLicenses userLicenses = null;
+    	
         try {
-            lmgList = lqh.getUserLicensesAsLicenseModelGroupList(userid);
+        	userLicenses = lqh.getUserLicensesAsLicenseUserLicensesObject(userid);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return lmgList;
+        return userLicenses;
     }
 
     public LicenseModelGroup getLicenseForURL(final String url) {
@@ -61,8 +66,22 @@ public class LicenseService {
     }
 
     public LicenseModelGroup getUserLicenseForURL(final String userid, final String url) {
-        return getLicenseGroupsForURL(getLicenseGroupsForUser(userid), url);
+        UserLicenses ul = getLicenseGroupsForUser(userid);
+        List<UserLicense> userLicenseList = ul.getUserLicenses();
+        
+        for (int i = 0; i < userLicenseList.size(); i++) {
+        	List<LicenseModelGroup> lmgList = userLicenseList.get(i).getLmgList();
+        	
+        	LicenseModelGroup lmg = getLicenseGroupsForURL(lmgList, url);
+        	
+        	if (lmg != null) {
+        		return lmg;
+        	}
+        }
+    	
+        return null;
     }
+    
 
     /**
      * Finds group based on URL
@@ -132,7 +151,7 @@ public class LicenseService {
      * @return true if successfully deactivated (or do we need some other output?)
      */
     public LicenseConcludeResponseObject concludeLicense(final LicenseModel model, final String userId) {
-        LicenseConcludeResponseObject response = null;
+    	LicenseConcludeResponseObject response = null;
 
         try {
             response = lqh.concludeLicenseObjectResponse(model, userId);
@@ -171,7 +190,7 @@ public class LicenseService {
     }
 
     /**
-     * Unsubscribe from a license
+     * Activate license
      *
      * @param licenseId LicenseId
      * @return boolean - indicates only if the HTTP query went through, not that license was actually deactivated!!!
