@@ -24,26 +24,21 @@ public class UserLicenses {
     }
 
     /**
-     * Finds group based on URL
+     * Finds license based on URL. Returns the first license to have LicenseModelGroup with matching url.
      *
      * @param url
-     * @return LicenseModelGroup with matching url or null if none match the url.
+     * @return UserLicense with LicenseModelGroup having a matching url or null if none match the url.
      */
-    public UserLicense getLicenseForURL(final String url) {
+    public UserLicense getLicenseForServiceURL(final String url) {
         if (url == null || userLicenses == null) {
             return null;
         }
         for (UserLicense userLicense : userLicenses) {
-            if(userLicense.getLmgList() == null) {
+            LicenseModelGroup group = userLicense.getLicenseModelGroupForURL(url);
+            if(group == null) {
                 continue;
             }
-            for (LicenseModelGroup group : userLicense.getLmgList()) {
-                // NOTE! -> URL <-
-                if (url.equalsIgnoreCase(group.getUrl())) {
-                    // NOTE! -> returning user license, not group <-
-                    return userLicense;
-                }
-            }
+            return userLicense;
         }
         return null;
     }

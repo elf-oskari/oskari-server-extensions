@@ -89,7 +89,7 @@ public class LicenseHandler extends RestActionHandler {
         if(userLicenses == null) {
             return null;
         }
-        final UserLicense license = userLicenses.getLicenseForURL(url);
+        final UserLicense license = userLicenses.getLicenseForServiceURL(url);
         if(license == null) {
             return null;
         }

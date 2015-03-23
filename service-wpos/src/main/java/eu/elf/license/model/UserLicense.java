@@ -34,6 +34,24 @@ public class UserLicense {
 		this.lmgList = lmgList;
 	}
 
+    /**
+     * Finds LicenseModelGroup based on URL
+     *
+     * @param url
+     * @return LicenseModelGroup with matching url or null if none match the url.
+     */
+    public LicenseModelGroup getLicenseModelGroupForURL(final String url) {
+        if (url == null || lmgList == null) {
+            return null;
+        }
+        for (LicenseModelGroup group : lmgList) {
+            // NOTE! -> URL <-
+            if (url.equalsIgnoreCase(group.getUrl())) {
+                return group;
+            }
+        }
+        return null;
+    }
 	
 	
 }
