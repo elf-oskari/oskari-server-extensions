@@ -56,7 +56,7 @@ public class LicenseHandler extends RestActionHandler {
         final String url = params.getHttpParam(PARAM_ID);
         final User user = params.getUser();
         if(url != null) {
-            final UserLicense userLicense = getUserLicense(params, url);
+            final UserLicenseWrapper userLicense = getUserLicense(params, url);
             // TODO: check the handling of case where user already has the license, service should tag group with a boolean or something?
             if(userLicense != null) {
                 // User already has license, respond with it!
@@ -83,7 +83,7 @@ public class LicenseHandler extends RestActionHandler {
         }
     }
 
-    private UserLicense getUserLicense(ActionParameters params, final String url) {
+    private UserLicenseWrapper getUserLicense(ActionParameters params, final String url) {
 
         final UserLicenses userLicenses = service.getLicenseGroupsForUser(params.getUser().getScreenname());
         if(userLicenses == null) {
@@ -94,15 +94,18 @@ public class LicenseHandler extends RestActionHandler {
             return null;
         }
         List<LicenseModelGroup> groups = license.getLmgList();
-        if(groups == null) {
+        if(groups == null || groups.isEmpty()) {
             log.warn("User had license, but no LicenseModelGroups");
             return null;
+
         }
         // groups don't need filtering by roles since user already has these
-        for(LicenseModelGroup group : groups) {
-            LicenseHelper.removeNonUIParams(group);
+        if(groups.size() > 1) {
+            log.warn("User license had more than one group, should have only one/service!");
         }
-        return license;
+        LicenseModelGroup group = groups.get(0);
+        LicenseHelper.removeNonUIParams(group);
+        return new UserLicenseWrapper(license, group);
     }
 
     @Override
