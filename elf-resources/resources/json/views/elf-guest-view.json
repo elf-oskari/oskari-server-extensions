@@ -10,6 +10,8 @@
     },
     "bundles": [
         {
+          "id": "elf-lang-overrides"
+        }, {
             "id": "openlayers-default-theme"
         }, {
             "id": "mapfull",
@@ -85,7 +87,8 @@
                     		"termsUrl":{
                     			"fi":"http://www.elfproject.eu/content/terms-service",
                     			"sv":"http://www.elfproject.eu/content/terms-service",
-                    			"en":"http://www.elfproject.eu/content/terms-service"
+                    			"en":"http://www.elfproject.eu/content/terms-service",
+                                "es":"http://www.elfproject.eu/content/terms-service"
                     		},
                     		"mapUrlPrefix":{
                     			"fi":"?",
@@ -155,9 +158,9 @@
                     "link": true
                 },
                 "mapUrlPrefix": {
-            		"en" : "http://54.216.109.137/oskari-map/?lang=en&",
-            		"sv" : "http://54.216.109.137/oskari-map/?lang=sv&",
-            		"fi" : "http://54.216.109.137/oskari-map/?lang=fi&"
+            		"en" : "http://54.75.147.57/oskari-map/?lang=en&",
+            		"sv" : "http://54.75.147.57/oskari-map/?lang=sv&",
+            		"fi" : "http://54.75.147.57/oskari-map/?lang=fi&"
             	}
                 
             }
