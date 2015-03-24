@@ -6,7 +6,7 @@ INSERT INTO oskari_maplayer(type, name, groupId,
                              locale) 
   VALUES('wfslayer', 'elf_HYP_geonorge_no', 902, 
          500000, 1, 
-          'http://wfs.geonorge.no/skwms1/wfs.inspire-hy-p', 'maan0001', 'r3jtqJE2TQS6M862f',  'urn:ogc:def:crs:EPSG::3857', '2.0.0',
+          'http://wfs.geonorge.no/skwms1/wfs.inspire-hy-p', null, null,  'urn:ogc:def:crs:EPSG::3857', '2.0.0',
           '{fi:{name:"HY-P Watercouse - geonorge.no", subtitle:"Geonorge.no"},sv:{name:"HY-P Watercouse - geonorge.no", subtitle:"Geonorge.no"},en:{name:"HY-P Watercouse - geonorge.no", subtitle:"Geonorge.no"}}');
          
 
