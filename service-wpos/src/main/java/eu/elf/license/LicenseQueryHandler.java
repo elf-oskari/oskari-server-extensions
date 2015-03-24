@@ -192,7 +192,7 @@ public class LicenseQueryHandler {
 
         final String response = doHTTPQuery(this.wposURL, "post", getUserLicensesQuery, false).toString();
         // System.out.println("response: "+response);
-        //log.debug("User licenses:\n", response);
+        log.debug("User licenses:\n", response);
         userLicenses = LicenseParser.parseUserLicensesAsLicenseModelGroupList(response);
 
 

@@ -85,8 +85,13 @@ public class LicenseParser {
     	    	Element orderContentElement = (Element)orderElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "orderContent").item(0);
     	    	Element catalogElement = (Element)orderContentElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "catalog").item(0);
     	    	NodeList productGroupElementList = catalogElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "productGroup");
-    	    	
-    	    	userLicense.setLmgList(createLicenseModelGroupList(productGroupElementList));
+
+                // setup user license flags in models
+                List<LicenseModelGroup> list = createLicenseModelGroupList(productGroupElementList);
+                for(LicenseModelGroup group : list) {
+                   group.setUserLicense(true);
+                }
+    	    	userLicense.setLmgList(list);
     	    	
     	    	String WSS_URL = findWssUrlFromUserLicenseParamList(userLicense.getLmgList());
     	    	
