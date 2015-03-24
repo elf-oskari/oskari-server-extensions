@@ -71,7 +71,6 @@ public class LicenseQueryHandler {
 	private String SOAPAddress = "";
 	URL wposURL = null;
 	URL soapURL = null;
-	private boolean proxyEnabled = false;
 	private String username = null;
 	private String password = null;
 	
@@ -732,25 +731,19 @@ public class LicenseQueryHandler {
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	private Boolean sendSOAP(BasicCookieStore bcs, String query, String SOAPAction) throws ClientProtocolException, IOException {
-		String url = "http://54.247.162.180:8080/licenserepository/services/LicenseManager";
+	private Boolean sendSOAP(BasicCookieStore bcs, String query, String SOAPAction) throws IOException {
 		//System.out.println("Query "+deactivateLicenseQuery);
         
         CloseableHttpClient hClient = HttpClients.custom().setDefaultCookieStore(bcs).build();
+        LicenseService.setupProxy(hClient);
         
-        HttpPost hPost = new HttpPost(url);
-        
-        //hPost.setHeader("User-Agent", "Mozilla/5.0");
+        HttpPost hPost = new HttpPost(this.SOAPAddress);
         hPost.setHeader("Content-Type", "text/xml; charset=utf-8");
-       // hPost.setHeader("SOAPAction","http://security.conterra.de/LicenseManager/DeactivateLicense");
-        hPost.setHeader("SOAPAction",SOAPAction);
+        hPost.setHeader("SOAPAction", SOAPAction);
         
         List<Cookie> cookieList = bcs.getCookies();
-		//System.out.println("cookieList.size: "+cookieList.size());
         String kex = "";
 		for (int i = 0; i < cookieList.size(); i++) {
-			//System.out.println("cookie("+i+") name: "+cookieList.get(i).getName());
-			//System.out.println("cookie("+i+") value: "+cookieList.get(i).getValue());
 			
 			kex = cookieList.get(i).getName();
 	        kex += "=";
@@ -762,23 +755,10 @@ public class LicenseQueryHandler {
         
         StringEntity entity = new StringEntity(query);
         hPost.setEntity(entity);
-       // System.out.println();
-        
-        
-	//    HttpHost proxy = new HttpHost("wwwp.nls.fi",800,"http");
-	//    RequestConfig conf = RequestConfig.custom().setProxy(proxy).build();
-	//    hPost.setConfig(conf);
-	        
-	        //System.out.println("hPost: "+hPost.toString());
-	//    System.out.println(hPost.getConfig().toString());
-	        //System.out.println("entity: "+hPost.getEntity().getContent().toString());
-        
-        //System.out.println("HEADERS");
+
         Header[] headers = hPost.getAllHeaders();
         for (int i=0; i< headers.length; i++) {
-          //  System.out.println(headers[i].toString());
         }
-        //System.out.println();
         
         HttpEntity ent = hPost.getEntity();
         String cont = EntityUtils.toString(ent);
@@ -824,18 +804,9 @@ public class LicenseQueryHandler {
 		
 		try {	
 
-		   if(proxyEnabled) {
-			   Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("46.30.132.7", 8080));
-			   httpuc = (HttpURLConnection) queryURL.openConnection(proxy);
-			   httpuc.setDoInput(true);
-			   httpuc.setDoOutput(true);
-		   }
-			 
-		   else {
-			   httpuc = (HttpURLConnection) queryURL.openConnection();
-			   httpuc.setDoInput(true);
-			   httpuc.setDoOutput(true); 
-		   }
+           httpuc = (HttpURLConnection) queryURL.openConnection();
+           httpuc.setDoInput(true);
+           httpuc.setDoOutput(true);
 			
 			if (useBasicAuthentication == true) {
 				userPassword = this.username + ":" + this.password;

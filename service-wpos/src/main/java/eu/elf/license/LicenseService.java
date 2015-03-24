@@ -5,7 +5,6 @@ import eu.elf.license.model.LicenseModel;
 import eu.elf.license.model.LicenseModelGroup;
 import eu.elf.license.model.UserLicense;
 import eu.elf.license.model.UserLicenses;
-import eu.elf.license.LicenseQueryHandler;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -13,18 +12,20 @@ import fi.nls.oskari.util.ConversionHelper;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClients;
 
 import java.io.IOException;
 import java.util.List;
 
 public class LicenseService {
 
-    private final Logger log = LogFactory.getLogger(LicenseService.class);
+    private final static Logger log = LogFactory.getLogger(LicenseService.class);
     private LicenseQueryHandler lqh;
     private String loginUrl;
     private String user;
@@ -253,29 +254,9 @@ public class LicenseService {
         //System.out.println("Fetching cookies...");
         //CloseableHttpClient httpclient = HttpClients.createDefault();
         DefaultHttpClient httpclient = new DefaultHttpClient();
+        LicenseService.setupProxy(httpclient);
         HttpPost post = new HttpPost(loginUrl + "&username=" + user + "&password=" + pass);
 
-        // TODO: check for loginUrl.protocol() + ".proxyHost"
-        if(System.getProperty("http.proxyHost") != null) {
-            log.info("http.proxyHost configured - using it for http client:",
-                    System.getProperty("http.proxyHost"),
-                    "port:", System.getProperty("http.proxyPort"));
-            int proxyPort = ConversionHelper.getInt(System.getProperty("http.proxyPort"), -1);
-            if(proxyPort == -1) {
-                log.warn("http.proxyHost configured, but http.proxyPort isn't");
-            }
-            else {
-                HttpHost proxy = new HttpHost(System.getProperty("http.proxyHost"), proxyPort);
-                httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY,proxy);
-                RequestConfig config = RequestConfig.custom()
-                        .setProxy(proxy)
-                        .build();
-                post.setConfig(config);
-            }
-        }
-        else {
-            log.info("No proxy configured");
-        }
         BasicCookieStore bcs = new BasicCookieStore();
 
         try {
@@ -300,6 +281,34 @@ public class LicenseService {
         }
 
         return bcs;
+    }
+
+    @SuppressWarnings("deprecation")
+    public static void setupProxy(CloseableHttpClient httpclient) {
+
+        // TODO: setup https proxy as well
+        if(System.getProperty("http.proxyHost") != null) {
+            log.info("http.proxyHost configured - using it for http client:",
+                    System.getProperty("http.proxyHost"),
+                    "port:", System.getProperty("http.proxyPort"));
+            int proxyPort = ConversionHelper.getInt(System.getProperty("http.proxyPort"), -1);
+            if(proxyPort == -1) {
+                log.warn("http.proxyHost configured, but http.proxyPort isn't");
+            }
+            else {
+                HttpHost proxy = new HttpHost(System.getProperty("http.proxyHost"), proxyPort);
+                httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY,proxy);
+                /*
+                RequestConfig config = RequestConfig.custom()
+                        .setProxy(proxy)
+                        .build();
+                post.setConfig(config);
+                */
+            }
+        }
+        else {
+            log.info("No proxy configured");
+        }
     }
 
 
