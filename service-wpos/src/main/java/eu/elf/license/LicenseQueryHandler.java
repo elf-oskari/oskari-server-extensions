@@ -148,7 +148,6 @@ public class LicenseQueryHandler {
      * @throws IOException
      */
     public String getUserLicensesAsXMLString(String user) throws Exception {
-        StringBuffer buf = null;
 
         String getUserLicensesQuery = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
                 "<wpos:WPOSRequest xmlns:wpos=\"http://www.conterra.de/wpos/1.1\" xmlns:xcpf=\"http://www.conterra.de/xcpf/1.1\" version=\"1.1.0\">" +
@@ -160,13 +159,11 @@ public class LicenseQueryHandler {
                 "</wpos:WPOSRequest>";
 
         try {
-            buf = doHTTPQuery(this.wposURL, "post", getUserLicensesQuery, false);
+            return doHTTPQuery(this.wposURL, "post", getUserLicensesQuery, false).toString();
 
         } catch (Exception e) {
             throw e;
         }
-
-        return buf.toString();
     }
 
 
