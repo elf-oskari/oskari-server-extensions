@@ -9,6 +9,7 @@ import eu.elf.license.model.UserLicenses;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.IOHelper;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
