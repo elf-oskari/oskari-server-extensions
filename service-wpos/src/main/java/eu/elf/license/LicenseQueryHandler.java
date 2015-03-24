@@ -42,6 +42,7 @@ import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.w3c.dom.Attr;
@@ -733,9 +734,11 @@ public class LicenseQueryHandler {
 	 */
 	private Boolean sendSOAP(BasicCookieStore bcs, String query, String SOAPAction) throws IOException {
 		//System.out.println("Query "+deactivateLicenseQuery);
-        
-        CloseableHttpClient hClient = HttpClients.custom().setDefaultCookieStore(bcs).build();
+
+        DefaultHttpClient hClient = new DefaultHttpClient();
         LicenseService.setupProxy(hClient);
+        //httpclient.setCookieStore(bcs);
+        //CloseableHttpClient hClient = HttpClients.createDefault(); //.setDefaultCookieStore(bcs).build();
         
         HttpPost hPost = new HttpPost(this.SOAPAddress);
         hPost.setHeader("Content-Type", "text/xml; charset=utf-8");
