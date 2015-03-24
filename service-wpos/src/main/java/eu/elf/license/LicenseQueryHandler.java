@@ -179,7 +179,6 @@ public class LicenseQueryHandler {
      */
     //public List<LicenseModelGroup> getUserLicensesAsLicenseModelGroupList(String user) throws Exception {
     public UserLicenses getUserLicensesAsLicenseUserLicensesObject(String user) throws Exception {
-        UserLicenses userLicenses = new UserLicenses();
 
         String getUserLicensesQuery = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
                 "<wpos:WPOSRequest xmlns:wpos=\"http://www.conterra.de/wpos/1.1\" xmlns:xcpf=\"http://www.conterra.de/xcpf/1.1\" version=\"1.1.0\">" +
@@ -191,18 +190,15 @@ public class LicenseQueryHandler {
                 "</wpos:WPOSRequest>";
 
         final String response = doHTTPQuery(this.wposURL, "post", getUserLicensesQuery, false).toString();
-        // System.out.println("response: "+response);
-        log.debug("User licenses:\n", response);
-        userLicenses = LicenseParser.parseUserLicensesAsLicenseModelGroupList(response);
+        UserLicenses userLicenses = LicenseParser.parseUserLicensesAsLicenseModelGroupList(response);
+        if(userLicenses.getUserLicenses() != null && userLicenses.getUserLicenses().size() > 0) {
+            log.debug("User licenses found: ", userLicenses.getUserLicenses().size());
+        }
+        else {
+            log.debug("User has no licenses");
+        }
 
-
-        //List<LicenseModelGroup> list = LicenseParser.parseUserLicensesAsLicenseModelGroupList(response);
-        //List<LicenseModelGroup> list = LicenseParser.parseListOfLicensesAsLicenseModelGroupList(response);
-        //for(LicenseModelGroup group : list) {
-        //   group.setUserLicense(true);
-        //}
         return userLicenses;
-
     }
 
 
