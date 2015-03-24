@@ -13,6 +13,7 @@ import fi.nls.oskari.util.ConversionHelper;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.impl.client.BasicCookieStore;
@@ -252,6 +253,8 @@ public class LicenseService {
         //System.out.println("Fetching cookies...");
         //CloseableHttpClient httpclient = HttpClients.createDefault();
         DefaultHttpClient httpclient = new DefaultHttpClient();
+        HttpPost post = new HttpPost(loginUrl + "&username=" + user + "&password=" + pass);
+
         // TODO: check for loginUrl.protocol() + ".proxyHost"
         if(System.getProperty("http.proxyHost") != null) {
             log.info("http.proxyHost configured - using it for http client:",
@@ -264,13 +267,15 @@ public class LicenseService {
             else {
                 HttpHost proxy = new HttpHost(System.getProperty("http.proxyHost"), proxyPort);
                 httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY,proxy);
+                RequestConfig config = RequestConfig.custom()
+                        .setProxy(proxy)
+                        .build();
+                post.setConfig(config);
             }
         }
         else {
             log.info("No proxy configured");
         }
-
-        HttpPost post = new HttpPost(loginUrl + "&username=" + user + "&password=" + pass);
         BasicCookieStore bcs = new BasicCookieStore();
 
         try {
