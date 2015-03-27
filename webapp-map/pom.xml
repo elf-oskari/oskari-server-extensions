@@ -34,7 +34,18 @@
             <artifactId>icu4j</artifactId>
             <version>51.1</version>
         </dependency>
+
         <!-- oskari -->
+        <dependency>
+            <groupId>fi.nls.oskari</groupId>
+            <artifactId>service-logging</artifactId>
+            <version>${oskari.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
         <dependency>
             <groupId>fi.nls.oskari</groupId>
             <artifactId>map-servlet</artifactId>
