@@ -34,7 +34,8 @@
                         }
                     }, {
                         "id": "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin"
-                    }, {
+                    },  { "id": "Oskari.arcgis.bundle.maparcgis.plugin.ArcGisLayerPlugin"
+                    },{
                         "id": "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin",
                         "config": {
                         	"deferSetLocation": true,

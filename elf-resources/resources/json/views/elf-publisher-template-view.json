@@ -34,6 +34,7 @@
                         }
                     },
                     { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" },
+                    { "id": "Oskari.arcgis.bundle.maparcgis.plugin.ArcGisLayerPlugin"},
                     { "id" : "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin" },
                     {
                     	"id":"Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin",
