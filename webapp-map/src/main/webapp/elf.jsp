@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ page contentType="text/html; charset=UTF-8" isELIgnored="false" %>
 <!DOCTYPE html>
 <html>
@@ -73,6 +74,8 @@
 </head>
 <body>
 
+<fmt:setLocale value="${language}"/>
+<fmt:setBundle basename="locale"/>
 <nav id="maptools">
     <div id="logobar">
     </div>
@@ -86,19 +89,19 @@
         <c:set var="user" value="fi.nls.oskari.domain.User" />
         <c:choose>
             <c:when test="${!empty _logout_uri}">
-                <a href="${_logout_uri}">Logout</a>
+                <a href="${_logout_uri}"><fmt:message key="logout"/></a>
             </c:when>
             <c:otherwise>
                 <c:choose>
                     <c:when test="${!empty loginState}">
-                        <p class="error">Invalid password or username!!</p>
+                        <p class="error"><fmt:message key="invalid_password_or_username"/></p>
                     </c:when>
                 </c:choose>
                 <form action='j_security_check' method="post" accept-charset="UTF-8">
-                    <input size="16" id="username" name="j_username" type="text" placeholder="Username" autofocus
+                    <input size="16" id="username" name="j_username" type="text" placeholder="<fmt:message key="username"/>" autofocus
                            required>
-                    <input size="16" id="password" name="j_password" type="password" placeholder="Password" required>
-                    <input type="submit" id="submit" value="Log in">
+                    <input size="16" id="password" name="j_password" type="password" placeholder="<fmt:message key="password"/>" required>
+                    <input type="submit" id="submit" value="<fmt:message key="login"/>">
                 </form>
             </c:otherwise>
         </c:choose>
