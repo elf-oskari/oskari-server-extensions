@@ -3,12 +3,14 @@ package eu.elf.license;
 import eu.elf.license.conclude.LicenseConcludeResponseObject;
 import eu.elf.license.model.*;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.w3c.dom.*;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.ext.Locator2Impl;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -34,7 +36,7 @@ public class LicenseParser {
        
     
     
-    public static UserLicenses parseUserLicensesAsLicenseModelGroupList(String xml) throws Exception {      
+    public static UserLicenses parseUserLicensesAsLicenseModelGroupList(String xml, String userid) throws Exception {      
     	UserLicenses userLicenses = new UserLicenses();
     	
     	try {
@@ -103,14 +105,16 @@ public class LicenseParser {
 	            userLicenses.addUserLicense(userLicense);
             	
             }
-                   
+                              
             return userLicenses;
 
         } catch (Exception e) {
             throw e;
         }
     }
-
+  
+      
+    
     /**
      * Get WSS_URL Parameter value ** Only for user's licenses
      *  
@@ -731,4 +735,56 @@ public class LicenseParser {
 
         return document;
     }
+    
+    /**
+     * Parses a list of active licenses from GetLicenseReferences response string
+     * 
+     * @param xml	- xml response
+     * @return		- ArrayList of license identifiers that are active
+     * @throws Exception
+     */
+    public static ArrayList<String> parseActiveLicensesFromGetLicenseReferencesResponse(String xml) throws Exception {
+    	ArrayList<String> activeLicenses = new ArrayList<String>();
+    	
+    	try {
+            Document xmlDoc = createXMLDocumentFromString(xml);
+            
+            NodeList licenseReferenceList = xmlDoc.getElementsByTagNameNS("http://www.52north.org/license/0.3.2", "LicenseReference");
+    
+            
+            for (int i = 0; i < licenseReferenceList.getLength(); i++) {
+            	Element licenseReferenceElement = (Element)licenseReferenceList.item(i);
+            	
+            	NodeList attributeElementList = licenseReferenceElement.getElementsByTagNameNS("urn:oasis:names:tc:SAML:2.0:assertion", "Attribute");
+
+            	for (int j = 0; j < attributeElementList.getLength(); j++) {
+            		Element attributeElement = (Element)attributeElementList.item(j);
+            		Element attributeValueElement = (Element)attributeElement.getElementsByTagNameNS("urn:oasis:names:tc:SAML:2.0:assertion", "AttributeValue").item(0);
+            	  
+            		NamedNodeMap attributeMap = attributeElement.getAttributes();
+            		
+            		for (int k = 0; k < attributeMap.getLength(); k++) {
+            			Attr attrs = (Attr) attributeMap.item(k);
+      	            	if (attrs.getNodeName().equals("Name") ) {
+
+      	                    if(attrs.getNodeValue().equals("urn:opengeospatial:ows4:geodrm:LicenseID")) {
+      	                    	activeLicenses.add(attributeValueElement.getTextContent());
+      	                    }
+      	    	        }
+      	            	
+      	
+      	            }
+	
+            	}
+	    		
+    
+            }
+            
+	    } catch (Exception e) {
+	    	throw e;
+	    }
+    	
+    	return activeLicenses;
+    }
+    
 }

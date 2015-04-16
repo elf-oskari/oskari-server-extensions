@@ -13,6 +13,7 @@ import eu.elf.license.model.*;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.IOHelper;
+
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.cookie.Cookie;
@@ -20,10 +21,13 @@ import org.apache.http.impl.client.BasicCookieStore;
 import org.w3c.dom.*;
 
 import javax.net.ssl.HttpsURLConnection;
+
 import java.io.*;
 import java.net.*;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class LicenseQueryHandler {
 
@@ -175,8 +179,9 @@ public class LicenseQueryHandler {
      * @throws IOException
      */
     //public List<LicenseModelGroup> getUserLicensesAsLicenseModelGroupList(String user) throws Exception {
-    public UserLicenses getUserLicensesAsLicenseUserLicensesObject(String user) throws Exception {
-
+    public UserLicenses getUserLicensesAsLicenseUserLicensesObject(BasicCookieStore bcs, String user) throws Exception {
+    	ArrayList<String> activeLicenses = new ArrayList<String>();
+    	
         String getUserLicensesQuery = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
                 "<wpos:WPOSRequest xmlns:wpos=\"http://www.conterra.de/wpos/1.1\" xmlns:xcpf=\"http://www.conterra.de/xcpf/1.1\" version=\"1.1.0\">" +
                 "<wpos:GetOrderList brief=\"false\">" +
@@ -187,9 +192,28 @@ public class LicenseQueryHandler {
                 "</wpos:WPOSRequest>";
 
         final String response = doHTTPQuery(this.wposURL, "post", getUserLicensesQuery, false).toString();
-        UserLicenses userLicenses = LicenseParser.parseUserLicensesAsLicenseModelGroupList(response);
+        
+        UserLicenses userLicenses = LicenseParser.parseUserLicensesAsLicenseModelGroupList(response, user);
+       
         if(userLicenses.getUserLicenses() != null && userLicenses.getUserLicenses().size() > 0) {
             log.debug("User licenses found: ", userLicenses.getUserLicenses().size());
+            
+            
+            // fetch list of active user licenses
+            activeLicenses = getActiveLicensesForUser(bcs, user);
+
+            // update isActive = true status for active UserLicense objects
+            for (int i = 0; i < userLicenses.getUserLicenses().size(); i++) {
+            	
+            	for (int j = 0; j < activeLicenses.size(); j++) {
+            		if (activeLicenses.get(j).equals(userLicenses.getUserLicenses().get(i).getLicenseId())) {	
+            			userLicenses.getUserLicenses().get(i).setIsActive(true);
+            		}
+                 }
+            		
+            }
+            
+            
         }
         else {
             log.debug("User has no licenses");
@@ -198,7 +222,52 @@ public class LicenseQueryHandler {
         return userLicenses;
     }
 
+    /**
+     * Fetch list of user's active licenses
+     * 
+     * @param userid
+     * @return
+     */
+    private ArrayList<String> getActiveLicensesForUser(BasicCookieStore bcs, String userid) throws Exception {
+    	
+    	try {
+	    	String SOAPAction = "http://security.conterra.de/LicenseManager/GetLicenseReferences";
+	    	ArrayList<String> activeLicenses = new ArrayList<String>();
+	    	
+	    	String SOAPqueryString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"+
+	    						 "<Envelope xmlns=\"http://www.w3.org/2003/05/soap-envelope\">"+
+							     "<Body>"+
+							     "<licmanp:GetLicenseReferences xmlns:licmanp=\"http://www.52north.org/licensemanagerprotocol\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""+
+							     " xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\" xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\">"+
+							     "<samlp:AttributeQuery ID=\"ID_2\" Version=\"1.0\" IssueInstant=\"2001-12-17T09:30:47.0Z\">"+
+							     "<saml:Subject>"+
+							     "<saml:NameID Format=\"urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified\">"+ StringEscapeUtils.escapeXml10(userid) + "</saml:NameID>"+
+							     "</saml:Subject>"+
+							     "<saml:Attribute Name=\"urn:opengeospatial:ows4:geodrm:Active\">"+
+							     "<saml:AttributeValue>true</saml:AttributeValue>"+
+							     "</saml:Attribute>"+
+							     "</samlp:AttributeQuery>"+
+							     "</licmanp:GetLicenseReferences>"+
+							     "</Body>"+
+							     "</Envelope>";
+	    	
+	    	String responseString = sendSOAPGetResponse(bcs, SOAPqueryString, SOAPAction);
+	    	
+	    	//log.debug("SOAPResponse: "+responseString);
+	    	
+	    	activeLicenses = LicenseParser.parseActiveLicensesFromGetLicenseReferencesResponse(responseString);
 
+	    	
+	    	return activeLicenses;
+    	
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    		throw e;
+    	}
+    	
+    }	
+    
+    
     /**
      * Gets the details of the specific license
      *
@@ -655,7 +724,6 @@ public class LicenseQueryHandler {
      * @throws IOException
      */
     private Boolean sendSOAP(BasicCookieStore bcs, String query, String SOAPAction) throws IOException {
-
         log.debug("Querying SOAP - URL:", SOAPAddress, "- Payload:\n", query);
         InputStream response = null;
         try {
@@ -680,6 +748,55 @@ public class LicenseQueryHandler {
                 return true;
             } else {
                 return false;
+            }
+        } finally {
+            IOHelper.close(response);
+        }
+
+
+    }
+    
+    /**
+     * Send SOAP Message and return response
+     * 
+     * @param bcs
+     * @param query
+     * @param SOAPAction
+     * @return
+     * @throws ClientProtocolException
+     * @throws IOException
+     */
+    private String sendSOAPGetResponse(BasicCookieStore bcs, String query, String SOAPAction) throws IOException {
+    	log.debug("Querying SOAP - URL:", SOAPAddress, "- Payload:\n", query);
+       
+    	InputStream response = null;
+    	String responseString = "";
+    	
+        try {
+            List<Cookie> cookieList = bcs.getCookies();
+            StringWriter cookieHeader = new StringWriter();
+            for (Cookie c : cookieList) {
+                cookieHeader.append(c.getName());
+                cookieHeader.append("=");
+                cookieHeader.append(c.getValue());
+                cookieHeader.append("; ");
+            }
+            
+            HttpURLConnection conn = IOHelper.getConnection(SOAPAddress);
+            IOHelper.setContentType(conn, "text/xml; charset=utf-8");
+            IOHelper.writeHeader(conn, "SOAPAction", SOAPAction);
+            IOHelper.writeHeader(conn, "Cookie", cookieHeader.toString());
+
+            IOHelper.writeToConnection(conn, query);
+            response = conn.getInputStream();
+            int code = conn.getResponseCode();
+            
+            if (code == 200) {
+            	responseString = new Scanner(response,"UTF-8").useDelimiter("\\A").next();
+        
+                return responseString;
+            } else {
+                return "";
             }
         } finally {
             IOHelper.close(response);

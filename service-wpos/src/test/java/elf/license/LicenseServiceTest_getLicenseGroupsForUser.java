@@ -17,6 +17,7 @@ import eu.elf.license.model.UserLicenses;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -25,20 +26,33 @@ public class LicenseServiceTest_getLicenseGroupsForUser {
 
     @Test
     public void test() throws Exception {
-        //LicenseService ls = TestHelper.createService();
-    	//List<LicenseModelGroup> lmgList = new ArrayList<LicenseModelGroup>();
-    	//lmgList = ls.getLicenseGroupsForUser("FGI");
+        String userid = "FGI";
+    	LicenseService ls = TestHelper.createService();
+    	UserLicenses ul = ls.getLicenseGroupsForUser(userid);
+    
+   
+//List<LicenseModelGroup> lmgList = new ArrayList<LicenseModelGroup>();
+//lmgList = ls.getLicenseGroupsForUser("FGI");   	
+//final String xml = TestHelper.readString(getClass().getResourceAsStream("GetOrderListQueryResponse.xml"));    	
+//List<LicenseModelGroup> lmgList = LicenseParser.parseUserLicensesAsLicenseModelGroupList(xml);
+//UserLicenses ul = LicenseParser.parseUserLicensesAsLicenseModelGroupList(xml, userid);
+ 
     	
-       	final String xml = TestHelper.readString(getClass().getResourceAsStream("GetOrderListQueryResponse.xml"));    	
+    	List<UserLicense> userLicenseList = ul.getUserLicenses();
+ 
 
-    	//List<LicenseModelGroup> lmgList = LicenseParser.parseUserLicensesAsLicenseModelGroupList(xml);
-     	UserLicenses ul = LicenseParser.parseUserLicensesAsLicenseModelGroupList(xml);
-     	List<UserLicense> userLicenseList = ul.getUserLicenses();
      	
      	for (int h = 0; h < userLicenseList.size(); h++) {
      		System.out.println("ul.licenseId: "+userLicenseList.get(h).getLicenseId());
      		System.out.println("ul.validTo: "+userLicenseList.get(h).getValidTo());
+     		
+     		if (userLicenseList.get(h).getValidTo() != null) {
+     			Calendar cal =  userLicenseList.get(h).getValidToAsCalendarObject();
+     			System.out.println("ul.validToAsCalendar: "+cal.getTime());
+     		}
+     		
      		System.out.println("ul.secureServiceURL(): "+userLicenseList.get(h).getSecureServiceURL());
+     		System.out.println("ul.isActive: "+userLicenseList.get(h).getIsActive());
      		
      		List<LicenseModelGroup> lmgList = userLicenseList.get(h).getLmgList();
 
@@ -49,7 +63,7 @@ public class LicenseServiceTest_getLicenseGroupsForUser {
 	    	   	
 	    	System.out.println("lmgList.size "+lmgList.size());
 	   
-	  	
+	  	/**
 	    	for (int i = 0; i < lmgList.size(); i++) {
 	    		System.out.println("lmgList.id "+lmgList.get(i).getId());
 	    		System.out.println("lmgList.name "+lmgList.get(i).getName());
@@ -70,7 +84,8 @@ public class LicenseServiceTest_getLicenseGroupsForUser {
 	        		lpList = lmList.get(j).getParams();
 	        	
 	        		System.out.println("\t\tlpList.size: "+lpList.size());
-	        /**		
+	  
+	        		
 	        		for (int k = 0; k < lpList.size(); k++) {
 	        		
 	        			if (lpList.get(k).getParameterClass().equals("predefinedParameter")) {
@@ -175,15 +190,18 @@ public class LicenseServiceTest_getLicenseGroupsForUser {
 	        			
 	        		
 	        		}
-	   **/
+	  
 	        	}
+	        	
+	        	
     	
           	
 	    		System.out.println("\n");
 	    	}
+	   **/
 	    
     	}  
-		
+
 		
         //assertEquals("Abstract should match expected", "The product catalog of the license manager", pojo.getXMLObjectPojo().get_catalog().get_title());
         

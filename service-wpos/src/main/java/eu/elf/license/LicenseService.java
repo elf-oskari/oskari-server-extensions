@@ -5,17 +5,18 @@ import eu.elf.license.model.LicenseModel;
 import eu.elf.license.model.LicenseModelGroup;
 import eu.elf.license.model.UserLicense;
 import eu.elf.license.model.UserLicenses;
-
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
+
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.params.ConnRoutePNames;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -32,6 +33,14 @@ public class LicenseService {
     private String user;
     private String pass;
 
+    /**
+     * 
+     * @param WPOSUrl
+     * @param WPOSUsername
+     * @param WPOSPassword
+     * @param licenseManagerURL
+     * @param loginUrl
+     */
     public LicenseService(String WPOSUrl, String WPOSUsername, String WPOSPassword, String licenseManagerURL, String loginUrl) {
         user = WPOSUsername;
         pass = WPOSPassword;
@@ -44,6 +53,10 @@ public class LicenseService {
         }
     }
 
+    /**
+     * 
+     * @return
+     */
     public List<LicenseModelGroup> getLicenseGroups() {
         List<LicenseModelGroup> lmgList = null;
 
@@ -57,13 +70,25 @@ public class LicenseService {
         return lmgList;
     }
 
-
+    /**
+     * 
+     * @param userid
+     * @return
+     */
     public UserLicenses getLicenseGroupsForUser(final String userid) {
     	UserLicenses userLicenses = null;
     	
         try {
-        	userLicenses = lqh.getUserLicensesAsLicenseUserLicensesObject(userid);
+        	BasicCookieStore bcs = getAdminConsoleCookies();
+            //System.out.println("cookies fetched");
 
+        	userLicenses = lqh.getUserLicensesAsLicenseUserLicensesObject(bcs, userid);
+        	//userLicenses = lqh.getUserLicensesAsLicenseUserLicensesObject(userid);
+        	
+	    } catch (ClientProtocolException cpe) {
+	    	cpe.printStackTrace();
+        } catch (IOException ioe) {
+        	ioe.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -71,10 +96,22 @@ public class LicenseService {
         return userLicenses;
     }
 
+    /**
+     * 
+     * @param url
+     * @return
+     */
     public LicenseModelGroup getLicenseForURL(final String url) {
         return getLicenseGroupsForURL(getLicenseGroups(), url);
     }
 
+    /**
+     * Get user license for given url
+     * 
+     * @param userid
+     * @param url
+     * @return
+     */
     public LicenseModelGroup getUserLicenseForURL(final String userid, final String url) {
         UserLicenses ul = getLicenseGroupsForUser(userid);
         List<UserLicense> userLicenseList = ul.getUserLicenses();
@@ -86,6 +123,32 @@ public class LicenseService {
         	
         	if (lmg != null) {
         		return lmg;
+        	}
+        }
+    	
+        return null;
+    }
+    
+    /**
+     * Get user license for given url, search only from active user licenses
+     * 
+     * @param userid
+     * @param url
+     * @return
+     */
+    public LicenseModelGroup getActiveUserLicenseForURL(final String userid, final String url) {
+        UserLicenses ul = getLicenseGroupsForUser(userid);
+        List<UserLicense> userLicenseList = ul.getUserLicenses();
+        
+        for (int i = 0; i < userLicenseList.size(); i++) {
+        	if (userLicenseList.get(i).getIsActive() == true) {
+	        	List<LicenseModelGroup> lmgList = userLicenseList.get(i).getLmgList();
+	        	
+	        	LicenseModelGroup lmg = getLicenseGroupsForURL(lmgList, url);
+	        	
+	        	if (lmg != null) {
+	        		return lmg;
+	        	}
         	}
         }
     	
@@ -214,7 +277,6 @@ public class LicenseService {
 
             success = lqh.activateLicense(bcs, licenseId);
 
-
         } catch (ClientProtocolException cpe) {
             cpe.printStackTrace();
         } catch (IOException ioe) {
@@ -239,7 +301,6 @@ public class LicenseService {
 
             success = lqh.deleteLicense(bcs, licenseId);
 
-
         } catch (ClientProtocolException cpe) {
             cpe.printStackTrace();
         } catch (IOException ioe) {
@@ -249,7 +310,10 @@ public class LicenseService {
         return success;
     }
 
-
+	/**
+	 *  Get cookies from admin console
+	 * @return BasicCookieStore
+	 */
     @SuppressWarnings("deprecation")
     public BasicCookieStore getAdminConsoleCookies() {
         //System.out.println("Fetching cookies...");
@@ -269,10 +333,10 @@ public class LicenseService {
             //System.out.println("cookieList.size: "+cookieList.size());
 
             //for (int c = 0; c < cookieList.size(); c++) {
-            //	System.out.println("cookie "+c);
-            //	System.out.println(cookieList.get(c).getName());
-            //	System.out.println(cookieList.get(c).getValue());
-            //}
+          		//System.out.println("cookie "+c);
+          		//System.out.println(cookieList.get(c).getName());
+          		//System.out.println(cookieList.get(c).getValue());
+          	//}
 
 
         } catch (ClientProtocolException cpe) {
@@ -284,6 +348,10 @@ public class LicenseService {
         return bcs;
     }
 
+    /**
+     * 
+     * @param httpclient
+     */
     @SuppressWarnings("deprecation")
     public static void setupProxy(CloseableHttpClient httpclient) {
 
