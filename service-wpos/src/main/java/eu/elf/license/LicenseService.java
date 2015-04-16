@@ -136,18 +136,18 @@ public class LicenseService {
      * @param url
      * @return
      */
-    public LicenseModelGroup getActiveUserLicenseForURL(final String userid, final String url) {
+    public UserLicense getActiveUserLicenseForURL(final String userid, final String url) {
         UserLicenses ul = getLicenseGroupsForUser(userid);
         List<UserLicense> userLicenseList = ul.getUserLicenses();
         
-        for (int i = 0; i < userLicenseList.size(); i++) {
-        	if (userLicenseList.get(i).getIsActive() == true) {
-	        	List<LicenseModelGroup> lmgList = userLicenseList.get(i).getLmgList();
+        for (UserLicense license : userLicenseList) {
+        	if (license.getIsActive()) {
+	        	List<LicenseModelGroup> lmgList = license.getLmgList();
 	        	
 	        	LicenseModelGroup lmg = getLicenseGroupsForURL(lmgList, url);
 	        	
 	        	if (lmg != null) {
-	        		return lmg;
+	        		return license;
 	        	}
         	}
         }

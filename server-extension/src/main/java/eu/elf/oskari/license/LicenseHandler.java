@@ -85,11 +85,7 @@ public class LicenseHandler extends RestActionHandler {
 
     private UserLicenseWrapper getUserLicense(ActionParameters params, final String url) {
 
-        final UserLicenses userLicenses = service.getLicenseGroupsForUser(params.getUser().getScreenname());
-        if(userLicenses == null) {
-            return null;
-        }
-        final UserLicense license = userLicenses.getLicenseForServiceURL(url);
+        final UserLicense license = service.getActiveUserLicenseForURL(params.getUser().getScreenname(), url);
         if(license == null) {
             return null;
         }
