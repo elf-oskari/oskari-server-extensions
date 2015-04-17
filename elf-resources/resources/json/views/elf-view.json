@@ -322,7 +322,11 @@
         }, {
             "id": "maplegend"
         }, {
-            "id": "userguide"
+            "id": "userguide",
+            "config" : {
+                "tags" : "userguide",
+                "flyoutClazz" : "Oskari.mapframework.bundle.userguide.SimpleFlyout"
+            }
         }, {
             "id": "featuredata2"
         }, {
