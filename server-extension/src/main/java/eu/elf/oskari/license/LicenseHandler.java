@@ -101,6 +101,7 @@ public class LicenseHandler extends RestActionHandler {
         }
         LicenseModelGroup group = groups.get(0);
         LicenseHelper.removeNonUIParams(group);
+
         return new UserLicenseWrapper(license, group);
     }
 

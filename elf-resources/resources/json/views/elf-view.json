@@ -345,9 +345,9 @@
                 }
             }
         }, {
-            "id": "postprocessor"
-        }, {
         	"id": "elf-language-selector"
+        }, {
+            "id": "findbycoordinates"
         }, {
             "id": "elf-geolocator"
         }, {
