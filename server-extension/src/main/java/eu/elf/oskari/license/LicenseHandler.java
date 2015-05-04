@@ -89,7 +89,7 @@ public class LicenseHandler extends RestActionHandler {
     }
 
     private UserLicenseWrapper getUserLicenseById(User user, String licenseId) {
-        final UserLicense license = service.getActiveUserLicenseForURL(user.getScreenname(), licenseId);
+        final UserLicense license = service.getActiveUserLicenseById(user.getScreenname(), licenseId);
         return getUserLicense(license);
     }
 
