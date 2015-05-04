@@ -483,7 +483,7 @@ public class LicenseQueryHandler {
         // create query string
         final String wposQuery = createOrderProductQueryFromLicenseModel(lm, userId);
 
-//System.out.println("wposquery "+wposQuery);
+        //System.out.println("wposquery "+wposQuery);
 
         return concludeLicenseObjectResponse(wposQuery);
     }
@@ -574,17 +574,19 @@ public class LicenseQueryHandler {
 
                         if (lpenum.isMulti()) {
                             wposQuery += "<wpos:Parameter name=\"" + StringEscapeUtils.escapeXml10(lpenum.getName()) + "\" type=\"string\" multi=\"true\" optional=\"true\">";
-
-                            for (int j = 0; j < lpenum.getOptions().size(); j++) {
-                                if (CheckIfListOfStringContainsValue(lpenum.getSelections(), lpenum.getOptions().get(j)) == true) {
-                                    wposQuery += "<wpos:Value selected=\"true\">" + StringEscapeUtils.escapeXml10(lpenum.getOptions().get(j)) + "</wpos:Value>";
-                                } 
-                                //else {
-                                //    wposQuery += "<wpos:value selected=\"false\">" + StringEscapeUtils.escapeXml10(lpenum.getOptions().get(j)) + "</wpos:value>";
-                                //}
-
+                
+                            String selectionsString = "";
+                                                                 
+                            for (int j = 0; j <lpenum.getSelections().size(); j++) {
+                            	if (j == 0) {
+                            		selectionsString = lpenum.getSelections().get(j);
+                            	}
+                            	else {
+                            		selectionsString += ", "+lpenum.getSelections().get(j);
+                            	}
                             }
-
+                         
+                            wposQuery += "<wpos:Value selected=\"true\">" + StringEscapeUtils.escapeXml10(selectionsString) + "</wpos:Value>";
                             wposQuery += "</wpos:Parameter>";
                         } else {
                             wposQuery += "<wpos:Parameter name=\"" + StringEscapeUtils.escapeXml10(lpenum.getName()) + "\" type=\"string\" multi=\"false\">";

@@ -559,6 +559,7 @@ public class LicenseParser {
                 if (attrs.getNodeName().equals("selected") ) {
                     if (attrs.getNodeValue().equals("true")) {
                         lpEnum.setDefaultValue(valueElement.getTextContent());
+                        lpEnum.addSelection(valueElement.getTextContent());
                     }
                 }
 
