@@ -154,6 +154,29 @@ public class LicenseService {
     	
         return null;
     }
+
+    /**
+     * Get user license for given licenseId, search only from active user licenses
+     *
+     * @param userid
+     * @param licenseId
+     * @return
+     */
+    public UserLicense getActiveUserLicenseById(final String userid, final String licenseId) {
+        if(licenseId == null) {
+            return null;
+        }
+        UserLicenses ul = getLicenseGroupsForUser(userid);
+        List<UserLicense> userLicenseList = ul.getUserLicenses();
+
+        for (UserLicense license : userLicenseList) {
+            if (license.getIsActive() && licenseId.equals(license.getLicenseId())) {
+                return license;
+            }
+        }
+
+        return null;
+    }
     
 
     /**
