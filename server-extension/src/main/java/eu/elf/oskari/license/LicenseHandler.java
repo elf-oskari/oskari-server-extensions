@@ -56,7 +56,7 @@ public class LicenseHandler extends RestActionHandler {
         final String url = params.getHttpParam(PARAM_ID);
         final User user = params.getUser();
         if(url != null) {
-            final UserLicenseWrapper userLicense = getUserLicense(params, url);
+            final UserLicenseWrapper userLicense = getUserLicense(user, url);
             // TODO: check the handling of case where user already has the license, service should tag group with a boolean or something?
             if(userLicense != null) {
                 // User already has license, respond with it!
@@ -83,9 +83,18 @@ public class LicenseHandler extends RestActionHandler {
         }
     }
 
-    private UserLicenseWrapper getUserLicense(ActionParameters params, final String url) {
+    private UserLicenseWrapper getUserLicense(User user, final String url) {
+        final UserLicense license = service.getActiveUserLicenseForURL(user.getScreenname(), url);
+        return getUserLicense(license);
+    }
 
-        final UserLicense license = service.getActiveUserLicenseForURL(params.getUser().getScreenname(), url);
+    private UserLicenseWrapper getUserLicenseById(User user, String licenseId) {
+        final UserLicense license = service.getActiveUserLicenseById(user.getScreenname(), licenseId);
+        return getUserLicense(license);
+    }
+
+    private UserLicenseWrapper getUserLicense(final UserLicense license) {
+
         if(license == null) {
             return null;
         }
@@ -133,7 +142,13 @@ public class LicenseHandler extends RestActionHandler {
             // TODO: error handling in LicenseService?
             throw new ActionParamsException("Couldn't conclude license");
         }
-        ResponseHelper.writeResponse(params, LicenseHelper.getAsJSON(resp));
+
+        final UserLicenseWrapper userLicense = getUserLicenseById(params.getUser(), resp.getLicenseId());
+        if(userLicense == null) {
+            throw new ActionParamsException("Concluded successfully,but couldn't load license details");
+        }
+
+        ResponseHelper.writeResponse(params, LicenseHelper.getAsJSON(userLicense));
     }
 
     @Override

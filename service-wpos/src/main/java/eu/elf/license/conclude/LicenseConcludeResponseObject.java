@@ -8,13 +8,22 @@ public class LicenseConcludeResponseObject {
 	public LicenseConcludeResponseObject() {
 		
 	}
-	
+
+	/**
+	 * LicenseModel id
+	 * @return
+	 */
 	public String getProductId() {
 		return productId;
 	}
 	public void setProductId(String productId) {
 		this.productId = productId;
 	}
+
+	/**
+	 * Id for the newly concluded license
+	 * @return
+	 */
 	public String getLicenseId() {
 		return licenseId;
 	}
