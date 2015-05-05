@@ -8,6 +8,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.domain.Role;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -20,6 +21,8 @@ import java.net.URL;
 import java.net.HttpURLConnection;
 import java.util.Iterator;
 import java.util.Set;
+
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * Created by RLINKALA on 16.3.2015.
@@ -38,15 +41,16 @@ public class GiveMetadataFeedbackHandler extends ActionHandler {
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
 
-        String test = params.getHttpParam("test");
-        log.debug("&&&&&&&&&:" + params.getHttpParam("data"));
         if(log.isDebugEnabled()) printRequestData(params.getHttpParam("data"));
+        getRole(params);
 
-        sendFeedBackToServer("https://geoviqua.stcorp.nl/devel/api/v1/feedback/items/", params);
-        //sendFeedBackToServer("http://dev.paikkatietoikkuna.fi/gf/api/v1/feedback/items/", params);
 
+        sendFeedBackToServer("http://dev.paikkatietoikkuna.fi/gf/api/v1/feedback/items/", params);
+        //sendFeedBackToServer("https://geoviqua.stcorp.nl/devel/api/v1/feedback/items/", params);
+        //sendFeedBackToServer("http://54.75.147.57:8000/api/v1/feedback/items/", params);
 
         JSONArray result = new JSONArray();
+
 
         try {
             JSONObject item = new JSONObject();
@@ -65,31 +69,40 @@ public class GiveMetadataFeedbackHandler extends ActionHandler {
         // TODO check which role to get and make also null checks
         Set roles = params.getUser().getRoles();
 
-        String returnRole = null;
+        Role returnRole = null;
         for(Iterator rolesIterator = roles.iterator(); rolesIterator.hasNext(); ){
-            returnRole = (String)rolesIterator.next();
-            log.debug("role: " + returnRole);
+            returnRole = (Role)rolesIterator.next();
+            log.debug("role: " + returnRole.getName());
         }
-        return returnRole;
+        return returnRole.getName();
     }
 
     private void sendFeedBackToServer(String url, ActionParameters params){
-        String USER_AGENT = "Mozilla/5.0";
+        //String USER_AGENT = "Mozilla/5.0";
 
         try{
-
             org.json.simple.JSONObject requestParameters = getRequestParameters(params.getHttpParam("data"));
 
-            //String url = "https://geoviqua.stcorp.nl/devel/api/v1/feedback/items/";
             URL obj = new URL(url);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
-            //add reuqest header
+            //String name = "feedback_elf_super";
+            //String password = "P3ll3Pel0t0n";
+            String name = "masa";
+            String password = "masa15";
+
+            String authString = name + ":" + password;
+            log.debug("auth string: " + authString);
+            byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
+            String authStringEnc = new String(authEncBytes);
+            log.debug("Base64 encoded auth string: " + authStringEnc);
+
+
             con.setRequestMethod("POST");
-            con.setRequestProperty("User-Agent", USER_AGENT);
             con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
             con.setRequestProperty("Connection", "keep-alive");
             con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+            con.setRequestProperty("Authorization", "Basic " + authStringEnc);
 
 
             String postJSON = createJSONObjectForPOSTRequest(requestParameters);
@@ -120,9 +133,9 @@ public class GiveMetadataFeedbackHandler extends ActionHandler {
             //print result
             log.debug(response.toString());
 
-        }catch(Exception e){
-            System.out.println("MESSU: " + e.getMessage());
-            System.out.println(e.toString());
+        } catch (Exception e){
+            log.error("MESSU: " + e.getMessage());
+            log.error(e.toString());
         }
 
     }
@@ -142,19 +155,13 @@ public class GiveMetadataFeedbackHandler extends ActionHandler {
         JSONHelper.putValue(JSONbase, "userRole", jsonGVQ_UserRoleCode);
 
 
-        JSONObject jsonComment = JSONHelper.createJSONObject("comment", (String)requestParameters.get("userComment"));
-        JSONObject jsonMimetype = JSONHelper.createJSONObject("mime-type", "text/plain");
-        JSONHelper.putValue(JSONbase, "userComment", jsonComment);
-        JSONHelper.putValue(JSONbase, "userComment", jsonMimetype);
-
-
         JSONObject jsonCharacterString = JSONHelper.createJSONObject("CharacterString", (String)requestParameters.get("primaryTargetCode"));
         JSONObject jsonCharacterString2 = JSONHelper.createJSONObject("CharacterString", (String)requestParameters.get("primaryTargetCodeSpace"));
 
 
         JSONObject JSONbase2 = new JSONObject();
         JSONHelper.putValue(JSONbase2, "code", jsonCharacterString);
-        JSONHelper.putValue(JSONbase2, "codespace", jsonCharacterString2);
+        JSONHelper.putValue(JSONbase2, "codeSpace", jsonCharacterString2);
         JSONObject jsonMD_Identifier = JSONHelper.createJSONObject("MD_Identifier", JSONbase2);
 
 
@@ -165,14 +172,18 @@ public class GiveMetadataFeedbackHandler extends ActionHandler {
 
         JSONHelper.putValue(JSONbase, "primaryTarget", jsonArray2);
 
+
+        JSONObject ratingJSONObject  = new JSONObject();
+
+        JSONHelper.putValue(ratingJSONObject, "justification", requestParameters.get("justification"));
+        JSONHelper.putValue(ratingJSONObject, "score", Integer.parseInt((String) requestParameters.get("score")));
+
+
         JSONArray jsonArrayx = new JSONArray();
-        jsonArrayx.put(JSONHelper.createJSONObject("justification", (String)requestParameters.get("justification")));
-        jsonArrayx.put(JSONHelper.createJSONObject("score", Integer.parseInt((String) requestParameters.get("score"))));
+        jsonArrayx.put(ratingJSONObject);
 
         JSONHelper.put(JSONbase,"rating", jsonArrayx);
-        JSONHelper.putValue(JSONbase, "user", "testihemmo");
-
-        log.debug("##############" + JSONbase.toString());
+        JSONHelper.putValue(JSONbase, "user", "/api/v1/feedback/userinformation/1/");
 
         return JSONbase.toString();
    }
@@ -201,6 +212,7 @@ public class GiveMetadataFeedbackHandler extends ActionHandler {
     private String printRequestData(String data) throws ActionException{
 
         log.debug("data: " + data);
+        log.debug("Got from FrontEnd:" + data);
         try{
             JSONParser parser = new JSONParser();
             org.json.simple.JSONObject jsonData = (org.json.simple.JSONObject)parser.parse(data);
