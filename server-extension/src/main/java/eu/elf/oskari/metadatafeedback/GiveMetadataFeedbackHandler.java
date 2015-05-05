@@ -9,6 +9,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.domain.Role;
+import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -44,10 +45,9 @@ public class GiveMetadataFeedbackHandler extends ActionHandler {
         if(log.isDebugEnabled()) printRequestData(params.getHttpParam("data"));
         getRole(params);
 
-
-        sendFeedBackToServer("http://dev.paikkatietoikkuna.fi/gf/api/v1/feedback/items/", params);
-        //sendFeedBackToServer("https://geoviqua.stcorp.nl/devel/api/v1/feedback/items/", params);
-        //sendFeedBackToServer("http://54.75.147.57:8000/api/v1/feedback/items/", params);
+        String feedbackServerUrl = PropertyUtil.get("oskari.elf.feedback.s" +
+                "erver");
+        sendFeedBackToServer(feedbackServerUrl, params);
 
         JSONArray result = new JSONArray();
 
@@ -88,8 +88,9 @@ public class GiveMetadataFeedbackHandler extends ActionHandler {
 
             //String name = "feedback_elf_super";
             //String password = "P3ll3Pel0t0n";
-            String name = "masa";
-            String password = "masa15";
+            String name = PropertyUtil.get("oskari.elf.feedback.username");
+            String password = PropertyUtil.get("oskari.elf.feedback.password");
+
 
             String authString = name + ":" + password;
             log.debug("auth string: " + authString);
