@@ -42,6 +42,7 @@ public class MetadataCatalogueELFResultParser extends MetadataCatalogueResultPar
     public SearchResultItem parseResult(OMElement elem, String locale) throws Exception {
         final SearchResultItem item = super.parseResult(elem, locale);
         log.debug("Parsed service url for", item.getResourceId(), ":", item.getGmdURL());
+
         // Check OnlineResource URL: if matches securitymanagerin url -> setup KEY_LICENSE = service url
         if(urlPrefix != null && item.getGmdURL() != null && item.getGmdURL().startsWith(urlPrefix)) {
             item.addValue(KEY_LICENSE, item.getGmdURL());

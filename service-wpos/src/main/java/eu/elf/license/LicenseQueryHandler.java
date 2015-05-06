@@ -383,7 +383,7 @@ public class LicenseQueryHandler {
                                 selectionsString += ", " + tempSelections.get(j);
                             }
                         }
-                        
+
                         productPriceQuery += "<wpos:Value selected=\"true\">" + StringEscapeUtils.escapeXml10(selectionsString) + "</wpos:Value>" +
                                 "</wpos:Parameter>";
                     }
