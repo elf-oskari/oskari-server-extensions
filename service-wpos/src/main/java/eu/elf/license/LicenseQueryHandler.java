@@ -373,10 +373,19 @@ public class LicenseQueryHandler {
                         productPriceQuery += "<wpos:Value selected=\"true\">" + StringEscapeUtils.escapeXml10(tempOptions.get(0)) + "</wpos:Value>" +
                                 "</wpos:Parameter>";
                     } else {
+                        String selectionsString = "";
+
                         for (int j = 0; j < tempSelections.size(); j++) {
-                            productPriceQuery += "<wpos:Value selected=\"true\">" + StringEscapeUtils.escapeXml10(tempSelections.get(j)) + "</wpos:Value>" +
-                                    "</wpos:Parameter>";
+                            if(j==0) {
+                                selectionsString = tempSelections.get(j);
+                            }
+                            else {
+                                selectionsString += ", " + tempSelections.get(j);
+                            }
                         }
+                        
+                        productPriceQuery += "<wpos:Value selected=\"true\">" + StringEscapeUtils.escapeXml10(selectionsString) + "</wpos:Value>" +
+                                "</wpos:Parameter>";
                     }
                 } else if (lp instanceof LicenseParamText) {
                     LicenseParamText lpText = (LicenseParamText) lp;
