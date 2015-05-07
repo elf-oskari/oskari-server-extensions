@@ -7,7 +7,7 @@
 
 
 
-INSERT INTO oskari_wfs_parser_config ( name, type, request_template, response_template, parse_config) VALUES ( 'default', 'Path', '/fi/nls/oskari/fe/input/request/wfs/generic/ELF_generic_wfs_template.xml', 'fi.nls.oskari.eu.elf.recipe.universal.ELF_wfs_DefaultParser',
+INSERT INTO oskari_wfs_parser_config ( name, type, request_template, response_template, parse_config) VALUES ( 'default', 'Default Path', '/fi/nls/oskari/fe/input/request/wfs/generic/ELF_generic_wfs_template.xml', 'fi.nls.oskari.eu.elf.recipe.universal.ELF_wfs_DefaultParser',
  '{
         "scan": {
           "scanNS": "http://www.opengis.net/wfs/2.0",
