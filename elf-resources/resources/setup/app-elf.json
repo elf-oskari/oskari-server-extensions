@@ -21,6 +21,7 @@
         "elf-publisher-template-view.json"
     ],
     "sql": [
+        "elf_add_oskari_wfs_parser_config.sql",
         "populate-Inspire-themes.sql",
         "elf-organisations.sql",
         "elf-basemap-wmtslayer.sql",

@@ -7,9 +7,9 @@ INSERT INTO oskari_maplayer(type, name, groupId,
                             minscale, maxscale, 
                             url, username, password, srs_name, version,
                              locale) 
-  VALUES('wfslayer', 'elf_lod0ad_fi', 905, 
+  VALUES('wfslayer', 'elf_lod0ad_fi', 999, 
          50000, 1, 
-          'http://54.228.221.191/ELFcascadingWFS/service', null, null, 'urn:ogc:def:crs:EPSG::3857', '2.0.0', '{fi:{name:"AD cascading Osoitteet - ELF", subtitle:"ELF Cascading"},sv:{name:"Ad cascading Adresser - ELF", subtitle:"ELF Cascading"},en:{name:"AD cascading Address- ELF", subtitle:"ELF Cascading"}}');
+          'http://54.228.221.191/ELFcascadingWFS/service', null, null, 'urn:ogc:def:crs:EPSG::3857', '2.0.0', '{fi:{name:"AD cascading Osoitteet (lod0ad) - ELF", subtitle:"ELF Cascading"},sv:{name:"AD cascading Adresser (lod0ad) - ELF", subtitle:"ELF Cascading"},en:{name:"AD cascading Address (lod0ad) - ELF", subtitle:"ELF Cascading"}}');
           
  
           
@@ -81,7 +81,7 @@ VALUES (
         {
         "path": "/elf-lod0ad:Address/ad:component/@xlink:href",
         "type": "Href",
-        "label": "components",
+        "label": "addressUnits",
         "hrefPath": [{
             "path": "/wfs:SimpleFeatureCollection/wfs:member/elf-lod0ad:AdminUnitName/@gml:id",
             "type": "String",
