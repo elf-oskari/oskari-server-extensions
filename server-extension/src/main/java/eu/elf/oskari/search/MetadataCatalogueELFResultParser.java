@@ -32,14 +32,14 @@ public class MetadataCatalogueELFResultParser extends MetadataCatalogueResultPar
 
     public static final String KEY_LICENSE = "license";
     public static final String KEY_RATING = "rating";
+    public static final String KEY_NATUREOFTHETARGET = "natureofthetarget";
     public static final String AVERAGE_RATING_NODE = "gvq:averageRating";
-    //TODO move this to prperies file
-    public static final String RATING_SERVER_URL = "https://geoviqua.stcorp.nl/devel/api/v1/feedback/collections/?format=xml";
 
     private String urlPrefix = PropertyUtil.getOptional("search.channel.METADATA_CATALOGUE_CHANNEL.licenseUrlPrefix");
 
     @Override
     public SearchResultItem parseResult(OMElement elem, String locale) throws Exception {
+
         final SearchResultItem item = super.parseResult(elem, locale);
         log.debug("Parsed service url for", item.getResourceId(), ":", item.getGmdURL());
 
@@ -48,11 +48,26 @@ public class MetadataCatalogueELFResultParser extends MetadataCatalogueResultPar
             item.addValue(KEY_LICENSE, item.getGmdURL());
         }
 
-        String rating = getRatingForSearchResult(item, "https://geoviqua.stcorp.nl/devel/api/v1/feedback/collections/?format=xml&target_code=datasetti&target_codespace=mml.fi");
+        String feedbackServer = PropertyUtil.get("oskari.elf.feedback.server");
+        if(feedbackServer == null || feedbackServer.equals("")){
+            log.error("Feedback server missing!!!! (>oskari.elf.feedback.server< property missing from properties file)");
+        }
 
-        log.debug("ResourceId: " + item.getResourceId());
+        StringBuffer sb = new StringBuffer(feedbackServer);
+        sb.append("collections/?format=xml&target_code=");
+        sb.append(item.getResourceId());
+        sb.append("&target_codespace=ELF_METADATA");
+
+        log.debug("Searching from feedback server: " + sb.toString());
+
+        String rating = getRatingForSearchResult(sb.toString());
+        if(rating == null)
+            rating = "0";
+
         log.debug("ActionURL: " + item.getActionURL());
         item.addValue(KEY_RATING, rating);
+        log.debug("nature of target: " + item.getNatureOfTarget());
+        item.addValue(KEY_NATUREOFTHETARGET, item.getNatureOfTarget());
 
         return item;
     }
@@ -60,12 +75,12 @@ public class MetadataCatalogueELFResultParser extends MetadataCatalogueResultPar
     /**
      * Get ratings from rating service (geoviqua)
      *
-     * @param item
+     * //@param item
      * @return
      */
-    private String getRatingForSearchResult(SearchResultItem item, String url){
-        String resourceId = item.getResourceId();
-        log.debug("resourceId: " + resourceId);
+    //private String getRatingForSearchResult(SearchResultItem item, String url){
+    private String getRatingForSearchResult(String url){
+        String averageValue = null;
 
         try{
 
@@ -76,7 +91,7 @@ public class MetadataCatalogueELFResultParser extends MetadataCatalogueResultPar
             con.setRequestMethod("GET");
 
             //add request header
-            con.setRequestProperty("User-Agent", "moz");
+            //con.setRequestProperty("User-Agent", "moz");
 
             int responseCode = con.getResponseCode();
             log.debug("\nSending 'GET' request to URL : " + url);
@@ -87,14 +102,15 @@ public class MetadataCatalogueELFResultParser extends MetadataCatalogueResultPar
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(con.getInputStream());
 
-            String averageValue = parseAverageValueFromXMLDocument(doc);
+            averageValue = parseAverageValueFromXMLDocument(doc);
+
+            log.debug("############: " + averageValue);
 
         }catch (Exception e){
             log.debug("reading from service failed");
             log.debug(e.toString());
         }
-        // for test purposes returning 4
-        return "4";
+        return averageValue;
     }
 
 
@@ -108,8 +124,8 @@ public class MetadataCatalogueELFResultParser extends MetadataCatalogueResultPar
                 value = nodeList.item(i).getFirstChild().getNodeValue();
             }
 
-            XPath xPath =  XPathFactory.newInstance().newXPath();
-            value = xPath.compile("/gvq:collection/gvq:GVQ_FeedbackCollection/gvq:summary/gvq:averageRating").evaluate(doc);
+            //XPath xPath =  XPathFactory.newInstance().newXPath();
+            //value = xPath.compile("/gvq:collection/gvq:GVQ_FeedbackCollection/gvq:summary/gvq:averageRating").evaluate(doc);
 
 
         }catch(Exception e){

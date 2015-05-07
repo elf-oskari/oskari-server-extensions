@@ -43,23 +43,31 @@ public class GiveMetadataFeedbackHandler extends ActionHandler {
     public void handleAction(ActionParameters params) throws ActionException {
 
         if(log.isDebugEnabled()) printRequestData(params.getHttpParam("data"));
-        getRole(params);
+        //getRole(params);
 
-        String feedbackServerUrl = PropertyUtil.get("oskari.elf.feedback.s" +
-                "erver");
-        sendFeedBackToServer(feedbackServerUrl, params);
+        String feedbackServerUrl = PropertyUtil.get("oskari.elf.feedback.server");
+        sendFeedBackToServer(feedbackServerUrl + "items/", params);
+
 
         JSONArray result = new JSONArray();
 
 
         try {
+            JSONParser parser = new JSONParser();
+            org.json.simple.JSONObject jsonData = (org.json.simple.JSONObject)parser.parse(params.getHttpParam("data"));
+            String resourceId = (String)jsonData.get("primaryTargetCode");
+
+            String average = MetadataFeedback.getAverage(resourceId);
+            log.debug("average: " + average);
+
+
             JSONObject item = new JSONObject();
-            item.put("id", "xxxxxxxxxxxxxxxx");
-            item.put("rating", "4");
+            item.put("id", resourceId);
+            item.put("rating", average);
             result.put(item);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ActionException("Failed to save feedback");
-
         }
         ResponseHelper.writeResponse(params, result);
     }
@@ -78,16 +86,15 @@ public class GiveMetadataFeedbackHandler extends ActionHandler {
     }
 
     private void sendFeedBackToServer(String url, ActionParameters params){
-        //String USER_AGENT = "Mozilla/5.0";
 
         try{
             org.json.simple.JSONObject requestParameters = getRequestParameters(params.getHttpParam("data"));
 
+            log.debug("URL: " + url);
+
             URL obj = new URL(url);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
-            //String name = "feedback_elf_super";
-            //String password = "P3ll3Pel0t0n";
             String name = PropertyUtil.get("oskari.elf.feedback.username");
             String password = PropertyUtil.get("oskari.elf.feedback.password");
 
@@ -135,7 +142,7 @@ public class GiveMetadataFeedbackHandler extends ActionHandler {
             log.debug(response.toString());
 
         } catch (Exception e){
-            log.error("MESSU: " + e.getMessage());
+            log.error(e.getMessage());
             log.error(e.toString());
         }
 
@@ -157,7 +164,7 @@ public class GiveMetadataFeedbackHandler extends ActionHandler {
 
 
         JSONObject jsonCharacterString = JSONHelper.createJSONObject("CharacterString", (String)requestParameters.get("primaryTargetCode"));
-        JSONObject jsonCharacterString2 = JSONHelper.createJSONObject("CharacterString", (String)requestParameters.get("primaryTargetCodeSpace"));
+        JSONObject jsonCharacterString2 = JSONHelper.createJSONObject("CharacterString", "ELF_METADATA");
 
 
         JSONObject JSONbase2 = new JSONObject();
