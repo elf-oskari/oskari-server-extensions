@@ -3,6 +3,7 @@
         "create-empty-db",
         "register-bundles",
         "elf-add-myplaces",
+        "elf-add-userlayers",
         "postgres-add-users",
         "postgres-add-JAAS"
     ],
