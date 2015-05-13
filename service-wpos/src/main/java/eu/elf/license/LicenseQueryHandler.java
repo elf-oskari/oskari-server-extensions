@@ -325,53 +325,46 @@ public class LicenseQueryHandler {
 
         for (int i = 0; i < lpList.size(); i++) {
             if (lpList.get(i).getParameterClass().equals("configurationParameter")) {
+
                 LicenseParam lp = (LicenseParam) lpList.get(i);
 
-                productPriceQuery += "<wpos:Parameter name=\"" + StringEscapeUtils.escapeXml10(lp.getName()) + "\">";
-                //System.out.println(lp.getName()+"  "+lp.getParameterClass());
-
+                String priceQuery = "<wpos:Parameter name=\"" + StringEscapeUtils.escapeXml10(lp.getName()) + "\">";
 
                 if (lp instanceof LicenseParamInt) {
                     LicenseParamInt lpi = (LicenseParamInt) lp;
-                    //System.out.println("int "+lpi.getName());
 
-                    productPriceQuery += "<wpos:Value selected=\"true\">" + lpi.getValue() + "</wpos:Value>" +
+                    priceQuery += "<wpos:Value selected=\"true\">" + lpi.getValue() + "</wpos:Value>" +
                             "</wpos:Parameter>";
                 } else if (lp instanceof LicenseParamBln) {
                     LicenseParamBln lpBln = (LicenseParamBln) lp;
-                    //System.out.println("Bln "+lpBln.getName());
 
-                    productPriceQuery += "<wpos:Value selected=\"true\">" + lpBln.getValue() + "</wpos:Value>" +
+                    priceQuery += "<wpos:Value selected=\"true\">" + lpBln.getValue() + "</wpos:Value>" +
                             "</wpos:Parameter>";
                 } else if (lp instanceof LicenseParamDisplay) {
                     LicenseParamDisplay lpd = (LicenseParamDisplay) lp;
                     List<String> values = lpd.getValues();
 
-                    //System.out.println("Display "+lpd.getName());
-
                     if (lp.getName().equals("LICENSE_USER_GROUP")) {
-                        productPriceQuery += "<wpos:Value>Users</wpos:Value>";
+                        priceQuery += "<wpos:Value>Users</wpos:Value>";
 
                     } else if (lp.getName().equals("LICENSE_USER_ID")) {
-                        productPriceQuery += "<wpos:Value>" + userId + "</wpos:Value>";
+                        priceQuery += "<wpos:Value>" + userId + "</wpos:Value>";
 
                     } else {
                         for (int l = 0; l < values.size(); l++) {
-                            productPriceQuery += "<wpos:Value selected=\"true\">" + StringEscapeUtils.escapeXml10(values.get(l)) + "</wpos:Value>";
+                            priceQuery += "<wpos:Value selected=\"true\">" + StringEscapeUtils.escapeXml10(values.get(l)) + "</wpos:Value>";
                         }
                     }
 
-                    productPriceQuery += "</wpos:Parameter>";
+                    priceQuery += "</wpos:Parameter>";
                 } else if (lp instanceof LicenseParamEnum) {
                     LicenseParamEnum lpEnum = (LicenseParamEnum) lp;
-                    //System.out.println("Enum "+lpEnum.getName());
 
                     List<String> tempOptions = lpEnum.getOptions();
                     List<String> tempSelections = lpEnum.getSelections();
 
                     if (tempSelections.size() == 0) {
-                        productPriceQuery += "<wpos:Value selected=\"true\">" + StringEscapeUtils.escapeXml10(tempOptions.get(0)) + "</wpos:Value>" +
-                                "</wpos:Parameter>";
+                        priceQuery = "";
                     } else {
                         String selectionsString = "";
 
@@ -384,22 +377,20 @@ public class LicenseQueryHandler {
                             }
                         }
 
-                        productPriceQuery += "<wpos:Value selected=\"true\">" + StringEscapeUtils.escapeXml10(selectionsString) + "</wpos:Value>" +
+                        priceQuery += "<wpos:Value selected=\"true\">" + StringEscapeUtils.escapeXml10(selectionsString) + "</wpos:Value>" +
                                 "</wpos:Parameter>";
                     }
                 } else if (lp instanceof LicenseParamText) {
                     LicenseParamText lpText = (LicenseParamText) lp;
-                    //System.out.println("Text "+lpText.getName());
-
                     List<String> values = lpText.getValues();
 
                     for (int k = 0; k < values.size(); k++) {
-                        productPriceQuery += "<wpos:Value selected=\"true\">" + lpText.getValues() + "</wpos:Value>";
+                        priceQuery += "<wpos:Value selected=\"true\">" + lpText.getValues() + "</wpos:Value>";
                     }
-                    productPriceQuery += "</wpos:Parameter>";
+                    priceQuery += "</wpos:Parameter>";
                 }
 
-
+                productPriceQuery += priceQuery;
             }
 
         }
@@ -581,7 +572,7 @@ public class LicenseQueryHandler {
 
                         LicenseParamEnum lpenum = (LicenseParamEnum) lpList.get(i);
 
-                        if (lpenum.isMulti()) {
+                        if (lpenum.isMulti() && lpenum.getSelections().size()>0) {
                             wposQuery += "<wpos:Parameter name=\"" + StringEscapeUtils.escapeXml10(lpenum.getName()) + "\" type=\"string\" multi=\"true\" optional=\"true\">";
                 
                             String selectionsString = "";
@@ -597,7 +588,7 @@ public class LicenseQueryHandler {
                          
                             wposQuery += "<wpos:Value selected=\"true\">" + StringEscapeUtils.escapeXml10(selectionsString) + "</wpos:Value>";
                             wposQuery += "</wpos:Parameter>";
-                        } else {
+                        } else if(!lpenum.isMulti()) {
                             wposQuery += "<wpos:Parameter name=\"" + StringEscapeUtils.escapeXml10(lpenum.getName()) + "\" type=\"string\" multi=\"false\">";
 
                             for (int k = 0; k < lpenum.getOptions().size(); k++) {
