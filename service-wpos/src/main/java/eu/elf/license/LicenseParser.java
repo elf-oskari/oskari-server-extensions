@@ -248,8 +248,8 @@ public class LicenseParser {
                             if (attrs.getNodeValue().equals("ALL_ROLES")) {
                                 Element valueElement = (Element)parameterElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "value").item(0);
 
-                                if (valueElement.getTextContent().equals("false")) {
-                                    isRestricted = true;
+                                if (valueElement.getTextContent().equals("true")) {
+                                    isRestricted = false;
                                 }
                             }
                         }
