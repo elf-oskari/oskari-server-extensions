@@ -211,6 +211,7 @@ public class GiveMetadataFeedbackHandler extends ActionHandler {
             return jsonData;
 
         } catch (Exception e) {
+            e.printStackTrace();
             log.debug(e.toString());
             throw new ActionException("Couldn't parse rating form's JSON");
         }
@@ -241,6 +242,7 @@ public class GiveMetadataFeedbackHandler extends ActionHandler {
             log.debug(jsonData.get("onlineReference"));
 
         }catch(Exception e){
+            e.printStackTrace();
             log.debug(e.toString());
             throw new ActionException("Couldn't parse rating form's JSON");
         }
