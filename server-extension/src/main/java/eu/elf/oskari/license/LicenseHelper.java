@@ -1,10 +1,10 @@
 package eu.elf.oskari.license;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.elf.license.model.*;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
