@@ -1,5 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html; charset=UTF-8" isELIgnored="false" %>
 <!DOCTYPE html>
 <html>
@@ -88,25 +88,25 @@
     <div id="toolbar">
     </div>
      <div id="login">
-        <c:set var="user" value="fi.nls.oskari.domain.User" />
-        <c:choose>
-            <c:when test="${!empty _logout_uri}">
-                <a href="${_logout_uri}"><fmt:message key="logout"/></a>
-            </c:when>
-            <c:otherwise>
-                <c:choose>
-                    <c:when test="${!empty loginState}">
-                        <p class="error"><fmt:message key="invalid_password_or_username"/></p>
-                    </c:when>
-                </c:choose>
-                <form action='j_security_check' method="post" accept-charset="UTF-8">
-                    <input size="16" id="username" name="j_username" type="text" placeholder='<fmt:message key="username"/>' autofocus
-                           required>
-                    <input size="16" id="password" name="j_password" type="password" placeholder='<fmt:message key="password"/>' required>
-                    <input type="submit" id="submit" value='<fmt:message key="login"/>'>
-                </form>
-            </c:otherwise>
-        </c:choose>
+         <c:set var="user" value="fi.nls.oskari.domain.User" />
+         <c:choose>
+             <c:when test="${!empty _logout_uri}">
+                 <a href="${_logout_uri}"><spring:message code="logout" text="Logout" /></a>
+             </c:when>
+             <c:otherwise>
+                 <c:choose>
+                     <c:when test="${!empty loginState}">
+                         <p class="error"><spring:message code="invalid_password_or_username" text="Invalid password or username!" /></p>
+                     </c:when>
+                 </c:choose>
+                 <form action='j_security_check' method="post" accept-charset="UTF-8">
+                     <input size="16" id="username" name="j_username" type="text" placeholder="<spring:message code="username" text="Username" />" autofocus
+                            required>
+                     <input size="16" id="password" name="j_password" type="password" placeholder="<spring:message code="password" text="Password" />" required>
+                     <input type="submit" id="submit" value="<spring:message code="login" text="Log in" />">
+                 </form>
+             </c:otherwise>
+         </c:choose>
     </div>
 </nav>
 
