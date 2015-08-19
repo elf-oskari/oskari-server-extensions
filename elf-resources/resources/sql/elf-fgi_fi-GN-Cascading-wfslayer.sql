@@ -68,7 +68,7 @@ INSERT INTO portti_wfs_layer (
 -- add wfs layer styles; 
 INSERT INTO portti_wfs_layer_style (name,sld_style) VALUES(
 	'oskari-feature-engine',
-	'/fi/nls/oskari/fe/output/style/inspire/gn/fgi_cascade.xml'
+	'/fi/nls/oskari/fe/output/style/inspire/gn/fgi_gn_cascade.xml'
 );
 
 -- link wfs layer styles; 

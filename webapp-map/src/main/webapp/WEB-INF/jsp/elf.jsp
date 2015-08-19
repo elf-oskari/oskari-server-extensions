@@ -1,9 +1,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html; charset=UTF-8" isELIgnored="false" %>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>ELF - ${viewName}</title>
+    <title>ELF Showcase Application</title>
     <meta charset="utf-8" />
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.0/jquery.cookie.min.js"></script>
@@ -73,10 +74,10 @@
 </head>
 <body>
 
+<fmt:setLocale value="${language}"/>
+<fmt:setBundle basename="locale"/>
 <nav id="maptools">
     <div id="logobar">
-    </div>
-    <div id="langSelector">
     </div>
     <div id="menubar">
     </div>
@@ -88,22 +89,24 @@
         <c:set var="user" value="fi.nls.oskari.domain.User" />
         <c:choose>
             <c:when test="${!empty _logout_uri}">
-                <a href="${_logout_uri}">Logout</a>
+                <a href="${_logout_uri}"><spring:message code="logout" text="Logout" /></a>
             </c:when>
             <c:otherwise>
                 <c:choose>
                     <c:when test="${!empty loginState}">
-                        <p class="error">Invalid password or username!!</p>
+                        <p class="error"><spring:message code="invalid_password_or_username" text="Invalid password or username!" /></p>
                     </c:when>
                 </c:choose>
                 <form action='j_security_check' method="post" accept-charset="UTF-8">
-                    <input size="16" id="username" name="j_username" type="text" placeholder="Username" autofocus
+                    <input size="16" id="username" name="j_username" type="text" placeholder="<spring:message code="username" text="Username" />" autofocus
                            required>
-                    <input size="16" id="password" name="j_password" type="password" placeholder="Password" required>
-                    <input type="submit" id="submit" value="Log in">
+                    <input size="16" id="password" name="j_password" type="password" placeholder="<spring:message code="password" text="Password" />" required>
+                    <input type="submit" id="submit" value="<spring:message code="login" text="Log in" />">
                 </form>
             </c:otherwise>
         </c:choose>
+    </div>
+    <div id="langSelector">
     </div>
 </nav>
 <div id="contentMap">

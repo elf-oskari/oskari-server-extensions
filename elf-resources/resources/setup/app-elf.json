@@ -3,6 +3,7 @@
         "create-empty-db",
         "register-bundles",
         "elf-add-myplaces",
+        "elf-add-userlayers",
         "postgres-add-users",
         "postgres-add-JAAS"
     ],
@@ -10,7 +11,8 @@
         "elf": [
             "999-elf-lang-selector.sql",
             "999-elf-geolocator.sql",
-            "999-elf-license.sql"
+            "999-elf-license.sql",
+            "999-elf-lang-overrides.sql"
         ]
     },
 
@@ -20,6 +22,7 @@
         "elf-publisher-template-view.json"
     ],
     "sql": [
+        "elf_add_oskari_wfs_parser_config.sql",
         "populate-Inspire-themes.sql",
         "elf-organisations.sql",
         "elf-basemap-wmtslayer.sql",

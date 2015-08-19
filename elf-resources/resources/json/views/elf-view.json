@@ -10,6 +10,8 @@
     },
     "bundles": [
         {
+          "id": "elf-lang-overrides"
+        }, {
             "id": "openlayers-default-theme"
         }, {
             "id": "mapfull",
@@ -32,7 +34,8 @@
                         }
                     }, {
                         "id": "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin"
-                    }, {
+                    }, {"id": "Oskari.arcgis.bundle.maparcgis.plugin.ArcGisLayerPlugin"},
+                    {
                         "id": "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin",
                         "config": {
                         	"deferSetLocation": true,
@@ -82,12 +85,15 @@
                     }, {
                         "id" : "Oskari.mapframework.bundle.mapmyplaces.plugin.MyPlacesLayerPlugin"
                     }, {
+                        "id" : "Oskari.mapframework.bundle.myplacesimport.plugin.UserLayersLayerPlugin"
+                    }, {
                     	"id":"Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin",
                     	"config":{
                     		"termsUrl":{
                     			"fi":"http://www.elfproject.eu/content/terms-service",
                     			"sv":"http://www.elfproject.eu/content/terms-service",
-                    			"en":"http://www.elfproject.eu/content/terms-service"
+                    			"en":"http://www.elfproject.eu/content/terms-service",
+                                "es":"http://www.elfproject.eu/content/terms-service"
                     		},
                     		"mapUrlPrefix":{
                     			"fi":"?",
@@ -121,8 +127,8 @@
  0.5971642833948135,
  0.29858214169740677,
  0.14929107084870338,
- 0.07464553542435169			        
-			        ],			        
+ 0.07464553542435169
+			        ],
         			"numZoomLevels": 19,
 			        "xresolutions": [
 156543.03390625,
@@ -146,23 +152,23 @@
  0.5971642833948135,
  0.29858214169740677,
  0.14929107084870338,
- 0.07464553542435169			        
-			        ],			        
+ 0.07464553542435169
+			        ],
         			"xnumZoomLevels": 22,
         			"maxExtent": {
                       "bottom": -20037508.34,
 					  "left": -20037508.34,
 					  "right": 20037508.34,
-					  "top": 20037508.34   
+					  "top": 20037508.34
                     }
-        			
+
                 },
                 "projectionDefs": {
                     "EPSG:3035": "+proj=laea +lat_0=52 +lon_0=10 +x_0=4321000 +y_0=3210000 +ellps=GRS80 +units=m +no_defs",
                     "EPSG:3067": "+proj=utm +zone=35 +ellps=GRS80 +units=m +no_defs",
                     "EPSG:4326": "+title=WGS 84 +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs",
                     "EPSG:3857": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs",
-                    "EPSG:900913": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs"                    
+                    "EPSG:900913": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs"
                 }
             },
             "state": {
@@ -214,15 +220,115 @@
             "id": "publisher",
             "config": {
             	"publishedMapUrl": {
-            		"en" : "http://54.216.109.137/?lang=en&viewId=",
-            		"sv" : "http://54.216.109.137/?lang=sv&viewId=",
-            		"fi" : "http://54.216.109.137/?lang=fi&viewId="
-            	}
+            		"en" : "http://54.75.147.57/?lang=en&viewId=",
+            		"sv" : "http://54.75.147.57/?lang=sv&viewId=",
+            		"fi" : "http://54.75.147.57/?lang=fi&viewId="
+            	},
+                "tools": [{
+                  "id": "Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin",
+                  "selected": false,
+                  "lefthanded": "bottom left",
+                  "righthanded": "bottom right",
+                  "config": {
+                    "location": {
+                      "top": "",
+                      "right": "",
+                      "bottom": "",
+                      "left": "",
+                      "classes": "bottom left"
+                    }
+                  }
+                }, {
+                  "id": "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons",
+                  "selected": false,
+                  "lefthanded": "top left",
+                  "righthanded": "top right",
+                  "config": {
+                    "location": {
+                      "top": "",
+                      "right": "",
+                      "bottom": "",
+                      "left": "",
+                      "classes": "top left"
+                    }
+                  }
+                }, {
+                  "id": "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar",
+                  "selected": true,
+                  "lefthanded": "top left",
+                  "righthanded": "top right",
+                  "config": {
+                    "location": {
+                      "top": "",
+                      "right": "",
+                      "bottom": "",
+                      "left": "",
+                      "classes": "top left"
+                    }
+                  }
+                }, {
+                  "id": "Oskari.mapframework.bundle.mapmodule.plugin.MyLocationPlugin",
+                  "selected": false,
+                  "lefthanded": "top left",
+                  "righthanded": "top right",
+                  "config": {
+                    "location": {
+                      "top": "",
+                      "right": "",
+                      "bottom": "",
+                      "left": "",
+                      "classes": "top left"
+                    }
+                  }
+                }, {
+                  "id": "Oskari.mapframework.bundle.mapmodule.plugin.SearchPlugin",
+                  "selected": false,
+                  "lefthanded": "top right",
+                  "righthanded": "top left",
+                  "config": {
+                    "location": {
+                      "top": "",
+                      "right": "",
+                      "bottom": "",
+                      "left": "",
+                      "classes": "top right"
+                    }
+                  }
+                }, {
+                  "id": "Oskari.mapframework.mapmodule.ControlsPlugin",
+                  "selected": true
+                }, {
+                  "id": "Oskari.mapframework.bundle.mapmodule.plugin.PublisherToolbarPlugin",
+                  "selected": false,
+                  "lefthanded": "top right",
+                  "righthanded": "top left",
+                  "config": {
+                    "location": {
+                      "top": "",
+                      "right": "",
+                      "bottom": "",
+                      "left": "",
+                      "classes": "top right"
+                    },
+                    "toolbarId": "PublisherToolbar"
+                  }
+                }, {
+                  "id": "Oskari.mapframework.mapmodule.GetInfoPlugin",
+                  "selected": true,
+                  "config": {
+                    "ignoredLayerTypes": ["WFS"],
+                    "infoBox": false
+                  }
+                }]
             }
         }, {
             "id": "maplegend"
         }, {
-            "id": "userguide"
+            "id": "userguide",
+            "config" : {
+                "tags" : "userguide",
+                "flyoutClazz" : "Oskari.mapframework.bundle.userguide.SimpleFlyout"
+            }
         }, {
             "id": "featuredata2"
         }, {
@@ -236,14 +342,14 @@
                     "formatProducers" : {
                         "application/pdf" : "/imaging/service/thumbnail/maplink.pdf?",
                         "image/png" : "/imaging/service/thumbnail/maplink.png?"
-                    }, 
+                    },
                     "buttons": { }
                 }
             }
         }, {
-            "id": "postprocessor"
-        }, {
         	"id": "elf-language-selector"
+        }, {
+            "id": "findbycoordinates"
         }, {
             "id": "elf-geolocator"
         }, {
