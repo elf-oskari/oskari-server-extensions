@@ -1,0 +1,1 @@
+# oskari-server-extensions
