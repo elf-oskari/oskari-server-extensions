@@ -1,0 +1,17 @@
+[
+  {
+    "name": "LICENSE_TEXT_testtxt",
+    "values": [
+      "As a service",
+      "As an embedded webmap"
+    ]
+  },
+  {
+    "name": "LICENSE_PARAMETER_testbln",
+    "value": true
+  },
+  {
+    "name": "LICENSE_PARAMETER_testint",
+    "value": 37
+  }
+]
