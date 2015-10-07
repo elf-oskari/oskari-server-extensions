@@ -50,6 +50,12 @@
 
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-control-rating</artifactId>
+            <version>${oskari.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-control-admin</artifactId>
             <version>${oskari.version}</version>
         </dependency>

@@ -29,6 +29,11 @@
         </dependency>
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-rating</artifactId>
+            <version>${oskari.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-search-nls</artifactId>
             <version>${oskari.version}</version>
         </dependency>
