@@ -354,6 +354,8 @@
             "id": "elf-geolocator"
         }, {
            "id": "elf-license"
+        }, {
+           "id": "elf-metadatafeedback"
         }
     ]
 }

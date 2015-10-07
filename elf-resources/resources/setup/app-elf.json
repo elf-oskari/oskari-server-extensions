@@ -12,7 +12,8 @@
             "999-elf-lang-selector.sql",
             "999-elf-geolocator.sql",
             "999-elf-license.sql",
-            "999-elf-lang-overrides.sql"
+            "999-elf-lang-overrides.sql",
+            "999-elf-metadatafeedback.sql"
         ]
     },
 
