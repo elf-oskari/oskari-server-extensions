@@ -33,7 +33,7 @@ public class MetadataCatalogueELFResultParser extends MetadataCatalogueResultPar
     private static final Logger log = LogFactory.getLogger(MetadataCatalogueELFResultParser.class);
 
     public static final String KEY_LICENSE = "license";
-    public static final String KEY_RATING = "rating";
+    public static final String KEY_RATING = "score";
     public static final String KEY_AMOUNT = "amount";
     public static final String ELF_METADATA = "ELF_METADATA";
     public static final String KEY_NATUREOFTHETARGET = "natureofthetarget";
