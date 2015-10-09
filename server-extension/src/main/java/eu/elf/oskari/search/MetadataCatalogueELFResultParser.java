@@ -34,6 +34,7 @@ public class MetadataCatalogueELFResultParser extends MetadataCatalogueResultPar
 
     public static final String KEY_LICENSE = "license";
     public static final String KEY_RATING = "rating";
+    public static final String KEY_AMOUNT = "amount";
     public static final String ELF_METADATA = "ELF_METADATA";
     public static final String KEY_NATUREOFTHETARGET = "natureofthetarget";
 
@@ -52,12 +53,13 @@ public class MetadataCatalogueELFResultParser extends MetadataCatalogueResultPar
             item.addValue(KEY_LICENSE, item.getGmdURL());
         }
 
-        String rating = ratingService.getAverageRatingFor(ELF_METADATA, item.getResourceId());
+        String[] rating = ratingService.getAverageRatingFor(ELF_METADATA, item.getResourceId());
 
         if(rating == null)
-            rating = "0";
+            rating = new String[] {"0","0"};
 
-        item.addValue(KEY_RATING, rating);
+        item.addValue(KEY_RATING, rating[0]);
+        item.addValue(KEY_AMOUNT, rating[1]);
         item.addValue(KEY_NATUREOFTHETARGET, item.getNatureOfTarget());
 
         return item;
