@@ -2,12 +2,12 @@
 -- add map layer; 
 INSERT INTO oskari_maplayer(type, name, groupId, 
                             minscale, maxscale, 
-                              url, username, password, srs_name,
+                              url, username, password, srs_name,version,
                                locale) 
   VALUES('wfslayer', 'elf_gn_nlsfi', 905, 
          120000, 1, 
-         '!http://visukarttake01.nls.fi:8080/elf-wfs/services/elf-lod1gn|http://195.156.69.59/elf-wfs/services/elf-lod1gn', null, null, 'urn:ogc:def:crs:EPSG::3857', 
-          '{fi:{name:"GN Geographical Names - nls.fi", subtitle:""},sv:{name:"GN Geographical Names - nls.fi", subtitle:""},en:{name:"GN Geographical Names - nls.fi", subtitle:""}}');
+         '!http://visukarttake01.nls.fi:8080/elf-wfs/services/elf-lod1gn|http://195.156.69.59/elf-wfs/services/elf-lod1gn', null, null, 'urn:ogc:def:crs:EPSG::3857', '2.0.0',
+          '{fi:{name:"GN Geographical Names - nls.fi", subtitle:""},sv:{name:"GN Geographical Names - nls.fi", subtitle:""},en:{name:"GN Geographical Names - nls.fi groovy", subtitle:""}}');
          
 
          
@@ -30,7 +30,7 @@ INSERT INTO portti_wfs_layer (
     maplayer_id, 
     layer_name, 
     gml_geometry_property, gml_version, gml2_separator, 
-    wfs_version, max_features, 
+     max_features, 
     feature_namespace, 
     properties, 
     feature_type, 
@@ -49,7 +49,7 @@ INSERT INTO portti_wfs_layer (
       'ELF_GN_nls_fi', 
        '!http://visukarttake01.nls.fi:8080/elf-wfs/services/elf-lod1gn|http://195.156.69.59/elf-wfs/services/elf-lod1gn', null, null, 
        'geom', '3.2.1', false, 
-       '2.0.0', 5000, 
+       5000, 
        'elf-lod1gn', 
        '', 
        '{"default" : "*geometry:Geometry,text:String,script:String,sourceOfName:String,nameStatus:String,nativeness:String,language:String,beginLifespanVersion:String,endLifespanVersion:String,localType:String"}', 
