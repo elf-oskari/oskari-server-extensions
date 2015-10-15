@@ -5,7 +5,7 @@ INSERT INTO oskari_maplayer(type, name, groupId,
                              locale) 
   VALUES('wfslayer', 'elf_bu_nlsfi', 905, 
          20000, 1, 
-        'http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0bu', null, null, 'urn:ogc:def:crs:EPSG::3857', '2.0.0', '{fi:{name:"BU Rakennukset - nls.fi", subtitle:""},sv:{name:"BU Byggnader - nls.fi", subtitle:""},en:{name:"BU Buildings- nls.fi", subtitle:""}}');
+        'http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0bu', null, null, 'urn:ogc:def:crs:EPSG::3857', '2.0.0', '{fi:{name:"BU Rakennukset - nls.fi", subtitle:""},sv:{name:"BU Byggnader - nls.fi", subtitle:""},en:{name:"BU Buildings- nls.fi pull", subtitle:""}}');
          
 
          
