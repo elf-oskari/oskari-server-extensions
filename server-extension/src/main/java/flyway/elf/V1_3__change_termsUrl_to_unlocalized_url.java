@@ -44,9 +44,17 @@ public class V1_3__change_termsUrl_to_unlocalized_url implements JdbcMigration {
                 for (int i=0 ; i < plugins.length() ; ++i) {
                     JSONObject plugin = plugins.getJSONObject(i);
                     if (plugin.get("id").equals("Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin")) {
-                        JSONObject logoConfig = plugin.getJSONObject("config");
-                        JSONObject termsUrl = logoConfig.getJSONObject("termsUrl");
-                        logoConfig.put("termsUrl", termsUrl.getString("en"));
+                        JSONObject logoConfig = plugin.optJSONObject("config");
+                        if(logoConfig == null) {
+                            continue;
+                        }
+                        Object termsUrl = logoConfig.opt("termsUrl");
+                        if(termsUrl == null) {
+                            continue;
+                        }
+                        if(termsUrl instanceof JSONObject) {
+                            logoConfig.put("termsUrl", ((JSONObject)termsUrl).optString("en"));
+                        }
                         plugin.put("config", logoConfig);
                         plugins.put(i, plugin);
                     }
