@@ -97,6 +97,8 @@
              <%-- If logout url is present - so logout link --%>
              <c:when test="${!empty _logout_uri}">
                  <a href="${_logout_uri}"><spring:message code="logout" text="Logout" /></a>
+                 <br><br>
+                <a href="http://54.247.162.180:8080/administration">administration</a>
              </c:when>
              <%-- Otherwise show appropriate logins --%>
              <c:otherwise>
