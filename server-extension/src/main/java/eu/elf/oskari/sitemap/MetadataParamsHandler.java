@@ -21,7 +21,7 @@ import java.io.StringWriter;
 public class MetadataParamsHandler extends ParamHandler {
     private static final Logger LOG = LogFactory.getLogger(MetadataParamsHandler.class);
 	private static final String BUNDLE_METADATA_FLYOUT = "metadataflyout";
-    private static final String KEY_ALLMETADATA = "allMetadata";
+    private static final String KEY_CURRENT_METADATA = "current";
     private static final String KEY_UUID = "uuid";
 
 
@@ -40,7 +40,7 @@ public class MetadataParamsHandler extends ParamHandler {
             metadata.put(KEY_UUID, params.getParamValue());
             allMetadata.put(metadata);
 
-            JSONHelper.putValue(metadataState, KEY_ALLMETADATA, allMetadata);
+            JSONHelper.putValue(metadataState, KEY_CURRENT_METADATA, allMetadata);
         }
         catch (JSONException jex) {
             LOG.error("Couldn't handle metadata param", jex.getMessage());
