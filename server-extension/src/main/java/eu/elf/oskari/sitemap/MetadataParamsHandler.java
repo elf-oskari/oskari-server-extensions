@@ -10,7 +10,7 @@ import fi.nls.oskari.view.modifier.ModifierParams;
 import fi.nls.oskari.control.view.modifier.param.ParamHandler;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
+import org.json.JSONException;
 import java.io.StringWriter;
 
 
@@ -19,21 +19,32 @@ import java.io.StringWriter;
  */
 @OskariViewModifier("metadata")
 public class MetadataParamsHandler extends ParamHandler {
-
-
-    private static final Logger log = LogFactory.getLogger(MetadataParamsHandler.class);
+    private static final Logger LOG = LogFactory.getLogger(MetadataParamsHandler.class);
+	private static final String BUNDLE_METADATA_FLYOUT = "metadataflyout";
+    private static final String KEY_ALLMETADATA = "allMetadata";
+    private static final String KEY_UUID = "uuid";
 
 
     public boolean handleParam(final ModifierParams params) throws ModifierException {
-        log.debug("MetadataParam");
+        LOG.debug("MetadataParam");
         if(params.getParamValue() == null) {
             return false;
         }
-        log.debug("parmas: " + params.getParamValue());
+        LOG.debug("params: " + params.getParamValue());
 
-        final JSONObject mapfullState = getBundleState(params.getConfig(), BUNDLE_MAPFULL);
+        try {
+            final JSONObject metadataState = getBundleState(params.getConfig(), BUNDLE_METADATA_FLYOUT);
 
-        JSONHelper.putValue(mapfullState, "meta_uuid", params.getParamValue());
+            final JSONArray allMetadata = new JSONArray();
+            final JSONObject metadata = new JSONObject();
+            metadata.put(KEY_UUID, params.getParamValue());
+            allMetadata.put(metadata);
+
+            JSONHelper.putValue(metadataState, KEY_ALLMETADATA, allMetadata);
+        }
+        catch (JSONException jex) {
+            LOG.error("Couldn't handle metadata param", jex.getMessage());
+        }
         return false;
     }
 
