@@ -1,93 +1,72 @@
 package eu.elf.oskari.sitemap;
 
 import fi.mml.portti.service.search.*;
-import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionHandler;
-import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.control.data.GetGeoLocatorSearchResultHandler;
-import fi.nls.oskari.search.channel.MetadataCatalogueChannelSearchService;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.search.channel.MetadataCatalogueChannelSearchService;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ServiceFactory;
+import org.apache.axiom.om.OMAbstractFactory;
+import org.apache.axiom.om.OMAttribute;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMFactory;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by RLINKALA on 24.2.2016.
  */
-@OskariActionRoute("MetaDataSiteMapPopulator")
-public class MetadataSitemapPopulator extends ActionHandler {
+public class MetadataSitemapPopulator {
 
     private final static Logger log = LogFactory.getLogger(MetadataSitemapPopulator.class);
 
-    private final static String SITEMAP_PATH = "sitemap.path";
     private static String DOMAIN_URL = "oskari.domain";
+    private final static String SITEMAP_FILE_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">";
+    private final static String SITEMAP_FILE_FOOTER = "</urlset>";
 
     private static final SearchService service = ServiceFactory.getSearchService();
+    final private static OMFactory OM_FACTORY = OMAbstractFactory.getOMFactory();
 
-    @Override
-    public void handleAction(ActionParameters params) throws ActionException {
 
-        log.debug("creating the sitemap");
-        String sitemapPath = PropertyUtil.get(SITEMAP_PATH, "C:\\Omat\\temppi\\filename.txt");
 
-        try{
-            createSiteMapFile(sitemapPath);
-        }catch(Exception e){
-            log.error(e.getMessage());
-            e.printStackTrace();
-        }
-
+    public MetadataSitemapPopulator() {
     }
 
-    private void createSiteMapFile(String path) throws Exception {
+    public String buildSiteMap() throws Exception {
 
-        File file = new File(path);
+        OMElement urlElement = null;
+        OMElement locElement = null;
+        final String domain = PropertyUtil.get(DOMAIN_URL, "http://localhost:8080");
+        final OMElement root = OM_FACTORY.createOMElement("urlset", null);
+        final OMAttribute xmlns = OM_FACTORY.createOMAttribute("xmlns", null, "http://www.sitemaps.org/schemas/sitemap/0.9");
 
-        if (!file.exists()) {
-            file.createNewFile();
-        }
+        root.addAttribute(xmlns);
 
-        FileWriter fw = new FileWriter(file.getAbsoluteFile());
-        BufferedWriter bw = new BufferedWriter(fw);
-        bw.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
-        bw.write(getContent());
-        bw.write("</urlset>");
-        bw.close();
-
-        log.debug("File created to location: " + path);
-
-    }
-
-    private String getContent() throws Exception{
-
-        String domain = PropertyUtil.get(DOMAIN_URL, "http://localhost:8884");
-
-        StringBuffer sb = new StringBuffer();
         List<String> metadataUuids = getUuids();
 
-        if(metadataUuids == null || metadataUuids.size() == 0)
-            throw new Exception("things are bad... there are no UUids");
+        if (metadataUuids == null || metadataUuids.size() == 0)
+            throw new Exception("No uuids found... The service might be unable to answer");
 
-        log.debug("size of uuid list: " + metadataUuids.size());
 
-        for(String metadataId : metadataUuids){
-            sb.append("<url><loc>");
-            sb.append(domain+"/?metadata=");
-            sb.append(metadataId);
-            sb.append("</loc></url>");
+        log.debug("metadataUuids size: " + metadataUuids.size());
+
+        for (String metadataId : metadataUuids) {
+            urlElement = OM_FACTORY.createOMElement("url", null);
+            locElement = OM_FACTORY.createOMElement("loc", null);
+            locElement.setText(domain + "/?metadata=" + metadataId);
+            urlElement.addChild(locElement);
+            root.addChild(urlElement);
         }
-        return sb.toString();
-    }
 
+        return root.toString();
+    }
 
     private List<String> getUuids() {
 
@@ -106,7 +85,7 @@ public class MetadataSitemapPopulator extends ActionHandler {
         log.debug("done search... now creating a list");
 
         for (SearchResultItem item : searchResult.getSearchResultItems()) {
-            if(item.getResourceId() != null){
+            if (item.getResourceId() != null) {
                 log.debug("Adding id: " + item.getResourceId());
                 uuids.add(item.getResourceId());
             }
