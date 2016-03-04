@@ -3,7 +3,6 @@ package eu.elf.oskari.sitemap;
 import fi.nls.oskari.annotation.OskariViewModifier;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.view.modifier.ModifierException;
 import fi.nls.oskari.view.modifier.ModifierParams;
@@ -11,7 +10,6 @@ import fi.nls.oskari.control.view.modifier.param.ParamHandler;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
-import java.io.StringWriter;
 
 
 /**

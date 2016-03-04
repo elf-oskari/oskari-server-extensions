@@ -19,9 +19,9 @@ import eu.elf.oskari.sitemap.MetadataSitemapPopulator;
 @Controller
 public class ELFMapController {
 
-    private final static Logger log = LogFactory.getLogger(ELFMapController.class);
+    private static final Logger LOG = LogFactory.getLogger(ELFMapController.class);
 
-    private final String SITEMAPXML = "sitemap";
+    private static final String SITEMAPXML = "sitemap";
     private final Cache<String> siteMapCache = CacheManager.getCache(ELFMapController.class.getCanonicalName());
 
     /**
@@ -34,7 +34,7 @@ public class ELFMapController {
     @RequestMapping(value="/sitemap.xml")
     @ResponseBody
     public String handle(){
-        log.debug("building SiteMap");
+        LOG.debug("building SiteMap");
 
         String siteMap = siteMapCache.get(SITEMAPXML);
 
@@ -44,6 +44,7 @@ public class ELFMapController {
                 siteMap = metadataSitemapPopulator.buildSiteMap();
                 siteMapCache.put(SITEMAPXML, siteMap);
             }catch(Exception e){
+                LOG.error("Sitemap creation failed: " + e.getMessage());
                 e.printStackTrace();
             }
         }

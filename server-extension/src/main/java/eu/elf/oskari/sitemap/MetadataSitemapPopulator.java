@@ -10,12 +10,6 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
-
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,15 +18,12 @@ import java.util.List;
  */
 public class MetadataSitemapPopulator {
 
-    private final static Logger log = LogFactory.getLogger(MetadataSitemapPopulator.class);
+    private final static Logger LOG = LogFactory.getLogger(MetadataSitemapPopulator.class);
 
     private static String DOMAIN_URL = "oskari.domain";
-    private final static String SITEMAP_FILE_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-            "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">";
-    private final static String SITEMAP_FILE_FOOTER = "</urlset>";
 
     private static final SearchService service = ServiceFactory.getSearchService();
-    final private static OMFactory OM_FACTORY = OMAbstractFactory.getOMFactory();
+    private static final OMFactory OM_FACTORY = OMAbstractFactory.getOMFactory();
 
 
 
@@ -51,11 +42,11 @@ public class MetadataSitemapPopulator {
 
         List<String> metadataUuids = getUuids();
 
-        if (metadataUuids == null || metadataUuids.size() == 0)
+        if (metadataUuids == null || metadataUuids.isEmpty())
             throw new Exception("No uuids found... The service might be unable to answer");
 
 
-        log.debug("metadataUuids size: " + metadataUuids.size());
+        LOG.debug("metadataUuids size: " + metadataUuids.size());
 
         for (String metadataId : metadataUuids) {
             urlElement = OM_FACTORY.createOMElement("url", null);
@@ -82,11 +73,11 @@ public class MetadataSitemapPopulator {
         final Query query = service.doSearch(sc);
         final ChannelSearchResult searchResult = query.findResult(MetadataCatalogueChannelSearchService.ID);
 
-        log.debug("done search... now creating a list");
+        LOG.debug("done search... now creating a list");
 
         for (SearchResultItem item : searchResult.getSearchResultItems()) {
             if (item.getResourceId() != null) {
-                log.debug("Adding id: " + item.getResourceId());
+                LOG.debug("Adding id: " + item.getResourceId());
                 uuids.add(item.getResourceId());
             }
         }
