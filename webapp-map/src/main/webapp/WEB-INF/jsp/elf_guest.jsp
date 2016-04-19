@@ -78,8 +78,10 @@
 <fmt:setBundle basename="locale"/>
 
 <nav id="maptools">
-    <div id="logobar">
-    </div>
+    <a href="http://www.locationframework.eu" target="_blank">
+        <div id="logobar">
+        </div>
+    </a>
     <div id="langSelector">
     </div>
     <div id="menubar">
@@ -99,7 +101,7 @@
              <c:when test="${!empty _logout_uri}">
                  <a href="${_logout_uri}"><spring:message code="logout" text="Logout" /></a>
                  <br><br>
-                <a href="http://54.247.162.180:8080/administration">administration</a>
+                <a href="https://security.locationframework.eu/administration" target="_blank">administration</a>
              </c:when>
              <%-- Otherwise show appropriate logins --%>
              <c:otherwise>
