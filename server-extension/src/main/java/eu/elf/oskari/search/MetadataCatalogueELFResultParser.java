@@ -36,7 +36,6 @@ public class MetadataCatalogueELFResultParser extends MetadataCatalogueResultPar
     public static final String KEY_RATING = "score";
     public static final String KEY_AMOUNT = "amount";
     public static final String ELF_METADATA = "ELF_METADATA";
-    public static final String KEY_NATUREOFTHETARGET = "natureofthetarget";
 
     private final RatingService ratingService = new RatingServiceMybatisImpl();
 
@@ -60,7 +59,6 @@ public class MetadataCatalogueELFResultParser extends MetadataCatalogueResultPar
 
         item.addValue(KEY_RATING, rating[0]);
         item.addValue(KEY_AMOUNT, rating[1]);
-        item.addValue(KEY_NATUREOFTHETARGET, item.getNatureOfTarget());
 
         return item;
     }
