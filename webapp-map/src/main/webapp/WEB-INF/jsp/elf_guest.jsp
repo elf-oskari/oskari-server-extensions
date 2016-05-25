@@ -6,6 +6,7 @@
 <head>
     <title>ELF Showcase Application</title>
     <meta charset="utf-8" />
+    <link rel="shortcut icon" href="http://locationframework.eu/sites/default/files/elffavicon_0.jpg" type="image/jpeg" />
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.0/jquery.cookie.min.js"></script>
 
@@ -14,15 +15,15 @@
     <link
             rel="stylesheet"
             type="text/css"
-            href="/Oskari${path}/css/icons.css"/>
+            href="/Oskari/resources/css/forms.css"/>
     <link
             rel="stylesheet"
             type="text/css"
-            href="/Oskari${path}/css/forms.css"/>
+            href="/Oskari/resources/css/portal.css"/>
     <link
             rel="stylesheet"
             type="text/css"
-            href="/Oskari${path}/css/portal.css"/>
+            href="/Oskari${path}/icons.css"/>
     <link
             rel="stylesheet"
             type="text/css"
@@ -37,7 +38,7 @@
             #login input[type="text"], #login input[type="password"] {
                 width: 90%;
                 margin-bottom: 5px;
-                background-image: url("/Oskari${path}/images/forms/input_shadow.png");
+                background-image: url("/Oskari/resources/images/forms/input_shadow.png");
                 background-repeat: no-repeat;
                 padding-left: 5px;
                 padding-right: 5px;
@@ -77,8 +78,10 @@
 <fmt:setBundle basename="locale"/>
 
 <nav id="maptools">
-    <div id="logobar">
-    </div>
+    <a href="http://www.locationframework.eu" target="_blank">
+        <div id="logobar">
+        </div>
+    </a>
     <div id="langSelector">
     </div>
     <div id="menubar">
@@ -97,6 +100,8 @@
              <%-- If logout url is present - so logout link --%>
              <c:when test="${!empty _logout_uri}">
                  <a href="${_logout_uri}"><spring:message code="logout" text="Logout" /></a>
+                 <br><br>
+                <a href="https://security.locationframework.eu/administration" target="_blank">administration</a>
              </c:when>
              <%-- Otherwise show appropriate logins --%>
              <c:otherwise>
@@ -127,19 +132,12 @@
 
 <script type="text/javascript">
     var ajaxUrl = '${ajaxUrl}';
-    var viewId = '${viewId}';
     var language = '${language}';
-    var preloaded = ${preloaded};
     var controlParams = ${controlParams};
 </script>
 
 <script type="text/javascript"
         src="/Oskari/bundles/bundle.js">
-</script>
-
-<!--  OPENLAYERS -->
-<script type="text/javascript"
-        src="/Oskari/packages/openlayers/startup.js">
 </script>
 
 <c:if test="${preloaded}">

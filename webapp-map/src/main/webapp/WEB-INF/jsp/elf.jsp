@@ -6,6 +6,7 @@
 <head>
     <title>ELF Showcase Application</title>
     <meta charset="utf-8" />
+    <link rel="shortcut icon" href="http://locationframework.eu/sites/default/files/elffavicon_0.jpg" type="image/jpeg" />
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.0/jquery.cookie.min.js"></script>
 
@@ -14,15 +15,15 @@
     <link
             rel="stylesheet"
             type="text/css"
-            href="/Oskari${path}/css/icons.css"/>
+            href="/Oskari/resources/css/forms.css"/>
     <link
             rel="stylesheet"
             type="text/css"
-            href="/Oskari${path}/css/forms.css"/>
+            href="/Oskari/resources/css/portal.css"/>
     <link
             rel="stylesheet"
             type="text/css"
-            href="/Oskari${path}/css/portal.css"/>
+            href="/Oskari${path}/icons.css"/>
     <link
             rel="stylesheet"
             type="text/css"
@@ -77,8 +78,10 @@
 <fmt:setLocale value="${language}"/>
 <fmt:setBundle basename="locale"/>
 <nav id="maptools">
-    <div id="logobar">
-    </div>
+    <a href="http://www.locationframework.eu" target="_blank">
+        <div id="logobar">
+        </div>
+    </a>
     <div id="menubar">
     </div>
     <div id="divider">
@@ -90,6 +93,8 @@
         <c:choose>
             <c:when test="${!empty _logout_uri}">
                 <a href="${_logout_uri}"><spring:message code="logout" text="Logout" /></a>
+                <br><br>
+                <a href="https://security.locationframework.eu/administration" target="_blank">administration</a>
             </c:when>
             <c:otherwise>
                 <c:choose>
@@ -120,7 +125,6 @@
 
 <script type="text/javascript">
     var ajaxUrl = '${ajaxUrl}';
-    var viewId = '${viewId}';
     var language = '${language}';
     var preloaded = ${preloaded};
     var controlParams = ${controlParams};
@@ -128,11 +132,6 @@
 
 <script type="text/javascript"
         src="/Oskari/bundles/bundle.js">
-</script>
-
-<!--  OPENLAYERS -->
-<script type="text/javascript"
-        src="/Oskari/packages/openlayers/startup.js">
 </script>
 
 <c:if test="${preloaded}">
@@ -147,9 +146,6 @@
             href="/Oskari${path}/oskari.min.css"
             />
     <%--language files --%>
-    <script type="text/javascript"
-            src="/Oskari${path}/oskari_lang_all.js">
-    </script>
     <script type="text/javascript"
             src="/Oskari${path}/oskari_lang_${language}.js">
     </script>

@@ -1,10 +1,11 @@
 -- add map layer; 
 INSERT INTO oskari_maplayer(type, name, groupId, 
                             minscale, maxscale, 
-                            url, locale) 
+                            url, username, password, srs_name, version,
+                             locale) 
   VALUES('wfslayer', 'elf_ad_nlsfi', 905, 
          120000, 1, 
-         'wfs', '{fi:{name:"AD Osoitteet - nls.fi", subtitle:""},sv:{name:"Ad Adresser - nls.fi", subtitle:""},en:{name:"AD Address- nls.fi", subtitle:""}}');
+         'http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad', null, null, 'urn:ogc:def:crs:EPSG::3857', '2.0.0','{fi:{name:"AD Osoitteet - nls.fi", subtitle:""},sv:{name:"Ad Adresser - nls.fi", subtitle:""},en:{name:"AD Address- nls.fi", subtitle:""}}');
           
  
           
@@ -26,9 +27,8 @@ VALUES (
 INSERT INTO portti_wfs_layer ( 
     maplayer_id, 
     layer_name, 
-    url, username, password, 
     gml_geometry_property, gml_version, gml2_separator, 
-    wfs_version, max_features, 
+    max_features, 
     feature_namespace, 
     properties, 
     feature_type, 
@@ -36,7 +36,6 @@ INSERT INTO portti_wfs_layer (
     feature_params_locales, 
     geometry_type, 
     selection_sld_style_id, get_map_tiles, get_feature_info, tile_request, wms_layer_id, 
-    srs_name, 
     feature_element, feature_namespace_uri, 
     geometry_namespace_uri, 
     get_highlight_image, 
@@ -45,10 +44,9 @@ INSERT INTO portti_wfs_layer (
     job_type, 
     wfs_template_model_id) 
     VALUES ( (select max(id) from oskari_maplayer), 
-      'ELF_AD_nls_fi', 
-       'http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad', null, null, 
+      'ELF_AD_nls_fi',  
        'geom', '3.2.1', false, 
-       '2.0.0', 5000, 
+        5000, 
        'elf-lod0ad', 
        '', 
        '{"default" : "*geometry:Geometry,beginLifespanVersion:String,endLifespanVersion:String,localType:String"}', 
@@ -56,7 +54,6 @@ INSERT INTO portti_wfs_layer (
        '{}', 
        '2d', 
        NULL, true, true, false, NULL, 
-    'urn:ogc:def:crs:EPSG::3857', 
     'Address', 'http://www.locationframework.eu/schemas/Addresses/MasterLoD0/1.0', 
     '', 
     true, '{}', '{ "default" : 1, "oskari_custom" : 1}', 
@@ -75,7 +72,7 @@ INSERT INTO portti_wfs_layers_styles (wfs_layer_id,wfs_layer_style_id) VALUES(
      
  
 -- setup permissions for guest user;
-INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'wfs+elf_ad_nlsfi');
+INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'wfslayer+http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad+elf_ad_fgifi');
  
 -- permissions;
 -- adding permissions to roles with id 10110, 2, and 3;
