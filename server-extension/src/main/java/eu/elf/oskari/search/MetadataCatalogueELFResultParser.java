@@ -8,19 +8,6 @@ import fi.nls.oskari.rating.RatingServiceMybatisImpl;
 import fi.nls.oskari.search.channel.MetadataCatalogueResultParser;
 import fi.nls.oskari.util.PropertyUtil;
 import org.apache.axiom.om.OMElement;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
-import org.w3c.dom.Element;
-
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathFactory;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 /**
  * Hooking information about service license to metadata search results.
@@ -36,6 +23,7 @@ public class MetadataCatalogueELFResultParser extends MetadataCatalogueResultPar
     public static final String KEY_RATING = "score";
     public static final String KEY_AMOUNT = "amount";
     public static final String ELF_METADATA = "ELF_METADATA";
+    public static final String KEY_NATUREOFTHETARGET = "natureofthetarget";
 
     private final RatingService ratingService = new RatingServiceMybatisImpl();
 
@@ -59,6 +47,7 @@ public class MetadataCatalogueELFResultParser extends MetadataCatalogueResultPar
 
         item.addValue(KEY_RATING, rating[0]);
         item.addValue(KEY_AMOUNT, rating[1]);
+        item.addValue(KEY_NATUREOFTHETARGET, item.getNatureOfTarget());
 
         return item;
     }
