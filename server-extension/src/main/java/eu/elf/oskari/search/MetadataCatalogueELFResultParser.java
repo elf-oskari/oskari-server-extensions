@@ -8,19 +8,6 @@ import fi.nls.oskari.rating.RatingServiceMybatisImpl;
 import fi.nls.oskari.search.channel.MetadataCatalogueResultParser;
 import fi.nls.oskari.util.PropertyUtil;
 import org.apache.axiom.om.OMElement;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
-import org.w3c.dom.Element;
-
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathFactory;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 /**
  * Hooking information about service license to metadata search results.
