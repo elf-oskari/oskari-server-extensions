@@ -3,6 +3,8 @@ package eu.elf.license;
 import eu.elf.license.conclude.LicenseConcludeResponseObject;
 import eu.elf.license.model.*;
 
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.w3c.dom.*;
 import org.xml.sax.SAXParseException;
@@ -20,6 +22,8 @@ import java.util.List;
  * Refactored from QueryHandler
  */
 public class LicenseParser { 
+
+    private static final Logger LOG = LogFactory.getLogger(LicenseParser.class);
 
     public static List<LicenseModelGroup> parseListOfLicensesAsLicenseModelGroupList(String xml) throws Exception {
 
@@ -47,62 +51,60 @@ public class LicenseParser {
             
             for (int i = 0; i < orderList.getLength(); i++) {
             	UserLicense userLicense = new UserLicense();
-            	
-            	Element orderElement = (Element)orderList.item(i);
-            	Element productionElement = (Element)orderElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "production").item(0);
-            	Element productionItemElement = (Element)productionElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "productionItem").item(0);
-            	Element LicenseReferenceElement = (Element)productionItemElement.getElementsByTagNameNS("http://www.52north.org/license/0.3.2", "LicenseReference").item(0);
-            	Element attributeStatementElement = (Element)LicenseReferenceElement.getElementsByTagNameNS("urn:oasis:names:tc:SAML:2.0:assertion", "AttributeStatement").item(0);
-            	
-            	NodeList attributeElementList = attributeStatementElement.getElementsByTagNameNS("urn:oasis:names:tc:SAML:2.0:assertion", "Attribute");
-    	    	
-            	
-    	    	for (int j = 0; j < attributeElementList.getLength(); j++) {
-    	    		Element attributeElement = (Element)attributeElementList.item(j);
-    	    		Element AttributeValueElement = (Element)attributeElement.getElementsByTagNameNS("urn:oasis:names:tc:SAML:2.0:assertion", "AttributeValue").item(0);
-    	    		    			
-    	    		NamedNodeMap attributeMap = attributeElement.getAttributes();
-    	
-    	    
-    	    		
-    	            for (int k = 0; k < attributeMap.getLength(); k++) {
-    	            	Attr attrs = (Attr) attributeMap.item(k);
-    	            	if (attrs.getNodeName().equals("Name") ) {
-    	      
-    	    	        	if(attrs.getNodeValue().equals("urn:opengeospatial:ows4:geodrm:NotOnOrAfter")) {
-    	    	        		userLicense.setValidTo(AttributeValueElement.getTextContent());
-    	                    }
-    	                    if(attrs.getNodeValue().equals("urn:opengeospatial:ows4:geodrm:LicenseID")) {
-    	                    	userLicense.setLicenseId(AttributeValueElement.getTextContent());
-    	                    }
-    	    	        }
-    	
-    	            }
-    	            
-    	            
-    	            userLicense.setSecureServiceURL("/httpauth/licid-"+userLicense.getLicenseId());
-    	            
-    	    	}
-    	    		
-    	    	Element orderContentElement = (Element)orderElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "orderContent").item(0);
-    	    	Element catalogElement = (Element)orderContentElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "catalog").item(0);
-    	    	NodeList productGroupElementList = catalogElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "productGroup");
+            	try {
+                    Element orderElement = (Element)orderList.item(i);
+                    Element productionElement = (Element)orderElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "production").item(0);
+                    Element productionItemElement = (Element)productionElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "productionItem").item(0);
+                    Element LicenseReferenceElement = (Element)productionItemElement.getElementsByTagNameNS("http://www.52north.org/license/0.3.2", "LicenseReference").item(0);
+                    Element attributeStatementElement = (Element)LicenseReferenceElement.getElementsByTagNameNS("urn:oasis:names:tc:SAML:2.0:assertion", "AttributeStatement").item(0);
 
-                // setup user license flags in models
-                List<LicenseModelGroup> list = createLicenseModelGroupList(productGroupElementList);
-                for(LicenseModelGroup group : list) {
-                   group.setUserLicense(true);
+                    NodeList attributeElementList = attributeStatementElement.getElementsByTagNameNS("urn:oasis:names:tc:SAML:2.0:assertion", "Attribute");
+
+
+                    for (int j = 0; j < attributeElementList.getLength(); j++) {
+                        Element attributeElement = (Element)attributeElementList.item(j);
+                        Element AttributeValueElement = (Element)attributeElement.getElementsByTagNameNS("urn:oasis:names:tc:SAML:2.0:assertion", "AttributeValue").item(0);
+
+                        NamedNodeMap attributeMap = attributeElement.getAttributes();
+                        for (int k = 0; k < attributeMap.getLength(); k++) {
+                            Attr attrs = (Attr) attributeMap.item(k);
+                            if ("Name".equals(attrs.getNodeName())) {
+
+                                if("urn:opengeospatial:ows4:geodrm:NotOnOrAfter".equals(attrs.getNodeValue())) {
+                                    userLicense.setValidTo(AttributeValueElement.getTextContent());
+                                }
+                                if("urn:opengeospatial:ows4:geodrm:LicenseID".equals(attrs.getNodeValue())) {
+                                    userLicense.setLicenseId(AttributeValueElement.getTextContent());
+                                }
+                            }
+                        }
+                        userLicense.setSecureServiceURL("/httpauth/licid-"+userLicense.getLicenseId());
+                    }
+
+                    Element orderContentElement = (Element)orderElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "orderContent").item(0);
+                    Element catalogElement = (Element)orderContentElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "catalog").item(0);
+                    NodeList productGroupElementList = catalogElement.getElementsByTagNameNS("http://www.conterra.de/xcpf/1.1", "productGroup");
+
+                    // setup user license flags in models
+                    List<LicenseModelGroup> list = createLicenseModelGroupList(productGroupElementList);
+                    for(LicenseModelGroup group : list) {
+                       group.setUserLicense(true);
+                    }
+                    userLicense.setLmgList(list);
+
+                    String WSS_URL = findWssUrlFromUserLicenseParamList(userLicense.getLmgList());
+
+                    //Remove WSS from the WSS-url string
+                    WSS_URL = WSS_URL.substring(0, WSS_URL.lastIndexOf("/"));
+
+                    userLicense.setSecureServiceURL(WSS_URL+userLicense.getSecureServiceURL());
+
+                    userLicenses.addUserLicense(userLicense);
+                } catch(Exception e) {
+                    // Sometimes we get results without LicenseReference element: order/production/productionItem/LicenseReference
+                    // there might be valid results in the same response. Skipping the invalid ones.
+                    LOG.warn("Error while parsing user licenses");
                 }
-    	    	userLicense.setLmgList(list);
-    	    	
-    	    	String WSS_URL = findWssUrlFromUserLicenseParamList(userLicense.getLmgList());
-    	    	
-    	    	//Remove WSS from the WSS-url string
-    	    	WSS_URL = WSS_URL.substring(0, WSS_URL.lastIndexOf("/"));
-    	    	
-    	    	userLicense.setSecureServiceURL(WSS_URL+userLicense.getSecureServiceURL());
-    	    	
-	            userLicenses.addUserLicense(userLicense);
             	
             }
                               
