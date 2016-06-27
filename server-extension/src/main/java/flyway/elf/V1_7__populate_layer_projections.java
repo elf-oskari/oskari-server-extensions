@@ -108,7 +108,8 @@ public class V1_7__populate_layer_projections implements JdbcMigration {
         int count = 0;
         try {
             // Get supported projections
-            Map<String, Object> capa = GetGtWFSCapabilities.getGtDataStoreCapabilities(layer.getUrl(), layer.getVersion(), layer.getUsername(), layer.getPassword());
+            Map<String, Object> capa = GetGtWFSCapabilities.getGtDataStoreCapabilities(layer.getUrl(), layer.getVersion(), layer.getUsername(),
+                    layer.getPassword(), layer.getSrs_name());
 
 
             if (capa != null) {
