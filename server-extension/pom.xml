@@ -37,7 +37,12 @@
             <artifactId>oskari-search-nls</artifactId>
             <version>${oskari.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>service-spatineo-monitor</artifactId>
+            <version>${oskari.version}</version>
+        </dependency>
+		
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
