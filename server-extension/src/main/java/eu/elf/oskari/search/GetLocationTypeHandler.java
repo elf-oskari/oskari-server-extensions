@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.data;
+package eu.elf.oskari.search;
 
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.nls.oskari.SearchWorker;
