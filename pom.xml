@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>eu.elf.oskari</groupId>
     <artifactId>elf-parent</artifactId>
-    <version>1.3.1</version>
+    <version>1.4.0</version>
     <packaging>pom</packaging>
     <name>ELF applications</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <oskari.version>1.38.2</oskari.version>
+        <oskari.version>1.39.0</oskari.version>
         <commons-dbcp2.version>2.0.1</commons-dbcp2.version>
         <postgresql.version>9.3-1102-jdbc41</postgresql.version>
         <java.version>1.7</java.version>
@@ -58,8 +58,6 @@
     <modules>
         <module>elf-resources</module>
         <module>service-wpos</module>
-        <!-- Disabled since no-one is using it for now -->
-        <!-- module>runnable-jar</module -->
         <module>server-extension</module>
         <module>webapp-map</module>
         <module>webapp-transport</module>

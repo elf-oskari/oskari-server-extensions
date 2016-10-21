@@ -1,6 +1,8 @@
 package eu.elf.oskari.search;
 
 import fi.mml.portti.service.search.SearchResultItem;
+import fi.nls.oskari.domain.Role;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.rating.RatingService;
@@ -22,6 +24,7 @@ public class MetadataCatalogueELFResultParser extends MetadataCatalogueResultPar
     public static final String KEY_LICENSE = "license";
     public static final String KEY_RATING = "score";
     public static final String KEY_AMOUNT = "amount";
+    public static final String KEY_ADMIN_RATING = "latestAdminRating";
     public static final String ELF_METADATA = "ELF_METADATA";
 
     private final RatingService ratingService = new RatingServiceMybatisImpl();
@@ -40,13 +43,15 @@ public class MetadataCatalogueELFResultParser extends MetadataCatalogueResultPar
         }
 
         String[] rating = ratingService.getAverageRatingFor(ELF_METADATA, item.getResourceId());
+        String adminRole = Role.getAdminRole().getName();
+        String adminRating = ratingService.findLatestAdminRating(ELF_METADATA, item.getResourceId(), adminRole);
 
         if(rating == null)
             rating = new String[] {"0","0"};
 
         item.addValue(KEY_RATING, rating[0]);
         item.addValue(KEY_AMOUNT, rating[1]);
-
+        item.addValue(KEY_ADMIN_RATING, adminRating);
         return item;
     }
 }
