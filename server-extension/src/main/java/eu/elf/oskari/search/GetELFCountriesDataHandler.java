@@ -4,10 +4,12 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.search.channel.ELFGeoLocatorSearchChannel;
 
 import java.util.Locale;
+import java.util.Properties;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,8 +37,7 @@ public class GetELFCountriesDataHandler extends ActionHandler {
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
 
-        // TODO use default lang if not found?
-        final String lang = params.getRequiredParam(LANG_PARAM);
+        final String lang = params.getRequiredParam(LANG_PARAM, PropertyUtil.getDefaultLanguage());
         Locale locale = new Locale(lang);
         JSONArray result = new JSONArray();
 
