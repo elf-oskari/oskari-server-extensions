@@ -103,7 +103,6 @@ public class UserXMLMapping {
         }
         catch (Exception e) {
             log.error(e, "Exception while parsing user data");
-            e.printStackTrace();
         }
         return null;
     }

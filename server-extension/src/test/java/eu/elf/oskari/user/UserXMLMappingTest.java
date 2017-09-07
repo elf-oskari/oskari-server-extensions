@@ -7,30 +7,29 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class ConterraSecurityManagerUserServiceTest {
+public class UserXMLMappingTest {
 
-    final ConterraSecurityManagerUserService service = new ConterraSecurityManagerUserService();
     final UserXMLMapping mapper = new UserXMLMapping();
 
     @Test
     public void testParseResponseNotExpectedInput() throws Exception {
 
-        User nullUser  = service.parseResponse(null);
+        User nullUser  = mapper.parse(null);
         assertNull("UserNotFound response should result in <null> user.", nullUser);
 
         final String response = IOHelper.readString(getClass().getResourceAsStream("UserNotFoundResponse.xml"));
-        User notFoundUser  = service.parseResponse(response);
+        User notFoundUser  = mapper.parse(response);
         assertNull("UserNotFound response should result in <null> user.", notFoundUser);
 
         final String wrongStatusResponse = IOHelper.readString(getClass().getResourceAsStream("LoginWithWrongStatus.xml"));
-        User wrongStatusUser  = service.parseResponse(wrongStatusResponse);
+        User wrongStatusUser  = mapper.parse(wrongStatusResponse);
         assertNull("UserNotFound response should result in <null> user.", wrongStatusUser);
     }
 
     @Test
     public void testParseResponseSuccesful() throws Exception {
         final String response = IOHelper.readString(getClass().getResourceAsStream("SuccessfulLogin.xml"));
-        User user  = service.parseResponse(response);
+        User user  = mapper.parse(response);
         assertNotNull("SuccessfulLogin response should result in actual user.", user);
         assertEquals("Attribute should match: screenname", "CONT", user.getScreenname());
         assertEquals("Attribute should match: email", "r.gartmann@conterra.de", user.getEmail());
