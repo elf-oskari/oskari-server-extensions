@@ -1,5 +1,6 @@
 package eu.elf.oskari.user;
 
+import eu.elf.oskari.util.IOHelperOverride;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -38,7 +39,7 @@ public class ConterraSecurityManagerUserService extends DatabaseUserService {
         params.put(PARAM_METHOD, PARAM_METHOD_VALUE);
         params.put(PARAM_REQUEST, PARAM_REQUEST_VALUE);
         params.put(PARAM_CREDENTIALS, "");
-        payloadTemplate = IOHelper.getParams(params);
+        payloadTemplate = IOHelperOverride.getParams(params);
         try {
             // get the service url from properties
             serviceURL = PropertyUtil.getNecessary("eu.elf.oskari.user.ConterraSecurityManagerUserService.url");
