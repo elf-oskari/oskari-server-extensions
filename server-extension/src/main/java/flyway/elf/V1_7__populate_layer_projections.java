@@ -79,7 +79,7 @@ public class V1_7__populate_layer_projections implements JdbcMigration {
                 if (parsed != null) {
                     WMTSCapabilitiesLayer capsLayer = parsed.getLayer(layer.getName());
                     if (capsLayer != null) {
-                        Set<String> crss = LayerJSONFormatterWMTS.getCRSs(parsed, capsLayer);
+                        Set<String> crss = LayerJSONFormatterWMTS.getCRSs(capsLayer);
                         if (crss != null && crss.size() > 0) {
                             removeProjections(layer.getId(), connection);
                             insertProjections(layer.getId(), crss, connection);
