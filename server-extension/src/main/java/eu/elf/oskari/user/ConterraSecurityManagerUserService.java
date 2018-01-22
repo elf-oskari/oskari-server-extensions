@@ -19,7 +19,6 @@ public class ConterraSecurityManagerUserService extends DatabaseUserService {
 
     private static Logger log = LogFactory.getLogger(ConterraSecurityManagerUserService.class);
     private String serviceURL = "";
-    private String payloadTemplate = "";
 
     private static final String PARAM_METHOD = "METHOD";
     private static final String PARAM_METHOD_VALUE = "urn:opengeospatial:authNMethod:OWS:1.0:password";
@@ -34,11 +33,7 @@ public class ConterraSecurityManagerUserService extends DatabaseUserService {
         super.init();
         // LinkedHashMap handles order so we get the empty PARAM_CREDENTIALS as the last param
         // this way we can just do payloadTemplate + <credentials value>
-        final Map<String, String> params = new LinkedHashMap<String, String>();
-        params.put(PARAM_METHOD, PARAM_METHOD_VALUE);
-        params.put(PARAM_REQUEST, PARAM_REQUEST_VALUE);
-        params.put(PARAM_CREDENTIALS, "");
-        payloadTemplate = IOHelper.getParams(params);
+
         try {
             // get the service url from properties
             serviceURL = PropertyUtil.getNecessary("eu.elf.oskari.user.ConterraSecurityManagerUserService.url");
@@ -54,7 +49,13 @@ public class ConterraSecurityManagerUserService extends DatabaseUserService {
             // call security manager login
             HttpURLConnection conn = IOHelper.getConnection(serviceURL);
             IOHelper.setContentType(conn, IOHelper.CONTENTTYPE_FORM_URLENCODED);
-            final String payload = payloadTemplate + IOHelper.encode64(username) + "," + IOHelper.encode64(pass);
+
+            final Map<String, String> params = new LinkedHashMap<String, String>();
+            params.put(PARAM_METHOD, PARAM_METHOD_VALUE);
+            params.put(PARAM_REQUEST, PARAM_REQUEST_VALUE);
+            params.put(PARAM_CREDENTIALS, IOHelper.encode64(username) + "," + IOHelper.encode64(pass));
+            final String payload = IOHelper.getParams(params);
+
             IOHelper.writeToConnection(conn, payload);
             final String response = IOHelper.readString(conn);
             if(response.isEmpty()) {
