@@ -1,11 +1,9 @@
 {
-    "setup": [
-        "create-empty-db",
-        "register-bundles",
-        "elf-add-myplaces",
-        "elf-add-userlayers",
-        "postgres-add-users",
-        "postgres-add-JAAS"
+    "create": [
+        "elf-organisations.sql",
+        "add-inspire-themes.sql",
+        "add-example-users.sql",
+        "add-example-credentials.sql"
     ],
     "bundles": {
         "elf": [
@@ -16,7 +14,6 @@
             "999-elf-metadatafeedback.sql"
         ]
     },
-
     "views": [
         "elf-view.json",
         "elf-guest-view.json",
@@ -24,8 +21,6 @@
     ],
     "sql": [
         "elf_add_oskari_wfs_parser_config.sql",
-        "populate-Inspire-themes.sql",
-        "elf-organisations.sql",
         "elf-basemap-wmtslayer.sql",
         "elf-cuzk_cz-AU-wfslayer.sql",
         "elf-fgi_fi-AU-Cascading-wfslayer.sql",

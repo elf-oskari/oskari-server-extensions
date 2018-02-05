@@ -1,5 +1,6 @@
 package flyway.elf;
 
+import fi.nls.oskari.db.DBHandler;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
@@ -25,6 +26,10 @@ public class V1_3__change_termsUrl_to_unlocalized_url implements JdbcMigration {
 
     public void migrate(Connection connection)
             throws Exception {
+
+        // add initial content
+        DBHandler.setupAppContent(connection, "app-elf.json");
+
         int page = 1;
         while(updateViews(page)) {
             page++;

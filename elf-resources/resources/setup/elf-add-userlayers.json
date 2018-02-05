@@ -1,8 +1,0 @@
-{
-    "create" : [
-        "create-userdata-tables.sql"
-    ],
-    "sql" : [
-        "elf-userlayer-wfs-baselayer.sql"
-    ]
-}
