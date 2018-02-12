@@ -5,11 +5,12 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.search.channel.MetadataCatalogueChannelSearchService;
 import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.util.ServiceFactory;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
+import org.oskari.service.util.ServiceFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
