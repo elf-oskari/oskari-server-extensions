@@ -113,9 +113,9 @@ public class V1_7__populate_layer_projections implements JdbcMigration {
 
 
             if (capa != null) {
-                Set<String> crss = GetGtWFSCapabilities.parseProjections(capa, layer.getVersion(), layer.getName());
+                Set<String> crss = GetGtWFSCapabilities.parseProjections(capa, layer.getName());
                 if (crss == null) {
-                    crss = new HashSet<String>();
+                    crss = new HashSet<>();
                 }
                 // Add default csr
                 if (layer.getSrs_name() != null) {
@@ -146,7 +146,7 @@ public class V1_7__populate_layer_projections implements JdbcMigration {
         int count = 0;
         try {
 
-            Set<String> crss = new HashSet<String>();
+            Set<String> crss = new HashSet<>();
 
             // Add default csr
             if (layer.getSrs_name() != null) {
