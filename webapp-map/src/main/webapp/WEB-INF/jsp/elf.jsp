@@ -105,6 +105,7 @@
                     <input size="16" id="username" name="j_username" type="text" placeholder="<spring:message code="username" text="Username" />" autofocus
                            required>
                     <input size="16" id="password" name="j_password" type="password" placeholder="<spring:message code="password" text="Password" />" required>
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     <input type="submit" id="submit" value="<spring:message code="login" text="Log in" />">
                 </form>
             </c:otherwise>
