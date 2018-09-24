@@ -5,7 +5,7 @@
 <head>
     <title>${viewName}</title>
     <meta charset="utf-8" />
-    <link rel="shortcut icon" href="http://locationframework.eu/sites/default/files/elffavicon_0.jpg" type="image/jpeg" />
+    <link rel="shortcut icon" href="/Oskari${path}/ELF_favicon.jpg" type="image/jpeg" />
     <script type="text/javascript" src="/Oskari/libraries/jquery/jquery-1.10.2.min.js"></script>
 
     <!-- ############# css ################# -->
