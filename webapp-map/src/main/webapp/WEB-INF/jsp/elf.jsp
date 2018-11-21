@@ -88,8 +88,6 @@
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     <a href="${pageContext.request.contextPath}${_logout_uri}" onClick="jQuery('#logoutform').submit();return false;"><spring:message code="logout" text="Logout" /></a>
                 </form>
-                <br><br>
-                <a href="https://security.locationframework.eu/administration" target="_blank">administration</a>
             </c:when>
             <c:otherwise>
                 <c:choose>
