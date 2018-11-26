@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>ELF Showcase Application</title>
+    <title>ELS Showcase Application</title>
     <meta charset="utf-8" />
     <link rel="shortcut icon" href="/Oskari${path}/ELF_favicon.jpg" type="image/jpeg" />
 
@@ -69,7 +69,7 @@
 <fmt:setLocale value="${language}"/>
 <fmt:setBundle basename="locale"/>
 <nav id="maptools">
-    <a href="http://www.locationframework.eu" target="_blank">
+    <a href="https://openels.eu" target="_blank">
         <div id="logobar">
         </div>
     </a>
