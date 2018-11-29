@@ -54,7 +54,7 @@
             }
 
             #login a {
-                color: #FFF;
+                color: #000;
                 padding: 5px;
             }
         }
