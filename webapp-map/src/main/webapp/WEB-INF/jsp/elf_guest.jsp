@@ -140,19 +140,17 @@
     var controlParams = ${controlParams};
 </script>
 
-<c:if test="${preloaded}">
-    <!-- Pre-compiled application JS, empty unless created by build job -->
-    <script type="text/javascript"
-            src="/Oskari${path}/oskari.min.js">
-    </script>
-    <%--language files --%>
-    <script type="text/javascript"
-            src="/Oskari${path}/oskari_lang_all.js">
-    </script>
-    <script type="text/javascript"
-            src="/Oskari${path}/oskari_lang_${language}.js">
-    </script>
-</c:if>
+<!-- Pre-compiled application JS, empty unless created by build job -->
+<script type="text/javascript"
+        src="/Oskari${path}/oskari.min.js">
+</script>
+<%--language files --%>
+<script type="text/javascript"
+        src="/Oskari${path}/oskari_lang_all.js">
+</script>
+<script type="text/javascript"
+        src="/Oskari${path}/oskari_lang_${language}.js">
+</script>
 
 <script type="text/javascript"
         src="/Oskari${path}/index.js">
