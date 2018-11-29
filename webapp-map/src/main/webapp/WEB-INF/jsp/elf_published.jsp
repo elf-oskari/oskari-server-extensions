@@ -19,6 +19,10 @@
 			#contentMap { margin-left: 0px !important; }
         }
     </style>
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="/Oskari${path}/oskari.min.css"/>
     <!-- ############# /css ################# -->
 </head>
 <body>
