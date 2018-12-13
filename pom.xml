@@ -63,7 +63,6 @@
 
     <modules>
         <module>elf-resources</module>
-        <module>service-wpos</module>
         <module>server-extension</module>
         <module>webapp-map</module>
         <module>webapp-transport</module>
