@@ -78,9 +78,15 @@ WMTS serving ELF Topographic Basemap ("elf_topographic_basemap") is hosted at ht
 
 Note! The IP-address is internal to the currently running network and cannot be accessed from the internet, but any basemap supporting EPSG:3035 can be used.
 
-### Geolocator
-	(Pekka Latvala will provide more information)
-   - http://services.locationframework.eu/elf/GeolocatorService
+### The ELS GeoLocator service
+
+The ELS GeoLocator service is a gazetteer type of web service that contains data from themes: Addresses (AD), Administrative Units (AU) and Geographical Names (GN) together with data from the EuroGeoNames (EGN) services and exonym data. The ELS GeoLocator service is based on the OGC Gazetteer Service Application Profile of the Web Feature Service (WFS-G).
+
+The GeoLocator service uses an off-the-shelf WFS application (deegree WFS), that serves the data from the PostgreSQL / PostGIS database through the WFS interface. The GeoLocator service contains also a custom-built front-end service module, based on Java Servlet that supports custom service operations and additional operation parameters. The custom service operations and additional operation parameters are not officially specified as part of the WFS standard or the WFS-G application profile. For this reason, the ELS GeoLocator service must be taken as an experimental service.
+
+The ELS GeoLocator service is currently running on the governmental cloud platform provided by the Norwegian NMCA Kartverket: http://services.locationframework.eu/elf/GeolocatorService
+
+There is a separate guide of installing and configuring the ELS Geolocator service.
 
 ### Properties
    Application specific properties should be configured to {jetty.base}/resources/oskari-ext.properties.
